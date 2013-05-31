@@ -1,0 +1,32 @@
+//
+// Prefix header for all source files of the 'Quting' target in the 'Quting' project
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+    #import <SystemConfiguration/SystemConfiguration.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
+#endif
+
+#define isiPhone5 [UIScreen mainScreen].bounds.size.height==568.f
+#define HEIGHT [UIScreen mainScreen].bounds.size.height//获取屏幕高度
+#define WIDTH [UIScreen mainScreen].bounds.size.width
+#define isRetina [UIScreen mainScreen].scale==2//是否为支持retina的设备
+#define isNewiPad (isPad && isRetina)//是否为new iPad
+
+#ifdef DEBUG
+#define NSLog(...) NSLog(__VA_ARGS__)//如果为测试模式,则log信息,否则什么都不做. 当项目设置为release时自动修改,不需要额外修改配置
+#else
+#define NSLog(...) do{} while(0)
+#endif
+
+#define imageNamed(name) ([UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:nil]])
+#define SHOWCONFIG @"showConfigView"
+#define BACKTOMAIN @"backToMainView"
