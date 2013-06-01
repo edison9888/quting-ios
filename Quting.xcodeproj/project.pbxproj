@@ -123,14 +123,6 @@
 		C49F3C13175614EC00C20A4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49F3C12175614EC00C20A4B /* QuartzCore.framework */; };
 		C49F3C161756156B00C20A4B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C151756156B00C20A4B /* MainViewController.m */; };
 		C49F3C191756157600C20A4B /* ConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C181756157600C20A4B /* ConfigViewController.m */; };
-		C49F3C43175617C200C20A4B /* FacingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C33175617C200C20A4B /* FacingView.m */; };
-		C49F3C44175617C200C20A4B /* FoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C35175617C200C20A4B /* FoldView.m */; };
-		C49F3C45175617C200C20A4B /* MultiFoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C37175617C200C20A4B /* MultiFoldView.m */; };
-		C49F3C46175617C200C20A4B /* PaperFoldSwipeHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C3A175617C200C20A4B /* PaperFoldSwipeHintView.m */; };
-		C49F3C47175617C200C20A4B /* PaperFoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C3C175617C200C20A4B /* PaperFoldView.m */; };
-		C49F3C48175617C200C20A4B /* ShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C3E175617C200C20A4B /* ShadowView.m */; };
-		C49F3C49175617C200C20A4B /* TouchThroughUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C40175617C200C20A4B /* TouchThroughUIView.m */; };
-		C49F3C4A175617C200C20A4B /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C42175617C200C20A4B /* UIView+Screenshot.m */; };
 		C49F3C6A17561EA700C20A4B /* AlbumsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C6917561EA700C20A4B /* AlbumsView.m */; };
 		C49F3C6E17561FDC00C20A4B /* CircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C6D17561FDC00C20A4B /* CircularProgressView.m */; };
 		C49F3C701756219D00C20A4B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49F3C6F1756219D00C20A4B /* AVFoundation.framework */; };
@@ -151,6 +143,14 @@
 		C4A4451F1756498100851E8D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A4451E1756498100851E8D /* SystemConfiguration.framework */; };
 		C4D0CD0817571C47002295D0 /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D0CD0717571C47002295D0 /* AudioManager.m */; };
 		C4D0CD59175724CE002295D0 /* PlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D0CD58175724CE002295D0 /* PlayViewController.m */; };
+		C4ECAEC81759B6B600B3B0FF /* FacingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEB81759B6B600B3B0FF /* FacingView.m */; };
+		C4ECAEC91759B6B600B3B0FF /* FoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEBA1759B6B600B3B0FF /* FoldView.m */; };
+		C4ECAECA1759B6B600B3B0FF /* MultiFoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEBC1759B6B600B3B0FF /* MultiFoldView.m */; };
+		C4ECAECB1759B6B600B3B0FF /* PaperFoldSwipeHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEBF1759B6B600B3B0FF /* PaperFoldSwipeHintView.m */; };
+		C4ECAECC1759B6B600B3B0FF /* PaperFoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC11759B6B600B3B0FF /* PaperFoldView.m */; };
+		C4ECAECD1759B6B600B3B0FF /* ShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC31759B6B600B3B0FF /* ShadowView.m */; };
+		C4ECAECE1759B6B600B3B0FF /* TouchThroughUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC51759B6B600B3B0FF /* TouchThroughUIView.m */; };
+		C4ECAECF1759B6B600B3B0FF /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC71759B6B600B3B0FF /* UIView+Screenshot.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -288,23 +288,6 @@
 		C49F3C151756156B00C20A4B /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		C49F3C171756157600C20A4B /* ConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigViewController.h; sourceTree = "<group>"; };
 		C49F3C181756157600C20A4B /* ConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigViewController.m; sourceTree = "<group>"; };
-		C49F3C32175617C200C20A4B /* FacingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacingView.h; sourceTree = "<group>"; };
-		C49F3C33175617C200C20A4B /* FacingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacingView.m; sourceTree = "<group>"; };
-		C49F3C34175617C200C20A4B /* FoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldView.h; sourceTree = "<group>"; };
-		C49F3C35175617C200C20A4B /* FoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldView.m; sourceTree = "<group>"; };
-		C49F3C36175617C200C20A4B /* MultiFoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiFoldView.h; sourceTree = "<group>"; };
-		C49F3C37175617C200C20A4B /* MultiFoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiFoldView.m; sourceTree = "<group>"; };
-		C49F3C38175617C200C20A4B /* PaperFoldConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldConstants.h; sourceTree = "<group>"; };
-		C49F3C39175617C200C20A4B /* PaperFoldSwipeHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldSwipeHintView.h; sourceTree = "<group>"; };
-		C49F3C3A175617C200C20A4B /* PaperFoldSwipeHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperFoldSwipeHintView.m; sourceTree = "<group>"; };
-		C49F3C3B175617C200C20A4B /* PaperFoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldView.h; sourceTree = "<group>"; };
-		C49F3C3C175617C200C20A4B /* PaperFoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperFoldView.m; sourceTree = "<group>"; };
-		C49F3C3D175617C200C20A4B /* ShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowView.h; sourceTree = "<group>"; };
-		C49F3C3E175617C200C20A4B /* ShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowView.m; sourceTree = "<group>"; };
-		C49F3C3F175617C200C20A4B /* TouchThroughUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchThroughUIView.h; sourceTree = "<group>"; };
-		C49F3C40175617C200C20A4B /* TouchThroughUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchThroughUIView.m; sourceTree = "<group>"; };
-		C49F3C41175617C200C20A4B /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Screenshot.h"; sourceTree = "<group>"; };
-		C49F3C42175617C200C20A4B /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Screenshot.m"; sourceTree = "<group>"; };
 		C49F3C6817561EA700C20A4B /* AlbumsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsView.h; sourceTree = "<group>"; };
 		C49F3C6917561EA700C20A4B /* AlbumsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsView.m; sourceTree = "<group>"; };
 		C49F3C6C17561FDC00C20A4B /* CircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularProgressView.h; sourceTree = "<group>"; };
@@ -341,6 +324,23 @@
 		C4D0CD0717571C47002295D0 /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioManager.m; sourceTree = "<group>"; };
 		C4D0CD57175724CE002295D0 /* PlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayViewController.h; sourceTree = "<group>"; };
 		C4D0CD58175724CE002295D0 /* PlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayViewController.m; sourceTree = "<group>"; };
+		C4ECAEB71759B6B600B3B0FF /* FacingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacingView.h; sourceTree = "<group>"; };
+		C4ECAEB81759B6B600B3B0FF /* FacingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacingView.m; sourceTree = "<group>"; };
+		C4ECAEB91759B6B600B3B0FF /* FoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldView.h; sourceTree = "<group>"; };
+		C4ECAEBA1759B6B600B3B0FF /* FoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldView.m; sourceTree = "<group>"; };
+		C4ECAEBB1759B6B600B3B0FF /* MultiFoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiFoldView.h; sourceTree = "<group>"; };
+		C4ECAEBC1759B6B600B3B0FF /* MultiFoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiFoldView.m; sourceTree = "<group>"; };
+		C4ECAEBD1759B6B600B3B0FF /* PaperFoldConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldConstants.h; sourceTree = "<group>"; };
+		C4ECAEBE1759B6B600B3B0FF /* PaperFoldSwipeHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldSwipeHintView.h; sourceTree = "<group>"; };
+		C4ECAEBF1759B6B600B3B0FF /* PaperFoldSwipeHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperFoldSwipeHintView.m; sourceTree = "<group>"; };
+		C4ECAEC01759B6B600B3B0FF /* PaperFoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldView.h; sourceTree = "<group>"; };
+		C4ECAEC11759B6B600B3B0FF /* PaperFoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperFoldView.m; sourceTree = "<group>"; };
+		C4ECAEC21759B6B600B3B0FF /* ShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowView.h; sourceTree = "<group>"; };
+		C4ECAEC31759B6B600B3B0FF /* ShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowView.m; sourceTree = "<group>"; };
+		C4ECAEC41759B6B600B3B0FF /* TouchThroughUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchThroughUIView.h; sourceTree = "<group>"; };
+		C4ECAEC51759B6B600B3B0FF /* TouchThroughUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchThroughUIView.m; sourceTree = "<group>"; };
+		C4ECAEC61759B6B600B3B0FF /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Screenshot.h"; sourceTree = "<group>"; };
+		C4ECAEC71759B6B600B3B0FF /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Screenshot.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -603,13 +603,13 @@
 				C43026EA1758979E0082D368 /* VoiceInputView.mm */,
 				C43026EB1758979E0082D368 /* VoiceTextField.h */,
 				C43026EC1758979E0082D368 /* VoiceTextField.mm */,
+				C4ECAEB61759B6B600B3B0FF /* paperFold */,
 				C430264A175897980082D368 /* voice */,
 				C43026471758978E0082D368 /* JSONKit.h */,
 				C43026481758978E0082D368 /* JSONKit.m */,
 				C49F3C8E175626E100C20A4B /* AFDownloadRequestOperation */,
 				C49F3C91175626E100C20A4B /* AFNetworking */,
 				C49F3C6B17561FDC00C20A4B /* CircularProgressView */,
-				C49F3C31175617C200C20A4B /* paperFold */,
 				C448DF671756090800AD4C94 /* AppDelegate.h */,
 				C448DF681756090800AD4C94 /* AppDelegate.m */,
 				C4D0CD0617571C47002295D0 /* AudioManager.h */,
@@ -646,31 +646,6 @@
 				C448DF6E1756090800AD4C94 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		C49F3C31175617C200C20A4B /* paperFold */ = {
-			isa = PBXGroup;
-			children = (
-				C49F3C32175617C200C20A4B /* FacingView.h */,
-				C49F3C33175617C200C20A4B /* FacingView.m */,
-				C49F3C34175617C200C20A4B /* FoldView.h */,
-				C49F3C35175617C200C20A4B /* FoldView.m */,
-				C49F3C36175617C200C20A4B /* MultiFoldView.h */,
-				C49F3C37175617C200C20A4B /* MultiFoldView.m */,
-				C49F3C38175617C200C20A4B /* PaperFoldConstants.h */,
-				C49F3C39175617C200C20A4B /* PaperFoldSwipeHintView.h */,
-				C49F3C3A175617C200C20A4B /* PaperFoldSwipeHintView.m */,
-				C49F3C3B175617C200C20A4B /* PaperFoldView.h */,
-				C49F3C3C175617C200C20A4B /* PaperFoldView.m */,
-				C49F3C3D175617C200C20A4B /* ShadowView.h */,
-				C49F3C3E175617C200C20A4B /* ShadowView.m */,
-				C49F3C3F175617C200C20A4B /* TouchThroughUIView.h */,
-				C49F3C40175617C200C20A4B /* TouchThroughUIView.m */,
-				C49F3C41175617C200C20A4B /* UIView+Screenshot.h */,
-				C49F3C42175617C200C20A4B /* UIView+Screenshot.m */,
-			);
-			name = paperFold;
-			path = ../../piiic/Piiic/paperFold;
 			sourceTree = "<group>";
 		};
 		C49F3C6B17561FDC00C20A4B /* CircularProgressView */ = {
@@ -715,6 +690,30 @@
 				C49F3CA4175626E200C20A4B /* UIImageView+AFNetworking.m */,
 			);
 			path = AFNetworking;
+			sourceTree = "<group>";
+		};
+		C4ECAEB61759B6B600B3B0FF /* paperFold */ = {
+			isa = PBXGroup;
+			children = (
+				C4ECAEB71759B6B600B3B0FF /* FacingView.h */,
+				C4ECAEB81759B6B600B3B0FF /* FacingView.m */,
+				C4ECAEB91759B6B600B3B0FF /* FoldView.h */,
+				C4ECAEBA1759B6B600B3B0FF /* FoldView.m */,
+				C4ECAEBB1759B6B600B3B0FF /* MultiFoldView.h */,
+				C4ECAEBC1759B6B600B3B0FF /* MultiFoldView.m */,
+				C4ECAEBD1759B6B600B3B0FF /* PaperFoldConstants.h */,
+				C4ECAEBE1759B6B600B3B0FF /* PaperFoldSwipeHintView.h */,
+				C4ECAEBF1759B6B600B3B0FF /* PaperFoldSwipeHintView.m */,
+				C4ECAEC01759B6B600B3B0FF /* PaperFoldView.h */,
+				C4ECAEC11759B6B600B3B0FF /* PaperFoldView.m */,
+				C4ECAEC21759B6B600B3B0FF /* ShadowView.h */,
+				C4ECAEC31759B6B600B3B0FF /* ShadowView.m */,
+				C4ECAEC41759B6B600B3B0FF /* TouchThroughUIView.h */,
+				C4ECAEC51759B6B600B3B0FF /* TouchThroughUIView.m */,
+				C4ECAEC61759B6B600B3B0FF /* UIView+Screenshot.h */,
+				C4ECAEC71759B6B600B3B0FF /* UIView+Screenshot.m */,
+			);
+			path = paperFold;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -863,14 +862,6 @@
 				C49F3C111756135B00C20A4B /* RootViewController.m in Sources */,
 				C49F3C161756156B00C20A4B /* MainViewController.m in Sources */,
 				C49F3C191756157600C20A4B /* ConfigViewController.m in Sources */,
-				C49F3C43175617C200C20A4B /* FacingView.m in Sources */,
-				C49F3C44175617C200C20A4B /* FoldView.m in Sources */,
-				C49F3C45175617C200C20A4B /* MultiFoldView.m in Sources */,
-				C49F3C46175617C200C20A4B /* PaperFoldSwipeHintView.m in Sources */,
-				C49F3C47175617C200C20A4B /* PaperFoldView.m in Sources */,
-				C49F3C48175617C200C20A4B /* ShadowView.m in Sources */,
-				C49F3C49175617C200C20A4B /* TouchThroughUIView.m in Sources */,
-				C49F3C4A175617C200C20A4B /* UIView+Screenshot.m in Sources */,
 				C49F3C6A17561EA700C20A4B /* AlbumsView.m in Sources */,
 				C49F3C6E17561FDC00C20A4B /* CircularProgressView.m in Sources */,
 				C49F3CA5175626E200C20A4B /* AFDownloadRequestOperation.m in Sources */,
@@ -913,6 +904,14 @@
 				C43026E8175897980082D368 /* MeterTable.mm in Sources */,
 				C43026ED1758979E0082D368 /* VoiceInputView.mm in Sources */,
 				C43026EE1758979E0082D368 /* VoiceTextField.mm in Sources */,
+				C4ECAEC81759B6B600B3B0FF /* FacingView.m in Sources */,
+				C4ECAEC91759B6B600B3B0FF /* FoldView.m in Sources */,
+				C4ECAECA1759B6B600B3B0FF /* MultiFoldView.m in Sources */,
+				C4ECAECB1759B6B600B3B0FF /* PaperFoldSwipeHintView.m in Sources */,
+				C4ECAECC1759B6B600B3B0FF /* PaperFoldView.m in Sources */,
+				C4ECAECD1759B6B600B3B0FF /* ShadowView.m in Sources */,
+				C4ECAECE1759B6B600B3B0FF /* TouchThroughUIView.m in Sources */,
+				C4ECAECF1759B6B600B3B0FF /* UIView+Screenshot.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
