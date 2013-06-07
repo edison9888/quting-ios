@@ -61,46 +61,14 @@
     }
 }
 
-- (void)audioProgress:(float)progress{
-    self.progress = progress;
-    //redraw back & progress circles
+- (void)setProgress:(float)progress_{
+    _progress = progress_;
     [self setNeedsDisplay];
-    
-    if (self.delegate && [self.delegate conformsToProtocol:@protocol(CircularProgressDelegate)]) {
-        [self.delegate didUpdateProgressView];
-    }
-}
-
-- (void)updateProgressCircle{
-    //update progress value
 }
 
 - (void)setProgressColor:(UIColor *)progressColor{
     _progressColor = progressColor;
     [self setNeedsDisplay];
-}
-
-- (void)play{
-    if ([[AudioManager defaultManager] stat] != MPMoviePlaybackStatePlaying) {
-        if ([[AudioManager defaultManager] needURL]) {
-            [[AudioManager defaultManager] playListAtFirst];
-            [[AudioManager defaultManager] addListener:self];
-        } else {
-            [[AudioManager defaultManager] resume];
-        }
-    } else {
-        [[AudioManager defaultManager] pause];
-    }
-}
-
-- (void)pause{
-    if ([[AudioManager defaultManager] stat] == MPMoviePlaybackStatePlaying) {
-        [[AudioManager defaultManager] pause];
-    }
-}
-
-- (BOOL)playing{
-    return [[AudioManager defaultManager] stat] == MPMoviePlaybackStatePlaying;
 }
 
 @end

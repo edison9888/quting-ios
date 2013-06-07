@@ -12,7 +12,7 @@
 #import "AudioManager.h"
 @protocol CircularProgressDelegate;
 
-@interface CircularProgressView : UIView <AudioManagerDelegate>
+@interface CircularProgressView : UIView
 
 @property (assign, nonatomic) id <CircularProgressDelegate> delegate;
 @property (assign, nonatomic) float progress;
@@ -24,14 +24,5 @@
           backColor:(UIColor *)backColor
       progressColor:(UIColor *)progressColor
           lineWidth:(CGFloat)lineWidth;
-- (void)play;
-- (void)pause;
-- (BOOL)playing;
-
-@end
-
-@protocol CircularProgressDelegate <NSObject>
-
-- (void)didUpdateProgressView;
 
 @end

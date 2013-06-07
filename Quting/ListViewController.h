@@ -18,5 +18,6 @@ typedef enum{
 
 - (id)initWithModel:(ListModel)model;
 - (void)loadDatas:(NSArray *)datas;
+- (void)resignFirstResponder;
 
 @end

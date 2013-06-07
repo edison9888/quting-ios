@@ -13,6 +13,7 @@
     #import <Foundation/Foundation.h>
     #import <SystemConfiguration/SystemConfiguration.h>
     #import <MobileCoreServices/MobileCoreServices.h>
+#import "AppDelegate.h"
 #endif
 
 #define isiPhone5 [UIScreen mainScreen].bounds.size.height==568.f
@@ -27,6 +28,7 @@
 #define NSLog(...) do{} while(0)
 #endif
 
+#define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)//获取AppDelegate
 #define imageNamed(name) ([UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:nil]])
 #define SHOWCONFIG @"showConfigView"
 #define BACKTOMAIN @"backToMainView"

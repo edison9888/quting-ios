@@ -9,6 +9,7 @@
 #import "PlayViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ListViewController.h"
+#import "UIImageView+AFNetworking.h"
 @interface PlayViewController ()
 
 @end
@@ -24,13 +25,23 @@
     UIView *coverView;
     ListViewController *listView;
     UIButton *listBtn;
+    
+    NSArray *datas;
+    NSDictionary *dict;
+    UIImage *coverImage;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+- (id)initWithDatas:(NSArray *)datas_ andParentData:(NSDictionary *)dict_ andCover:(UIImage *)img{
+    self = [super init];
     if (self) {
-        // Custom initialization
+        datas = datas_;
+        dict = dict_;
+        coverImage = img;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlay) name:AudioPlayNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPause) name:AudioPauseNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioNext) name:AudioNextNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPre) name:AudioPreNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioProgress:) name:AudioProgressNotification object:nil];
     }
     return self;
 }
@@ -41,79 +52,40 @@
     self.view.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
 //    NSString *audioPath = @"http://tome-file.b0.upaiyun.com/Inmysong.mp3";
 //    [[AudioManager defaultManager] playWithURL:audioPath];
-    [[AudioManager defaultManager] addListener:self];
     int height = self.view.frame.size.height-200;
-    int size = isiPhone5?270:230;
     
     listView = [[ListViewController alloc] initWithModel:ListModel_play];
     listView.view.alpha = 0;
     listView.view.frame = CGRectMake(0, 0, 320, height+50);
     [self.view addSubview:listView.view];
-    [listView loadDatas:@[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
-     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
-     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]];
-    
-    coverView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    coverView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:coverView];
-    
-    UIView *coverBG = [[UIView alloc] initWithFrame:CGRectMake(15-5, (isiPhone5?30:15)-5, size+10, size+10)];
-    coverBG.backgroundColor = [UIColor whiteColor];
-    coverBG.center = CGPointMake(self.view.center.x, coverBG.center.y);
-    coverBG.layer.cornerRadius = (size+10)/2;
-    
-    UIView *smallCoverBG = [[UIView alloc] initWithFrame:CGRectMake(coverBG.frame.origin.x+coverBG.frame.size.width-70, coverBG.frame.origin.y+coverBG.frame.size.height-70, 60, 60)];
-    smallCoverBG.backgroundColor = [UIColor whiteColor];
-    smallCoverBG.layer.cornerRadius = 30;
-    [coverView addSubview:smallCoverBG];
-    
-    [coverView addSubview:coverBG];
-    
-    UIImageView *cover = [[UIImageView alloc] initWithImage:imageNamed(@"thumb.jpg")];
-    cover.frame = CGRectMake(5, 5, size, size);
-//    cover.center = coverBG.center;
-    cover.contentMode = UIViewContentModeScaleAspectFit;
-    cover.clipsToBounds = YES;
-    cover.layer.cornerRadius = size/2;
-    [coverBG addSubview:cover];
-    
-    UIView *smallCover1 = [[UIView alloc] initWithFrame:CGRectMake(smallCoverBG.frame.origin.x+4, smallCoverBG.frame.origin.y+4, smallCoverBG.frame.size.width-8, smallCoverBG.frame.size.height-8)];
-    smallCover1.backgroundColor = [UIColor whiteColor];
-    smallCover1.layer.cornerRadius = (smallCoverBG.frame.size.height-10)/2;
-    smallCover1.clipsToBounds = YES;
-    [coverView addSubview:smallCover1];
-    
-    UIView *smallCover = [[UIView alloc] initWithFrame:CGRectMake(smallCoverBG.frame.origin.x+5, smallCoverBG.frame.origin.y+5, smallCoverBG.frame.size.width-10, smallCoverBG.frame.size.height-10)];
-    smallCover.backgroundColor = [UIColor whiteColor];
-    smallCover.layer.cornerRadius = (smallCoverBG.frame.size.height-10)/2;
-    smallCover.clipsToBounds = YES;
-    [coverView addSubview:smallCover];
+    NSMutableArray *tempDatas = [NSMutableArray array];
+    NSMutableArray *mp3List = [NSMutableArray array];
+    for (NSDictionary *temp in datas) {
+        [tempDatas addObject:@{@"title":[dict valueForKey:@"name"], @"detailTitle": [temp valueForKey:@"name"], @"isFav":@(NO), @"duration":[temp valueForKey:@"time"]}];
+        [mp3List addObject:[NSString stringWithFormat:@"%@/%@", @"http://t.pamakids.com/", [[temp valueForKey:@"url"] stringByReplacingOccurrencesOfString:@"public" withString:@""]]];
+    }
+    BOOL temp = NO;
+    if ([[AudioManager defaultManager] needURL]) {
+        [[AudioManager defaultManager] clearAudioList];
+        [[AudioManager defaultManager] addAudioListToList:mp3List];
+        [[AudioManager defaultManager] playListAtFirst];
+        temp = YES;
+    }
 
-    UIImageView *cover2 = [[UIImageView alloc] initWithImage:imageNamed(@"thumb.jpg")];
-    cover2.frame = CGRectMake(coverBG.frame.origin.x-smallCover.frame.origin.x+5, coverBG.frame.origin.y-smallCover.frame.origin.y+5, size, size);
-    cover2.contentMode = UIViewContentModeScaleAspectFit;
-    cover2.alpha = .8;
-    [smallCover addSubview:cover2];
+    [listView loadDatas:tempDatas];
     
-    UIImageView *heart = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
-    heart.frame = CGRectMake(18, 20, 14, 13);
-    [smallCover addSubview:heart];
-    
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height-16, 150, 16)];
-    title.backgroundColor = [UIColor clearColor];
-    title.text = @"我的歌声里";
-    title.font = [UIFont boldSystemFontOfSize:14];
-    title.textColor = [UIColor colorWithRed:49/255.0 green:49/255.0 blue:49/255.0 alpha:1];
-    [coverView addSubview:title];
-    
-    UILabel *detailTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height+3, 150, 9)];
-    detailTitle.backgroundColor = [UIColor clearColor];
-    detailTitle.text = @"我的歌声里原声带第一首";
-    detailTitle.font = [UIFont boldSystemFontOfSize:9];
-    detailTitle.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:125/255.0 alpha:1];
-    [coverView addSubview:detailTitle];
+    if (coverImage==nil) {
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[dict valueForKey:@"mtype"]]];
+        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+        UIImageView *cover = [[UIImageView alloc] init];
+        [cover setImageWithURLRequest:request placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+            coverImage = image;
+            [self addCover:[[tempDatas objectAtIndex:0] valueForKey:@"detailTitle"]];
+        } failure:nil];
+
+    } else {
+        [self addCover:[[tempDatas objectAtIndex:0] valueForKey:@"detailTitle"]];
+    }
     
     slider = [[UISlider alloc] initWithFrame:CGRectMake(15, height+10, 290, 24)];
     [slider setMaximumValue:1];
@@ -128,7 +100,7 @@
     [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
     //滑动拖动后的事件
     [slider addTarget:self action:@selector(sliderDragUp:) forControlEvents:UIControlEventTouchUpInside];
-    slider.enabled = NO;
+    slider.enabled = ![[AudioManager defaultManager] needURL];
     [self.view addSubview:slider];
     
     currentTime = [[UILabel alloc] initWithFrame:CGRectMake(20, height+40, 150, 15)];
@@ -145,6 +117,12 @@
     totalTime.textAlignment = NSTextAlignmentRight;
     totalTime.textColor = [UIColor colorWithRed:83/255.0 green:83/255.0 blue:83/255.0 alpha:1];
     [self.view addSubview:totalTime];
+    
+    int duration = [[AudioManager defaultManager] duration];
+    totalTime.text = [NSString stringWithFormat:@"%02d:%02d", duration/60, duration%60];
+    int currentPlaybackTime = [[AudioManager defaultManager] progress]*[[AudioManager defaultManager] duration];
+    currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
+    slider.value = [[AudioManager defaultManager] progress];
     
     pre = [UIButton buttonWithType:UIButtonTypeCustom];
     play = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -164,6 +142,7 @@
     pre.center = CGPointMake(64, self.view.frame.size.height-100);
     play.center = CGPointMake(165, self.view.frame.size.height-100);
     next.center = CGPointMake(260, self.view.frame.size.height-100);
+    play.selected = temp?temp:[[AudioManager defaultManager] playing];
     [self.view addSubview:pre];
     [self.view addSubview:play];
     [self.view addSubview:next];
@@ -182,7 +161,70 @@
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
     self.navigationItem.leftBarButtonItem = back;
     self.navigationItem.hidesBackButton = YES;
-    self.navigationItem.title = @"我的歌声里";
+    self.navigationItem.title = [dict valueForKey:@"name"];
+}
+
+- (void)addCover:(NSString *)name{
+    int size = isiPhone5?270:230;
+    coverView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    coverView.backgroundColor = [UIColor clearColor];
+    [self.view insertSubview:coverView atIndex:0];
+    
+    UIView *coverBG = [[UIView alloc] initWithFrame:CGRectMake(15-5, (isiPhone5?30:15)-5, size+10, size+10)];
+    coverBG.backgroundColor = [UIColor whiteColor];
+    coverBG.center = CGPointMake(self.view.center.x, coverBG.center.y);
+    coverBG.layer.cornerRadius = (size+10)/2;
+    
+    UIView *smallCoverBG = [[UIView alloc] initWithFrame:CGRectMake(coverBG.frame.origin.x+coverBG.frame.size.width-70, coverBG.frame.origin.y+coverBG.frame.size.height-70, 60, 60)];
+    smallCoverBG.backgroundColor = [UIColor whiteColor];
+    smallCoverBG.layer.cornerRadius = 30;
+    [coverView addSubview:smallCoverBG];
+    
+    [coverView addSubview:coverBG];
+    
+    UIImageView *cover = [[UIImageView alloc] initWithImage:coverImage];
+    cover.frame = CGRectMake(5, 5, size, size);
+    //    cover.center = coverBG.center;
+    cover.contentMode = UIViewContentModeScaleAspectFill;
+    cover.clipsToBounds = YES;
+    cover.layer.cornerRadius = size/2;
+    [coverBG addSubview:cover];
+    
+    UIView *smallCover1 = [[UIView alloc] initWithFrame:CGRectMake(smallCoverBG.frame.origin.x+4, smallCoverBG.frame.origin.y+4, smallCoverBG.frame.size.width-8, smallCoverBG.frame.size.height-8)];
+    smallCover1.backgroundColor = [UIColor whiteColor];
+    smallCover1.layer.cornerRadius = (smallCoverBG.frame.size.height-10)/2;
+    smallCover1.clipsToBounds = YES;
+    [coverView addSubview:smallCover1];
+    
+    UIView *smallCover = [[UIView alloc] initWithFrame:CGRectMake(smallCoverBG.frame.origin.x+5, smallCoverBG.frame.origin.y+5, smallCoverBG.frame.size.width-10, smallCoverBG.frame.size.height-10)];
+    smallCover.backgroundColor = [UIColor whiteColor];
+    smallCover.layer.cornerRadius = (smallCoverBG.frame.size.height-10)/2;
+    smallCover.clipsToBounds = YES;
+    [coverView addSubview:smallCover];
+    
+    UIImageView *cover2 = [[UIImageView alloc] initWithImage:coverImage];
+    cover2.frame = CGRectMake(coverBG.frame.origin.x-smallCover.frame.origin.x+5, coverBG.frame.origin.y-smallCover.frame.origin.y+5, size, size);
+    cover2.contentMode = UIViewContentModeScaleAspectFill;
+    cover2.alpha = .8;
+    [smallCover addSubview:cover2];
+    
+    UIImageView *heart = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
+    heart.frame = CGRectMake(18, 20, 14, 13);
+    [smallCover addSubview:heart];
+    
+    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height-16, 110, 16)];
+    title.backgroundColor = [UIColor clearColor];
+    title.text = [dict valueForKey:@"name"];
+    title.font = [UIFont boldSystemFontOfSize:14];
+    title.textColor = [UIColor colorWithRed:49/255.0 green:49/255.0 blue:49/255.0 alpha:1];
+    [coverView addSubview:title];
+    
+    UILabel *detailTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height+3, 150, 9)];
+    detailTitle.backgroundColor = [UIColor clearColor];
+    detailTitle.text = name;
+    detailTitle.font = [UIFont boldSystemFontOfSize:9];
+    detailTitle.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:125/255.0 alpha:1];
+    [coverView addSubview:detailTitle];
 }
 
 - (void)covertMode{
@@ -232,7 +274,10 @@
     }
 }
 
-- (void)audioProgress:(float)progress{
+#pragma mark - audio notification
+
+- (void)audioProgress:(NSNotification *)notifi{
+    float progress = [notifi.object floatValue];
     if (!slider.enabled) {
         slider.enabled = YES;
         int duration = [[AudioManager defaultManager] duration];
@@ -240,7 +285,10 @@
     }
     int currentPlaybackTime = progress*[[AudioManager defaultManager] duration];
     currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
-    slider.value = progress;
+    NSLog(@"%f", progress);
+    if (progress!=0) {
+        slider.value = progress;
+    }
     [self checkSlider];
 }
 
@@ -265,17 +313,31 @@
 - (void)sliderValueChanged:(UISlider *)slider1{
 //    NSLog(@"slider change:%f", slider.value);
     [[AudioManager defaultManager] skipTo:slider.value];
-    [self audioProgress:slider.value];
     [self checkSlider];
 }
 
 - (void)sliderDragUp:(UISlider *)slider1{
     NSLog(@"slider up:%f", slider.value);
-    [[AudioManager defaultManager] addListener:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlay) name:AudioPlayNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPause) name:AudioPauseNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioNext) name:AudioNextNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPre) name:AudioPreNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioProgress:) name:AudioProgressNotification object:nil];
+    if (![[AudioManager defaultManager] playing]) {
+        [[AudioManager defaultManager] resume];
+    }
 }
 
 - (void)sliderTouchDown:(UISlider *)slider1{
-    [[AudioManager defaultManager] removeListener:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)dealloc{
+    NSLog(@"playview dealloc");
 }
 
 - (void)didReceiveMemoryWarning

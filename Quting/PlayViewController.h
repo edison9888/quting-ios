@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "AudioManager.h"
 
-@interface PlayViewController : UIViewController <AudioManagerDelegate>
+@interface PlayViewController : UIViewController
+
+- (id)initWithDatas:(NSArray *)datas andParentData:(NSDictionary *)dict andCover:(UIImage *)img;
 
 @end

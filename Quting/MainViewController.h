@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MainViewController : UIViewController
+@interface MainViewController : UIViewController <UIScrollViewDelegate>
 
 - (void)removeBackGesture;
+- (void)convertMode;
 
 @end

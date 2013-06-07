@@ -9,6 +9,10 @@
 #import "ListViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "VoiceTextField.h"
+#import "AudioManager.h"
+#import "RequestHelper.h"
+#import "PlayViewController.h"
+#import "MainViewController.h"
 @interface ListViewController ()
 
 @end
@@ -19,11 +23,14 @@
     
     UIButton *myFavBtn;
     UIButton *historyBtn;
+    int currentIndex;
+    VoiceTextField *textField;
 }
 
 - (id)initWithModel:(ListModel)model_{
     self = [self initWithStyle:UITableViewStylePlain];
     if (self) {
+        currentIndex = -1;
         model = model_;
         if (model==ListModel_fav) {
             self.navigationItem.title = @"我的最爱";
@@ -35,8 +42,19 @@
             self.navigationItem.leftBarButtonItem = back;
             self.navigationItem.hidesBackButton = YES;
         }
+        if (model==ListModel_play) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeCurrent:) name:AudioNextNotification object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeCurrent:) name:AudioPreNotification object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeCurrent:) name:AudioPlayNotification object:nil];
+            [self changeCurrent:nil];
+        }
     }
     return self;
+}
+
+- (void)changeCurrent:(NSNotification *)notifi{
+    currentIndex = [[AudioManager defaultManager] currentIndex];
+    [self.tableView reloadData];
 }
 
 - (void)back{
@@ -94,6 +112,10 @@
             return datas.count+1;
         }
         return datas.count;
+    } else {
+        if (model==ListModel_search) {
+            return 1;
+        }
     }
     return 0;
 }
@@ -127,15 +149,16 @@
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.backgroundView = [[UIImageView alloc] initWithImage:imageNamed(@"cell_bg.png")];
             
-            if (![cell viewWithTag:1]) {
-                VoiceTextField *textField = [[VoiceTextField alloc] initWithFrame:CGRectMake(45, 9, 235, 33)];
+            if (textField==nil) {
+                textField = [[VoiceTextField alloc] initWithFrame:CGRectMake(45, 9, 235, 33)];
                 //            textField.center = CGPointMake(self.view.frame.size.width/2, 50);
-                textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
                 [textField setClearButtonMode:UITextFieldViewModeWhileEditing];
+                textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
                 [textField setReturnKeyType:UIReturnKeyDone];
                 textField.placeholder = @"请输入搜索内容";
                 textField.textColor = [UIColor blackColor];
                 textField.tag = 1;
+                [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
                 [cell addSubview:textField];
                 
                 UIButton *recordBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -146,21 +169,7 @@
             }
         } else {
             NSDictionary *dict = [datas objectAtIndex:indexPath.row-1];
-            cell.textLabel.text = [dict valueForKey:@"title"];
-            
-            UILabel *label = (UILabel *)[cell viewWithTag:1];
-            if (!label) {
-                UILabel *duration = [[UILabel alloc] initWithFrame:CGRectMake(260, 0, 60, 50)];
-                duration.font = [UIFont systemFontOfSize:12];
-                duration.textAlignment = NSTextAlignmentCenter;
-                duration.text = [dict valueForKey:@"duration"];
-                duration.backgroundColor = [UIColor clearColor];
-                duration.textColor = [UIColor colorWithRed:98/255.0 green:98/255.0 blue:98/255.0 alpha:1];
-                duration.tag = 1;
-                [cell addSubview:duration];
-            } else {
-                label.text = [dict valueForKey:@"duration"];
-            }
+            cell.textLabel.text = [dict valueForKey:@"name"];
         }
     } else if (model==ListModel_play) {
         NSDictionary *dict = [datas objectAtIndex:indexPath.row];
@@ -189,8 +198,8 @@
             [cell addSubview:fav];
         }
         
-        BOOL isCurrent = [[dict valueForKey:@"isCurrent"] boolValue];
-        if (isCurrent && ![cell viewWithTag:3]) {
+        [[cell viewWithTag:3] removeFromSuperview];
+        if (currentIndex==indexPath.row) {
             UIView *current = [[UIView alloc] initWithFrame:CGRectMake(0, 50/2-16, 7, 32)];
             current.tag = 3;
             current.backgroundColor = [UIColor colorWithRed:242/255.0 green:100/255.0 blue:163/255.0 alpha:1];
@@ -260,12 +269,52 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (model==ListModel_play) {
+        [[AudioManager defaultManager] playIndex:indexPath.row];
+    } else if (model==ListModel_search) {
+        NSDictionary *albums = [datas objectAtIndex:indexPath.row-1];
+        [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
+            PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];
+            [((MainViewController *)self.view.superview.nextResponder).navigationController pushViewController:playViewController animated:YES];
+//            [((MainViewController *)self.view.superview.nextResponder) convertMode];
+        } failed:nil];
+    }
 }
 
 - (void)loadDatas:(NSArray *)datas_{
     datas = nil;
     datas = datas_;
     [self.tableView reloadData];
+}
+
+#pragma mark - search
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    if ([textField isFirstResponder]) {
+        [textField resignFirstResponder];
+    }
+}
+
+- (void)resignFirstResponder{
+    [textField resignFirstResponder];
+}
+
+- (void)textFieldDidChange:(UITextField *)textField_{
+    //    NSLog(@"%@",textField.text);
+    if (textField.markedTextRange == nil) {
+        NSLog(@"%@", textField.text);
+        if (![textField.text isEqualToString:@""]) {
+            [[RequestHelper defaultHelper] requestGETAPI:@"/api/media" postData:@{@"term": textField.text} success:^(id result) {
+                if ([[result valueForKey:@"media"] count]>0) {
+                    NSMutableArray *tempDatas = [NSMutableArray array];
+                    for (NSDictionary *temp in [result valueForKey:@"media"]) {
+                        [tempDatas addObject:@{@"name":[temp valueForKey:@"name"], @"id": [temp valueForKey:@"id"], @"mtype": [temp valueForKey:@"mtype"]}];
+                    }
+                    [self loadDatas:tempDatas];
+                }
+            } failed:nil];
+        }
+    }
 }
 
 @end

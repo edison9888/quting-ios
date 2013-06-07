@@ -8,23 +8,17 @@
 
 #import <Foundation/Foundation.h>
 #import <MediaPlayer/MediaPlayer.h>
+@class AlbumsView;
+#define AudioPlayNotification @"audioPaly"
+#define AudioPauseNotification @"audioPause"
+#define AudioNextNotification @"audioNext"
+#define AudioPreNotification @"audioPre"
+#define AudioProgressNotification @"audioProgress"
 
-@protocol AudioManagerDelegate <NSObject>
-
-@optional
-- (void)audioProgress:(float)progress;
-- (void)audioPlay;
-- (void)audioPause;
-- (void)audioNext;
-- (void)audioPre;
-
-@end
 
 @interface AudioManager : NSObject
 
 + (AudioManager *)defaultManager;
-- (void)addListener:(id<AudioManagerDelegate>)delegate;
-- (void)removeListener:(id<AudioManagerDelegate>)delegate;
 - (void)playWithURL:(NSString *)url;
 - (BOOL)needURL;
 - (BOOL)changeStat;
@@ -44,5 +38,11 @@
 - (BOOL)hasNext;
 - (BOOL)hasPre;
 - (void)playListAtFirst;
+- (int)currentIndex;
+- (void)playIndex:(int)index;
+- (BOOL)playing;
+- (void)setCurrentAlbums:(AlbumsView *)albums;
+- (BOOL)clearOtherAlbumsStat:(AlbumsView *)albums;
+- (float)progress;
 
 @end

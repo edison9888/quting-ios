@@ -8,14 +8,14 @@
 
 #import "AudioManager.h"
 #import <AVFoundation/AVFoundation.h>
-
+#import "AlbumsView.h"
 @implementation AudioManager {
     MPMoviePlayerController *player;
     NSMutableArray *playList;
     int currentIndex;
-    NSMutableArray *listener;
     NSTimer *ticker;
     NSString *tempURL;
+    AlbumsView *albumsView;
 }
 
 + (AudioManager *)defaultManager{
@@ -30,14 +30,14 @@
 - (id)init{
     self = [super init];
     if (self) {
+        currentIndex = -1;
         AVAudioSession *session = [AVAudioSession sharedInstance];
         [session setActive:YES error:nil];
         [session setCategory:AVAudioSessionCategoryPlayback error:nil];
         player = [[MPMoviePlayerController alloc] init];
         player.movieSourceType = MPMovieSourceTypeStreaming;
         playList = [[NSMutableArray alloc] init];
-        listener = [[NSMutableArray alloc] init];
-        [[NSNotificationCenter defaultCenter]  addObserver:self selector:@selector(audiofinished) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiofinished:) name:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey object:nil];
     }
     return self;
 }
@@ -46,10 +46,9 @@
     [self stopTick];
     ticker = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(tick) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:ticker forMode:NSRunLoopCommonModes];
-    for (id delegate in listener) {
-        if (delegate && [delegate respondsToSelector:@selector(audioPlay)]) {
-            [delegate audioPlay];
-        }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioPlayNotification object:nil];
+    if (albumsView) {
+        [albumsView audioPlay];
     }
 }
 
@@ -57,38 +56,28 @@
     if (ticker) {
         [ticker invalidate];
         ticker = nil;
-        for (id delegate in listener) {
-            if (delegate && [delegate respondsToSelector:@selector(audioPause)]) {
-                [delegate audioPause];
-            }
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioPauseNotification object:nil];
     }
+    if (albumsView) {
+        [albumsView audioPause];
+    }
+}
+
+- (float)progress{
+    float currentTime = player.currentPlaybackTime;
+    float total = player.duration;
+    return currentTime/total;
 }
 
 - (void)tick{
-    for (id delegate in listener) {
-        if (delegate && [delegate respondsToSelector:@selector(audioProgress:)]) {
-            float currentTime = player.currentPlaybackTime;
-            float total = player.duration;
-            [delegate audioProgress:currentTime/total];
-        }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:[self progress]]];
+    if (albumsView) {
+        [albumsView audioProgress:[self progress]];
     }
-}
-
-- (void)addListener:(id<AudioManagerDelegate>)delegate{
-    [listener addObject:delegate];
-}
-
-- (void)removeListener:(id<AudioManagerDelegate>)delegate{
-    [listener removeObject:delegate];
 }
 
 - (void)playWithURL:(NSString *)url{
-    for (id delegate in listener) {
-        if (delegate && [delegate respondsToSelector:@selector(audioProgress:)]) {
-            [delegate audioProgress:0];
-        }
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
 #warning setMediaInfo
 //    self setMediaInfo:<#(UIImage *)#> andTitle:<#(NSString *)#> andArtist:<#(NSString *)#>
     AVAudioSession *session = [AVAudioSession sharedInstance];
@@ -104,15 +93,25 @@
     return !tempURL;
 }
 
-- (void)audiofinished{
-    for (id delegate in listener) {
-        if (delegate && [delegate respondsToSelector:@selector(audioProgress:)]) {
-            [delegate audioProgress:1];
-        }
+- (void)audiofinished:(NSNotification *)notification{
+    if (notification==nil) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:1]];
+        tempURL = nil;
+        [self stopTick];
+        [self next];
     }
-    tempURL = nil;
-    [self stopTick];
-    [self next];
+    int reason = [[[notification userInfo] valueForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
+    if (reason == MPMovieFinishReasonPlaybackEnded) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:1]];
+        tempURL = nil;
+        [self stopTick];
+        [self next];
+    }
+//    else if (reason == MPMovieFinishReasonUserExited) {
+//        //user hit the done button
+//    }else if (reason == MPMovieFinishReasonPlaybackError) {
+//        //error
+//    }
 }
 
 - (void)setMediaInfo:(UIImage *)img andTitle:(NSString *)title andArtist:(NSString *)artist{
@@ -146,7 +145,7 @@
 }
 
 - (void)resume{
-    if (player.playbackState == MPMoviePlaybackStatePaused) {
+    if (ticker==nil) {
         [player play];
         [self startTick];
     }
@@ -171,11 +170,7 @@
     NSString *url = [playList objectAtIndex:currentIndex];
     [self playWithURL:url];
     
-    for (id delegate in listener) {
-        if (delegate && [delegate respondsToSelector:@selector(audioNext)]) {
-            [delegate audioNext];
-        }
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioNextNotification object:nil];
 }
 
 - (void)pre{
@@ -189,11 +184,7 @@
     NSLog(@"pre play index:%d", currentIndex);
     [self playWithURL:[playList objectAtIndex:currentIndex]];
     
-    for (id delegate in listener) {
-        if (delegate && [delegate respondsToSelector:@selector(audioPre)]) {
-            [delegate audioPre];
-        }
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioPreNotification object:nil];
 }
 
 - (void)addAudioToList:(NSString *)name{
@@ -216,15 +207,20 @@
 }
 
 - (void)clearAudioList{
+    [player stop];
+    currentIndex = -1;
+    tempURL = nil;
+    [self stopTick];
     [playList removeAllObjects];
 }
 
 - (void)skipTo:(float)percentage{
     if (percentage >= 1) {
-        [self audiofinished];
+        [self audiofinished:nil];
         return;
     }
     float total = player.duration;
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:total*percentage]];
     [player setCurrentPlaybackTime:total*percentage];
 }
 
@@ -248,7 +244,37 @@
 }
 
 - (void)playListAtFirst{
+    currentIndex = 0;
     [self playWithURL:[playList objectAtIndex:currentIndex]];
 }
 
+- (int)currentIndex{
+    return currentIndex;
+}
+
+- (void)playIndex:(int)index{
+    currentIndex = index;
+    [self playWithURL:[playList objectAtIndex:currentIndex]];
+}
+
+- (BOOL)playing{
+    return player.playbackState == MPMoviePlaybackStatePlaying;
+}
+
+- (void)setCurrentAlbums:(AlbumsView *)albums{
+    albumsView = albums;
+}
+
+- (BOOL)clearOtherAlbumsStat:(AlbumsView *)albums{
+    if (albumsView==nil) {
+        [[AudioManager defaultManager] clearAudioList];
+        return YES;
+    }
+    if (albumsView==albums) {
+        return NO;
+    }
+    [albumsView stop];
+    albumsView = albums;
+    return YES;
+}
 @end
