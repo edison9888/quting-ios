@@ -9,6 +9,7 @@
 #import "RootViewController.h"
 #import "MainViewController.h"
 #import "ConfigViewController.h"
+#import "AppUtil.h"
 
 @interface RootViewController ()
 
@@ -25,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+        
     main = [[MainViewController alloc] init];
     main.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     config = [[ConfigViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -52,6 +53,11 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showConfigView:) name:SHOWCONFIG object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMainView:) name:BACKTOMAIN object:nil];
+    [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(warning) userInfo:nil repeats:NO];
+}
+
+- (void)warning{
+    [AppUtil warning:@"测试版本的主界面内容没有加载商店订阅内容,接口对接后数据就会正确.目前大部分界面数据都是本地数据.接口对接后数据正确显示." withType:m_none delay:10];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController_ didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{

@@ -11,7 +11,7 @@
 
 @interface AlbumsView : UIView
 
-- (id)initWithFrame:(CGRect)frame andInfo:(NSDictionary *)info;
+- (id)initWithFrame:(CGRect)frame andInfo:(NSDictionary *)info isShop:(BOOL)isShop;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) UIImage *coverImage;
 - (void)stop;

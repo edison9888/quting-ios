@@ -13,13 +13,15 @@
 #import "ListViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "RequestHelper.h"
-
+#import "PayView.h"
+#import "UIView+Animation.h"
 @implementation AlbumsView {
     UIImageView *cover;
     UIButton *control;
     NSDictionary *dict;
     NSMutableArray *listInfos;
     CircularProgressView *circularProgressView;
+    BOOL isShop;
 }
 
 @synthesize coverImage;
@@ -32,10 +34,11 @@
     return image;
 }
 
-- (id)initWithFrame:(CGRect)frame andInfo:(NSDictionary *)info
+- (id)initWithFrame:(CGRect)frame andInfo:(NSDictionary *)info isShop:(BOOL)isShop_
 {
     self = [super initWithFrame:frame];
     if (self) {
+        isShop = isShop_;
         self.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
         self.clipsToBounds = NO;
         UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
@@ -104,28 +107,33 @@
     cover.contentMode = UIViewContentModeScaleAspectFill;
     cover.layer.cornerRadius = (self.frame.size.width-20)/2;
     cover.clipsToBounds = YES;
-    
-    UIView *blackCover = [[UIView alloc] initWithFrame:CGRectMake(-10, self.frame.size.height-40, self.frame.size.width, self.frame.size.height)];
-    blackCover.backgroundColor = [UIColor blackColor];
-    blackCover.layer.cornerRadius = self.frame.size.width/2;
-    blackCover.alpha = .5;
-    [cover addSubview:blackCover];
+
+    UIView *blackCover;
+    if (!isShop) {
+        blackCover = [[UIView alloc] initWithFrame:CGRectMake(-10, self.frame.size.height-40, self.frame.size.width, self.frame.size.height)];
+        blackCover.backgroundColor = [UIColor blackColor];
+        blackCover.layer.cornerRadius = self.frame.size.width/2;
+        blackCover.alpha = .5;
+        [cover addSubview:blackCover];
+    }
     
     UIImage *temp = [self imageFromView:cover];
     cover.image = temp;
     cover.layer.cornerRadius = 0;
     cover.alpha = .85;
     [self addSubview:cover];
-    [blackCover removeFromSuperview];
     
-    if (NO) {
-        UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
-        fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
-        [cover addSubview:fav];
-    } else {
-        UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
-        fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
-        [cover addSubview:fav];
+    if (!isShop) {
+        [blackCover removeFromSuperview];
+        if (NO) {
+            UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
+            fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
+            [cover addSubview:fav];
+        } else {
+            UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
+            fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
+            [cover addSubview:fav];
+        }
     }
 }
 
@@ -179,23 +187,29 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     [[AudioManager defaultManager] setCurrentAlbums:self];
     cover.alpha = 1;
+    if (isShop) {
+        PayView *pay = [[PayView alloc] initWithImage:self.coverImage andInfo:dict];
+        [self.window addSubview:pay];
+        [pay fadeIn];
+        return;
+    }
     if (self.tag==-1) {
-//        ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
-//        [list loadDatas:@[
-//         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}],
-//         
-//         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]
-//         ]];
-//        [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
-        [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
-            NSLog(@"%@", result);
-        } failed:nil];
+        ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
+        [list loadDatas:@[
+         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
+         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
+         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}],
+         
+         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
+         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
+         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
+         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
+         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]
+         ]];
+        [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
+//        [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
+//            NSLog(@"%@", result);
+//        } failed:nil];
 
     } else {
         if (listInfos==nil) {

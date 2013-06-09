@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ListViewController.h"
 #import "UIImageView+AFNetworking.h"
+#import "BluetoothViewController.h"
 @interface PlayViewController ()
 
 @end
@@ -147,11 +148,23 @@
     [self.view addSubview:play];
     [self.view addSubview:next];
     
+    
+    UIView *rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 88, 44)];
+    rightView.backgroundColor = [UIColor clearColor];
+    
     listBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    listBtn.frame = CGRectMake(0, 0, 44, 44);
+    listBtn.frame = CGRectMake(44, 0, 44, 44);
     [listBtn setImage:imageNamed(@"listItem.png") forState:UIControlStateNormal];
     [listBtn addTarget:self action:@selector(covertMode) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *listItem = [[UIBarButtonItem alloc] initWithCustomView:listBtn];
+    
+    UIButton *blueTooth = [UIButton buttonWithType:UIButtonTypeCustom];
+    [blueTooth setImage:imageNamed(@"bluetooth.png") forState:UIControlStateNormal];
+    [blueTooth addTarget:self action:@selector(showTutorails) forControlEvents:UIControlEventTouchUpInside];
+    blueTooth.frame = CGRectMake(0, 0, 44, 44);
+    [rightView addSubview:blueTooth];
+    [rightView addSubview:listBtn];
+    
+    UIBarButtonItem *listItem = [[UIBarButtonItem alloc] initWithCustomView:rightView];
     self.navigationItem.rightBarButtonItem = listItem;
     
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -225,6 +238,11 @@
     detailTitle.font = [UIFont boldSystemFontOfSize:9];
     detailTitle.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:125/255.0 alpha:1];
     [coverView addSubview:detailTitle];
+}
+
+- (void)showTutorails{
+    BluetoothViewController *bluetooth = [[BluetoothViewController alloc] init];
+    [self.navigationController pushViewController:bluetooth animated:YES];
 }
 
 - (void)covertMode{
@@ -334,6 +352,14 @@
 
 - (void)viewDidDisappear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlay) name:AudioPlayNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPause) name:AudioPauseNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioNext) name:AudioNextNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPre) name:AudioPreNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioProgress:) name:AudioProgressNotification object:nil];
 }
 
 - (void)dealloc{

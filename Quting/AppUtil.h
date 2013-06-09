@@ -19,5 +19,6 @@ typedef enum {
 + (BOOL)isNetworkReachable;
 + (BOOL)isValidatePhoneNumber:(NSString *)number;
 + (void)warning:(NSString *)message withType:(MessageType)type;
++ (void)warning:(NSString *)message withType:(MessageType)type delay:(int)delay;
 
 @end

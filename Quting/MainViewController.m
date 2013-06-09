@@ -8,8 +8,10 @@
 
 #import "MainViewController.h"
 #import "AlbumsView.h"
-#import "ListViewController.h"
 #import "RequestHelper.h"
+#import "ListViewController.h"
+#import "ShopViewController.h"
+#import "AppUtil.h"
 @interface MainViewController ()
 
 @end
@@ -18,11 +20,11 @@
     UITapGestureRecognizer *tap;
     ListViewController *listView;
     UIButton *searchBtn;
+    UIButton *shopBtn;
     UIScrollView *scrollView;
     int loadPage;
     int maxCount;
     int maxPage;
-    dispatch_queue_t loadAlbums_queue;
     float offsetY;
 }
 
@@ -49,23 +51,33 @@
     maxCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxCount"];
     int temp = maxCount/6;
     maxPage = maxCount%6==0?temp:(temp+1);
-    loadAlbums_queue = dispatch_queue_create("loadAlbums", nil);
     self.navigationItem.title = @"趣 听";
     self.navigationController.navigationBarHidden = NO;
     self.view.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
-
+    
+    shopBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [shopBtn addTarget:self action:@selector(shop) forControlEvents:UIControlEventTouchUpInside];
+    shopBtn.frame = CGRectMake(0, 0, 44, 88);
+    [shopBtn setImage:imageNamed(@"shopItem.png") forState:UIControlStateNormal];
+    UIBarButtonItem *shop = [[UIBarButtonItem alloc] initWithCustomView:shopBtn];
+    self.navigationItem.leftBarButtonItem = shop;
+    
     searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [searchBtn addTarget:self action:@selector(convertMode) forControlEvents:UIControlEventTouchUpInside];
-    searchBtn.frame = CGRectMake(0, 0, 44, 88);
+    searchBtn.frame = CGRectMake(0, 0, 44, 44);
     [searchBtn setImage:imageNamed(@"searchItem.png") forState:UIControlStateNormal];
-    UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithCustomView:searchBtn];
-    self.navigationItem.leftBarButtonItem = search;
-    
+
     UIButton *configBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [configBtn addTarget:self action:@selector(showConfig) forControlEvents:UIControlEventTouchUpInside];
-    configBtn.frame = CGRectMake(0, 0, 44, 88);
+    configBtn.frame = CGRectMake(44, 0, 44, 44);
     [configBtn setImage:imageNamed(@"configItem.png") forState:UIControlStateNormal];
-    UIBarButtonItem *config = [[UIBarButtonItem alloc] initWithCustomView:configBtn];
+    
+    UIView *rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 88, 44)];
+    rightView.backgroundColor = [UIColor clearColor];
+    [rightView addSubview:searchBtn];
+    [rightView addSubview:configBtn];
+    
+    UIBarButtonItem *config = [[UIBarButtonItem alloc] initWithCustomView:rightView];
     self.navigationItem.rightBarButtonItem = config;
     
     listView = [[ListViewController alloc] initWithModel:ListModel_search];
@@ -104,7 +116,7 @@
     if (page<0) {
         return;
     }
-    if (scrollView_.contentOffset.y+scrollView_.frame.size.height > scrollView_.contentSize.height-scrollView_.frame.size.height*2 && (loadPage<=maxPage-1 || maxPage==0)) {
+    if (scrollView_.contentOffset.y+scrollView_.frame.size.height > scrollView_.contentSize.height-scrollView_.frame.size.height && (loadPage<=maxPage-1 || maxPage==0)) {
 //        NSLog(@"%d", page);
 //        return;
         loadPage++;
@@ -115,10 +127,12 @@
 
 - (void)loadAlbumsWithIndex:(int)index{
     NSString *key = [NSString stringWithFormat:@"api/media?page=%d", index];
-//    NSMutableArray *temp = [[NSUserDefaults standardUserDefaults] valueForKey:key];
-//    if (temp!=nil) {
-//        [self loadAlbumsWithDatas:temp];
-//    }
+    NSMutableArray *temp = [[NSUserDefaults standardUserDefaults] valueForKey:key];
+    if (temp!=nil && temp.count>0) {
+        loadPage *= -1;
+        [self loadAlbumsWithDatas:temp];
+        return;
+    }
     [[RequestHelper defaultHelper] requestGETAPI:key postData:nil success:^(id result) {
         if (result) {
             int tempMax = [[result valueForKey:@"count"] intValue];
@@ -132,10 +146,21 @@
                 }
             }
             loadPage *= -1;
-            NSMutableArray *datas = [NSMutableArray arrayWithArray:[result valueForKey:@"media"]];
+            NSMutableArray *datas = [NSMutableArray array];
+            for (NSDictionary *dict in [result valueForKey:@"media"]) {
+                NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithDictionary:dict];
+                for (NSString *key in [tempDict allKeys]) {
+                    if ([[tempDict valueForKey:key] isKindOfClass:[NSNull class]]) {
+                        [tempDict setValue:@"" forKey:key];
+                    }
+                }
+                [datas addObject:tempDict];
+            }
             if (index==1) {
                 [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
             }
+            [[NSUserDefaults standardUserDefaults] setValue:datas forKey:key];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [self loadAlbumsWithDatas:datas];
         }
         
@@ -153,7 +178,7 @@
     }
     int index = 0;
     for (int i=start; i<count; i++) {
-        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:index] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:index] valueForKey:@"name"]}];
+        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:index] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:index] valueForKey:@"name"]} isShop:NO];
         albums.tag = [[[datas objectAtIndex:index] valueForKey:@"id"] intValue];
         [scrollView addSubview:albums];
         index ++;
@@ -164,21 +189,10 @@
     scrollView.contentSize = CGSizeMake(0, height);
 }
 
-- (void)convertMode{
-    if (listView.view.alpha==0) {
-        [searchBtn setImage:imageNamed(@"backItem.png") forState:UIControlStateNormal];
-        __block CGRect frame = listView.view.frame;
-        frame.origin.y = 0;
-        [UIView animateWithDuration:.3 animations:^{
-            listView.view.alpha = 1;
-            listView.view.frame = frame;
-            frame = scrollView.frame;
-            frame.origin.y = self.view.frame.size.height;
-            scrollView.frame = frame;
-            scrollView.alpha = 0;
-        }];
-    } else {
-        [searchBtn setImage:imageNamed(@"searchItem.png") forState:UIControlStateNormal];
+- (void)shop{
+    if (listView.view.alpha==1) {
+        searchBtn.hidden = NO;
+        [shopBtn setImage:imageNamed(@"shopItem.png") forState:UIControlStateNormal];
         __block CGRect frame = listView.view.frame;
         frame.origin.y = -listView.view.frame.size.height;
         [UIView animateWithDuration:.3 animations:^{
@@ -189,7 +203,27 @@
             scrollView.frame = frame;
             scrollView.alpha = 1;
         }];
+    } else {
+        ShopViewController *shop = [[ShopViewController alloc] init];
+        [self.navigationController pushViewController:shop animated:YES];
     }
+}
+
+- (void)convertMode{
+    if (listView.view.alpha==0) {
+        [shopBtn setImage:imageNamed(@"backItem.png") forState:UIControlStateNormal];
+        __block CGRect frame = listView.view.frame;
+        frame.origin.y = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            listView.view.alpha = 1;
+            listView.view.frame = frame;
+            frame = scrollView.frame;
+            frame.origin.y = self.view.frame.size.height;
+            scrollView.frame = frame;
+            scrollView.alpha = 0;
+        }];
+        searchBtn.hidden = YES;
+    } 
 }
 
 - (void)showConfig{
