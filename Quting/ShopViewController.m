@@ -136,7 +136,7 @@
     int start = (loadPage-1)*6;
     int index = 0;
     for (int i=start; i<count; i++) {
-        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:index] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:index] valueForKey:@"name"], @"description": [[datas objectAtIndex:index] valueForKey:@"description"], @"id": [[datas objectAtIndex:index] valueForKey:@"id"]} isShop:YES];
+        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:[datas objectAtIndex:index] isShop:YES];
         albums.tag = [[[datas objectAtIndex:index] valueForKey:@"id"] intValue];
         [scrollView addSubview:albums];
         index ++;

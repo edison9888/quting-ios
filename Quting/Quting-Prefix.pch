@@ -33,3 +33,4 @@
 #define SHOWCONFIG @"showConfigView"
 #define BACKTOMAIN @"backToMainView"
 #define PAYMEIDA @"payMedia"
+#define CHANGEFAV @"changeFav"

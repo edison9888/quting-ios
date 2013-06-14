@@ -7,7 +7,6 @@
 //
 
 #import "RootViewController.h"
-#import "MainViewController.h"
 #import "ConfigViewController.h"
 #import "AppUtil.h"
 
@@ -19,7 +18,7 @@
     PaperFoldView *paperFoldView;
     UINavigationController *navigationController;
     
-    MainViewController *main;
+    
     ConfigViewController *config;
 }
 
@@ -27,12 +26,12 @@
 {
     [super viewDidLoad];
         
-    main = [[MainViewController alloc] init];
-    main.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    _main = [[MainViewController alloc] init];
+    _main.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     config = [[ConfigViewController alloc] initWithStyle:UITableViewStylePlain];
     config.view.frame = CGRectMake(0, 0, 280, self.view.frame.size.height);
     
-    navigationController = [[UINavigationController alloc] initWithRootViewController:main];
+    navigationController = [[UINavigationController alloc] initWithRootViewController:_main];
     navigationController.delegate = self;
     navigationController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     [navigationController.navigationBar setBackgroundImage:imageNamed(@"navi_background.png") forBarMetrics:UIBarMetricsDefault];
@@ -85,7 +84,7 @@
 
 - (void)paperFoldView:(id)paperFoldView didFoldAutomatically:(BOOL)automated toState:(PaperFoldState)paperFoldState{
     if (paperFoldState == PaperFoldStateDefault) {
-        [main removeBackGesture];
+        [_main removeBackGesture];
     }
 }
 

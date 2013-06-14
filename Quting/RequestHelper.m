@@ -52,4 +52,8 @@
     [self requestAPI:api type:@"GET" postData:datas success:success failed:failed];
 }
 
+- (void)requestDELETEAPI:(NSString *)api postData:(NSDictionary *)datas success:(void (^)(id result))success failed:(void (^)(id result, NSError *error))failed{
+    [self requestAPI:api type:@"DELETE" postData:datas success:success failed:failed];
+}
+
 @end

@@ -173,7 +173,7 @@
         }
     } else if (model==ListModel_play) {
         NSDictionary *dict = [datas objectAtIndex:indexPath.row];
-        cell.textLabel.text = [dict valueForKey:@"title"];
+        cell.textLabel.text = [dict valueForKey:@"name"];
         cell.detailTextLabel.text = [dict valueForKey:@"detailTitle"];
         
         UILabel *label = (UILabel *)[cell viewWithTag:1];
@@ -190,7 +190,7 @@
             label.text = [dict valueForKey:@"duration"];
         }
         
-        BOOL isFav = [[dict valueForKey:@"isFav"] boolValue];
+        BOOL isFav = [[dict valueForKey:@"is_like"] intValue]==1;
         if (isFav && ![cell viewWithTag:2]) {
             UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
             fav.tag = 2;
@@ -237,17 +237,17 @@
                 temp = [datas objectAtIndex:1];
             }
             NSDictionary *dict = [temp objectAtIndex:indexPath.row-1];
-            cell.textLabel.text = [dict valueForKey:@"title"];
-            cell.detailTextLabel.text = [dict valueForKey:@"detailTitle"];
-            UIImageView *fav = (UIImageView *)[cell viewWithTag:1];
-            if (!fav) {
-                fav = [[UIImageView alloc] initWithImage:imageNamed(myFavBtn.selected?@"fav.png":@"unFav.png")];
-                fav.frame = CGRectMake(280, 20, 14, 13);
-                fav.tag = 1;
-                [cell addSubview:fav];
-            } else {
-                fav.image = imageNamed(myFavBtn.selected?@"fav.png":@"unFav.png");
-            }
+            cell.textLabel.text = [dict valueForKey:@"name"];
+            cell.detailTextLabel.text = [dict valueForKey:@"author"];
+//            UIImageView *fav = (UIImageView *)[cell viewWithTag:1];
+//            if (!fav) {
+//                fav = [[UIImageView alloc] initWithImage:imageNamed(myFavBtn.selected?@"fav.png":@"unFav.png")];
+//                fav.frame = CGRectMake(280, 20, 14, 13);
+//                fav.tag = 1;
+//                [cell addSubview:fav];
+//            } else {
+//                fav.image = imageNamed(myFavBtn.selected?@"fav.png":@"unFav.png");
+//            }
         }
     }
     return cell;
@@ -273,12 +273,26 @@
     if (model==ListModel_play) {
         [[AudioManager defaultManager] playIndex:indexPath.row];
     } else {
-        NSDictionary *albums = [datas objectAtIndex:indexPath.row-1];
-        [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
-            PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];
-            [((MainViewController *)self.view.superview.nextResponder).navigationController pushViewController:playViewController animated:YES];
-//            [((MainViewController *)self.view.superview.nextResponder) convertMode];
-        } failed:nil];
+        NSDictionary *albums;
+        if (model==ListModel_search) {
+            albums = [datas objectAtIndex:indexPath.row-1];
+            [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
+                PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];
+                [((MainViewController *)self.view.superview.nextResponder).navigationController pushViewController:playViewController animated:YES];
+                //            [((MainViewController *)self.view.superview.nextResponder) convertMode];
+            } failed:nil];
+        } else {
+            if (historyBtn.selected) {
+                albums = [[datas objectAtIndex:1] objectAtIndex:indexPath.row-1];
+            } else {
+                albums = [[datas objectAtIndex:0] objectAtIndex:indexPath.row-1];
+            }
+            [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
+                PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];
+                [self.navigationController pushViewController:playViewController animated:YES];
+                //            [((MainViewController *)self.view.superview.nextResponder) convertMode];
+            } failed:nil];
+        }
     }
 }
 
@@ -316,6 +330,11 @@
             } failed:nil];
         }
     }
+}
+
+
+- (void)switchMethod{
+    
 }
 
 @end

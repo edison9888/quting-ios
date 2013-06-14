@@ -70,11 +70,18 @@
     BOOL temp = NO;
     if ([[AudioManager defaultManager] needURL]) {
         [[AudioManager defaultManager] clearAudioList];
-        [[AudioManager defaultManager] addAudioListToList:mp3List];
-        [[AudioManager defaultManager] playListAtFirst];
+        if (mp3List.count>0) {
+            [[AudioManager defaultManager] addAudioListToList:mp3List];
+            [[AudioManager defaultManager] playListAtFirst];
+        }
         temp = YES;
     }
 
+    if (tempDatas.count<=0) {
+        [AppUtil warning:@"未找到数据" withType:m_error];
+        [self.navigationController performSelector:@selector(popViewControllerAnimated:) withObject:[NSNumber numberWithBool:YES] afterDelay:.5];
+        return;
+    }
     [listView loadDatas:tempDatas];
     
     if (coverImage==nil) {
@@ -241,7 +248,7 @@
     
     UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn addTarget:self action:@selector(addFav:) forControlEvents:UIControlEventTouchUpInside];
-    if ([dict valueForKey:@"isFav"]) {
+    if ([[dict valueForKey:@"is_like"] intValue]==1) {
         btn.tag = 1;
         [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
     } else {
@@ -262,13 +269,14 @@
             [AppUtil warning:@"收藏成功!" withType:m_success];
             [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
             btn.tag = 1;
+            [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEFAV object:[dict valueForKey:@"id"] userInfo:@{@"is_like": @(1)}];
         } failed:nil];
     } else {
-        [[RequestHelper defaultHelper] requestGETAPI:[NSString stringWithFormat:@"/api/likes/%@", @"2"] postData:nil success:^(id result) {
-            NSLog(@"result:%@", result);
+        [[RequestHelper defaultHelper] requestGETAPI:@"api/likes/cancel" postData:@{@"medium_id": [[dict valueForKey:@"id"] stringValue], @"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
             [AppUtil warning:@"取消收藏成功!" withType:m_success];
             [btn setImage:imageNamed(@"noFav.png") forState:UIControlStateNormal];
             btn.tag = -1;
+            [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEFAV object:[dict valueForKey:@"id"] userInfo:@{@"is_like": @(-1)}];
         } failed:nil];
     }
 }

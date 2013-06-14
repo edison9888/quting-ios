@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "PaperFoldView.h"
+#import "MainViewController.h"
 
 @interface RootViewController : UIViewController <PaperFoldViewDelegate, UINavigationControllerDelegate>
+
+@property (nonatomic, strong) MainViewController *main;
 
 @end

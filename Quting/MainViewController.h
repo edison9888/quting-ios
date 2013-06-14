@@ -10,6 +10,8 @@
 
 @interface MainViewController : UIViewController <UIScrollViewDelegate>
 
+@property (nonatomic, retain) UIScrollView *scrollView;
+
 - (void)removeBackGesture;
 - (void)convertMode;
 

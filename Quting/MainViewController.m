@@ -21,9 +21,7 @@
     ListViewController *listView;
     UIButton *searchBtn;
     UIButton *shopBtn;
-    UIScrollView *scrollView;
     int maxCount;
-    int maxPage;
     float offsetY;
 }
 
@@ -37,19 +35,19 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    scrollView.contentOffset = CGPointMake(0, offsetY);
+    _scrollView.contentOffset = CGPointMake(0, offsetY);
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-    offsetY = scrollView.contentOffset.y;
+    offsetY = _scrollView.contentOffset.y;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     maxCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxCount"];
-    int temp = maxCount/6;
-    maxPage = maxCount%6==0?temp:(temp+1);
+//    int temp = maxCount/6;
+//    maxPage = maxCount%6==0?temp:(temp+1);
     self.navigationItem.title = @"趣 听";
     self.navigationController.navigationBarHidden = NO;
     self.view.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
@@ -91,8 +89,8 @@
 //     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)},]];
     
     
-    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
-    scrollView.delegate = self;
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+    _scrollView.delegate = self;
 
     NSString *key = @"api/buys";
     [[RequestHelper defaultHelper] requestGETAPI:key postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
@@ -113,12 +111,12 @@
         
     } failed:nil];
 
-    [self.view addSubview:scrollView];
+    [self.view addSubview:_scrollView];
     [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification *note) {
-                                                      [scrollView setContentOffset:CGPointZero animated:YES];
+                                                      [_scrollView setContentOffset:CGPointZero animated:YES];
                                                   }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:PAYMEIDA
@@ -127,16 +125,21 @@
                                                   usingBlock:^(NSNotification *note) {
                                                       float size = 115;
                                                       float gap = (320.0-size*2.0)/3.0;
-                                                      int i = scrollView.subviews.count;
+                                                      int i = 0;
+                                                      for (AlbumsView *albums in _scrollView.subviews) {
+                                                          if ([albums isKindOfClass:[AlbumsView class]]) {
+                                                              i++;
+                                                          }
+                                                      }
                                                       NSDictionary *data = note.object;
-                                                        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [data valueForKey:@"mtype"], @"name": [data valueForKey:@"name"]} isShop:NO];
+                                                        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:data isShop:NO];
                                                         albums.tag = [[data valueForKey:@"id"] intValue];
-                                                        [scrollView addSubview:albums];
+                                                        [_scrollView addSubview:albums];
                                                       i++;
                                                         int height = i%2==0?((i/2*(size+gap))+gap):((i/2+1)*(size+gap))+gap;
-                                                        height = height<=scrollView.frame.size.height?(scrollView.frame.size.height+1):height;
-                                                        height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
-                                                        scrollView.contentSize = CGSizeMake(0, height);
+                                                        height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
+//                                                        height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
+                                                        _scrollView.contentSize = CGSizeMake(0, height);
                                                   }];
 }
 
@@ -144,15 +147,19 @@
     float size = 115;
     float gap = (320.0-size*2.0)/3.0;
     for (int i=0; i<datas.count; i++) {
-        NSLog(@"%@", [[datas objectAtIndex:i] valueForKey:@"author"]);
-        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:i] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:i] valueForKey:@"name"], @"id": [[datas objectAtIndex:i] valueForKey:@"id"], @"author": ([[datas objectAtIndex:i] valueForKey:@"author"]==nil?@"":[[datas objectAtIndex:i] valueForKey:@"author"])} isShop:NO];
+        AlbumsView *albums;
+        if ([[[datas objectAtIndex:i] valueForKey:@"id"] intValue]==-1) {
+            albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:[datas objectAtIndex:i] isShop:NO];
+        } else {
+            albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:[datas objectAtIndex:i] isShop:NO];
+        }
         albums.tag = [[[datas objectAtIndex:i] valueForKey:@"id"] intValue];
-        [scrollView addSubview:albums];
+        [_scrollView addSubview:albums];
     }
     int height = datas.count%2==0?((datas.count/2*(size+gap))+gap):((datas.count/2+1)*(size+gap))+gap;
-    height = height<=scrollView.frame.size.height?(scrollView.frame.size.height+1):height;
-    height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
-    scrollView.contentSize = CGSizeMake(0, height);
+    height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
+//    height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
+    _scrollView.contentSize = CGSizeMake(0, height);
 }
 
 - (void)shop{
@@ -164,10 +171,10 @@
         [UIView animateWithDuration:.3 animations:^{
             listView.view.alpha = 0;
             listView.view.frame = frame;
-            frame = scrollView.frame;
+            frame = _scrollView.frame;
             frame.origin.y = 0;
-            scrollView.frame = frame;
-            scrollView.alpha = 1;
+            _scrollView.frame = frame;
+            _scrollView.alpha = 1;
         }];
     } else {
         ShopViewController *shop = [[ShopViewController alloc] init];
@@ -183,10 +190,10 @@
         [UIView animateWithDuration:.3 animations:^{
             listView.view.alpha = 1;
             listView.view.frame = frame;
-            frame = scrollView.frame;
+            frame = _scrollView.frame;
             frame.origin.y = self.view.frame.size.height;
-            scrollView.frame = frame;
-            scrollView.alpha = 0;
+            _scrollView.frame = frame;
+            _scrollView.alpha = 0;
         }];
         searchBtn.hidden = YES;
     } 

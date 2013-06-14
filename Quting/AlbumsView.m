@@ -22,6 +22,7 @@
     NSMutableArray *listInfos;
     CircularProgressView *circularProgressView;
     BOOL isShop;
+    UIImageView *fav;
 }
 
 @synthesize coverImage;
@@ -38,6 +39,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeFav:) name:CHANGEFAV object:nil];
         isShop = isShop_;
         self.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
         self.clipsToBounds = NO;
@@ -125,15 +127,27 @@
     
     if (!isShop) {
         [blackCover removeFromSuperview];
-        if (NO) {
-            UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
+        if ([[dict valueForKey:@"is_like"] intValue]==1) {
+            fav = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
             fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
             [cover addSubview:fav];
         } else {
-            UIImageView *fav = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
+            fav = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
             fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
             [cover addSubview:fav];
         }
+    }
+}
+
+- (void)changeFav:(NSNotification *)notifi{
+    if ([notifi.object intValue]!=self.tag) {
+        return;
+    }
+    [dict setValue:[notifi.userInfo valueForKey:@"is_like"] forKey:@"is_like"];
+    if ([[notifi.userInfo valueForKey:@"is_like"] intValue]==1) {
+        [fav setImage:imageNamed(@"fav.png")];
+    } else {
+        [fav setImage:imageNamed(@"noFav.png")];
     }
 }
 
@@ -185,7 +199,11 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    [[AudioManager defaultManager] setCurrentAlbums:self];
+    if (self.tag == -1) {
+        [[AudioManager defaultManager] setCurrentAlbums:nil];
+    } else {
+        [[AudioManager defaultManager] setCurrentAlbums:self];
+    }
     cover.alpha = 1;
     if (isShop) {
         PayView *pay = [[PayView alloc] initWithImage:self.coverImage andInfo:dict];
@@ -194,47 +212,54 @@
         return;
     }
     if (self.tag==-1) {
-        ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
-        [list loadDatas:@[
-         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}],
-         
-         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
-         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
-         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]
-         ]];
+//        ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
+//        [list loadDatas:@[
+//         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
+//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
+//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}],
+//         
+//         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
+//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
+//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
+//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
+//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]
+//         ]];
         
         [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
-            if ([[result valueForKey:@"likes"] count]>0) {
+//            if ([[result valueForKey:@"likes"] count]>0) {
                 NSMutableArray *tempDatas = [NSMutableArray array];
-                for (NSDictionary *temp in [result valueForKey:@"media"]) {
-                    [tempDatas addObject:@{@"title":[temp valueForKey:@"name"], @"id": [temp valueForKey:@"id"], @"mtype": [temp valueForKey:@"mtype"], @"detailTitle":[temp valueForKey:@"author"]}];
+                for (NSDictionary *temp in [result valueForKey:@"likes"]) {
+                    [tempDatas addObject:temp];
                 }
                 ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
-                [list loadDatas:@[tempDatas, [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"]]];
+                NSArray *temp = [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"];
+                if (temp == nil) {
+                    temp = @[];
+                }
+                [list loadDatas:@[tempDatas, temp]];
                 [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
-            }
+//            }
         } failed:nil];
 
     } else {
-        NSMutableArray *historys = [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"];
-        if (!historys) {
+        NSMutableArray *historys;
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"historys"]==nil) {
             historys = [NSMutableArray array];
+        } else {
+            historys = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] valueForKey:@"historys"]];
         }
         BOOL has = NO;
         for (NSDictionary *temp in historys) {
-            if ([[temp valueForKey:@"id"] isEqualToString:[dict valueForKey:@"id"]]) {
+            if ([[temp valueForKey:@"id"] intValue] == [[dict valueForKey:@"id"] intValue]) {
                 has = YES;
+                break;
             }
         }
         if (!has) {
-            [historys addObject:@{@"title":[dict valueForKey:@"name"], @"id": [dict valueForKey:@"id"], @"mtype": [dict valueForKey:@"mtype"], @"detailTitle":[dict valueForKey:@"author"]}];
+                [historys addObject:dict];
+            [[NSUserDefaults standardUserDefaults] setValue:historys forKey:@"historys"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        [[NSUserDefaults standardUserDefaults] setValue:historys forKey:@"historys"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
 
         if (listInfos==nil) {
             [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [NSString stringWithFormat:@"%d", self.tag]} success:^(id result) {
@@ -267,5 +292,9 @@
     circularProgressView.progressColor = [UIColor grayColor];
     cover.alpha = .85;
     control.selected = NO;
+}
+
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

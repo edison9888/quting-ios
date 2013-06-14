@@ -11,6 +11,10 @@
 #import "AppUtil.h"
 #import "UIView+Animation.h"
 #import "RequestHelper.h"
+#import "AppDelegate.h"
+#import "RootViewController.h"
+#import "MainViewController.h"
+#import "AlbumsView.h"
 
 @implementation PayView {
     NSDictionary *info;
@@ -106,6 +110,16 @@
 }
 
 - (void)addSubScription{
+    
+    NSArray *tempArr = ((RootViewController *)self.window.rootViewController).main.scrollView.subviews;
+    for (UIView *temp in tempArr) {
+        if ([temp isKindOfClass:[AlbumsView class]]) {
+            if (temp.tag== [[info valueForKey:@"id"] integerValue]) {
+                [AppUtil warning:@"已经订阅过了噢!" withType:m_success];
+                return;
+            }
+        }
+    }
     [[RequestHelper defaultHelper] requestPOSTAPI:@"/api/buys" postData:@{@"buy[guest_id]": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"buy[medium_id]": [[info valueForKey:@"id"] stringValue]} success:^(id result) {
         [AppUtil warning:@"订阅成功!" withType:m_success];
         [[NSNotificationCenter defaultCenter] postNotificationName:PAYMEIDA object:info];
