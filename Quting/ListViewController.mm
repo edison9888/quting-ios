@@ -206,6 +206,7 @@
             [cell addSubview:current];
         }
     } else if (model==ListModel_fav) {
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (indexPath.row==0) {
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.backgroundView = [[UIImageView alloc] initWithImage:imageNamed(@"myFavBG.png")];
@@ -271,7 +272,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (model==ListModel_play) {
         [[AudioManager defaultManager] playIndex:indexPath.row];
-    } else if (model==ListModel_search) {
+    } else {
         NSDictionary *albums = [datas objectAtIndex:indexPath.row-1];
         [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
             PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];

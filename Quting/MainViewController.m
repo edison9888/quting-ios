@@ -22,7 +22,6 @@
     UIButton *searchBtn;
     UIButton *shopBtn;
     UIScrollView *scrollView;
-    int loadPage;
     int maxCount;
     int maxPage;
     float offsetY;
@@ -94,60 +93,12 @@
     
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
     scrollView.delegate = self;
-    
-    loadPage = -1;
-    [self loadAlbumsWithIndex:1];
 
-    [self.view addSubview:scrollView];
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *note) {
-                                                      [scrollView setContentOffset:CGPointZero animated:YES];
-                                                  }];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView_{
-    if (loadPage<0) {
-        return;
-    }
-    CGFloat pageHeight = scrollView.frame.size.height;
-    int page = floor((scrollView.contentOffset.y - pageHeight / 2) / pageHeight) + 1;
-    if (page<0) {
-        return;
-    }
-    if (scrollView_.contentOffset.y+scrollView_.frame.size.height > scrollView_.contentSize.height-scrollView_.frame.size.height && (loadPage<=maxPage-1 || maxPage==0)) {
-//        NSLog(@"%d", page);
-//        return;
-        loadPage++;
-        loadPage *= -1;
-        [self loadAlbumsWithIndex:loadPage*-1];
-    }
-}
-
-- (void)loadAlbumsWithIndex:(int)index{
-    NSString *key = [NSString stringWithFormat:@"api/media?page=%d", index];
-    NSMutableArray *temp = [[NSUserDefaults standardUserDefaults] valueForKey:key];
-    if (temp!=nil && temp.count>0) {
-        loadPage *= -1;
-        [self loadAlbumsWithDatas:temp];
-        return;
-    }
-    [[RequestHelper defaultHelper] requestGETAPI:key postData:nil success:^(id result) {
+    NSString *key = @"api/buys";
+    [[RequestHelper defaultHelper] requestGETAPI:key postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
         if (result) {
-            int tempMax = [[result valueForKey:@"count"] intValue];
-            if (maxCount==0) {
-                if (tempMax!=maxCount) {
-                    maxCount = tempMax;
-                    [[NSUserDefaults standardUserDefaults] setInteger:maxCount forKey:@"maxCount"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    int temp = maxCount/6;
-                    maxPage = maxCount%6==0?temp:(temp+1);
-                }
-            }
-            loadPage *= -1;
             NSMutableArray *datas = [NSMutableArray array];
-            for (NSDictionary *dict in [result valueForKey:@"media"]) {
+            for (NSDictionary *dict in [result valueForKey:@"buys"]) {
                 NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithDictionary:dict];
                 for (NSString *key in [tempDict allKeys]) {
                     if ([[tempDict valueForKey:key] isKindOfClass:[NSNull class]]) {
@@ -156,34 +107,49 @@
                 }
                 [datas addObject:tempDict];
             }
-            if (index==1) {
-                [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
-            }
-            [[NSUserDefaults standardUserDefaults] setValue:datas forKey:key];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
             [self loadAlbumsWithDatas:datas];
         }
         
     } failed:nil];
+
+    [self.view addSubview:scrollView];
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      [scrollView setContentOffset:CGPointZero animated:YES];
+                                                  }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:PAYMEIDA
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      float size = 115;
+                                                      float gap = (320.0-size*2.0)/3.0;
+                                                      int i = scrollView.subviews.count;
+                                                      NSDictionary *data = note.object;
+                                                        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [data valueForKey:@"mtype"], @"name": [data valueForKey:@"name"]} isShop:NO];
+                                                        albums.tag = [[data valueForKey:@"id"] intValue];
+                                                        [scrollView addSubview:albums];
+                                                      i++;
+                                                        int height = i%2==0?((i/2*(size+gap))+gap):((i/2+1)*(size+gap))+gap;
+                                                        height = height<=scrollView.frame.size.height?(scrollView.frame.size.height+1):height;
+                                                        height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
+                                                        scrollView.contentSize = CGSizeMake(0, height);
+                                                  }];
 }
 
 - (void)loadAlbumsWithDatas:(NSMutableArray *)datas{
     float size = 115;
     float gap = (320.0-size*2.0)/3.0;
-    int count = datas.count+(loadPage-1)*6+1;
-    int start = (loadPage-1)*6+1;
-    if (scrollView.subviews.count==0) {
-        count--;
-        start--;
-    }
-    int index = 0;
-    for (int i=start; i<count; i++) {
-        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:index] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:index] valueForKey:@"name"]} isShop:NO];
-        albums.tag = [[[datas objectAtIndex:index] valueForKey:@"id"] intValue];
+    for (int i=0; i<datas.count; i++) {
+        NSLog(@"%@", [[datas objectAtIndex:i] valueForKey:@"author"]);
+        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:i] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:i] valueForKey:@"name"], @"id": [[datas objectAtIndex:i] valueForKey:@"id"], @"author": ([[datas objectAtIndex:i] valueForKey:@"author"]==nil?@"":[[datas objectAtIndex:i] valueForKey:@"author"])} isShop:NO];
+        albums.tag = [[[datas objectAtIndex:i] valueForKey:@"id"] intValue];
         [scrollView addSubview:albums];
-        index ++;
     }
-    int height = count%2==0?((count/2*(size+gap))+gap):((count/2+1)*(size+gap))+gap;
+    int height = datas.count%2==0?((datas.count/2*(size+gap))+gap):((datas.count/2+1)*(size+gap))+gap;
     height = height<=scrollView.frame.size.height?(scrollView.frame.size.height+1):height;
     height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
     scrollView.contentSize = CGSizeMake(0, height);

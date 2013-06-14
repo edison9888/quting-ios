@@ -10,14 +10,17 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AppUtil.h"
 #import "UIView+Animation.h"
+#import "RequestHelper.h"
 
 @implementation PayView {
+    NSDictionary *info;
 }
 
-- (id)initWithImage:(UIImage *)coverImage andInfo:(NSDictionary *)info
+- (id)initWithImage:(UIImage *)coverImage andInfo:(NSDictionary *)info_
 {
     self = [super initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT)];
     if (self) {
+        info = info_;
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.8];
         int size = isiPhone5?270:230;
         
@@ -103,7 +106,10 @@
 }
 
 - (void)addSubScription{
-    [AppUtil warning:@"订阅成功!" withType:m_success];
+    [[RequestHelper defaultHelper] requestPOSTAPI:@"/api/buys" postData:@{@"buy[guest_id]": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"buy[medium_id]": [[info valueForKey:@"id"] stringValue]} success:^(id result) {
+        [AppUtil warning:@"订阅成功!" withType:m_success];
+        [[NSNotificationCenter defaultCenter] postNotificationName:PAYMEIDA object:info];
+    } failed:nil];
     [self fadeOut];
 }
 

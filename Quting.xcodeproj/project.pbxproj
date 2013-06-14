@@ -235,6 +235,7 @@
 		C448DF6A1756090800AD4C94 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		C448DF6C1756090800AD4C94 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		C448DF6E1756090800AD4C94 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		C4724108176AE256006D1E12 /* Storyboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		C49BDB4F1761A4EB00C62A2D /* RequestHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestHelper.h; sourceTree = "<group>"; };
 		C49BDB501761A4EB00C62A2D /* RequestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestHelper.m; sourceTree = "<group>"; };
 		C49BDB521761A51900C62A2D /* AppUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUtil.h; sourceTree = "<group>"; };
@@ -553,6 +554,7 @@
 				C49F3C6917561EA700C20A4B /* AlbumsView.m */,
 				C430256C175870920082D368 /* ListViewController.h */,
 				C430256D175870920082D368 /* ListViewController.mm */,
+				C4724108176AE256006D1E12 /* Storyboard.storyboard */,
 				C448DF5F1756090800AD4C94 /* Supporting Files */,
 			);
 			path = Quting;

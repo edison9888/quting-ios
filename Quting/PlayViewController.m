@@ -11,6 +11,8 @@
 #import "ListViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "BluetoothViewController.h"
+#import "RequestHelper.h"
+#import "AppUtil.h"
 @interface PlayViewController ()
 
 @end
@@ -140,6 +142,7 @@
     pre.frame = CGRectMake(0, 0, 56, 56);
     next.frame = CGRectMake(0, 0, 56, 56);
     play.frame = CGRectMake(0, 0, 76, 76);
+    NSLog(@"height:%f", self.view.frame.size.height);
     pre.center = CGPointMake(64, self.view.frame.size.height-100);
     play.center = CGPointMake(165, self.view.frame.size.height-100);
     next.center = CGPointMake(260, self.view.frame.size.height-100);
@@ -221,9 +224,6 @@
     cover2.alpha = .8;
     [smallCover addSubview:cover2];
     
-    UIImageView *heart = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
-    heart.frame = CGRectMake(18, 20, 14, 13);
-    [smallCover addSubview:heart];
     
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height-16, 110, 16)];
     title.backgroundColor = [UIColor clearColor];
@@ -238,6 +238,39 @@
     detailTitle.font = [UIFont boldSystemFontOfSize:9];
     detailTitle.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:125/255.0 alpha:1];
     [coverView addSubview:detailTitle];
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn addTarget:self action:@selector(addFav:) forControlEvents:UIControlEventTouchUpInside];
+    if ([dict valueForKey:@"isFav"]) {
+        btn.tag = 1;
+        [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
+    } else {
+        btn.tag = -1;
+        [btn setImage:imageNamed(@"noFav.png") forState:UIControlStateNormal];
+    }
+    btn.frame = CGRectMake(coverBG.frame.origin.x+coverBG.frame.size.width-70, coverBG.frame.origin.y+coverBG.frame.size.height-70, 60, 60);
+    [coverView addSubview:btn];
+//    UIImageView *heart = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
+//    heart.frame = CGRectMake(18, 20, 14, 13);
+//    [smallCover addSubview:heart];
+}
+
+- (void)addFav:(UIButton *)btn{
+    if (btn.tag==-1) {
+        [[RequestHelper defaultHelper] requestPOSTAPI:@"/api/likes" postData:@{@"like[guest_id]": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"like[medium_id]": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
+            NSLog(@"result:%@", result);
+            [AppUtil warning:@"收藏成功!" withType:m_success];
+            [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
+            btn.tag = 1;
+        } failed:nil];
+    } else {
+        [[RequestHelper defaultHelper] requestGETAPI:[NSString stringWithFormat:@"/api/likes/%@", @"2"] postData:nil success:^(id result) {
+            NSLog(@"result:%@", result);
+            [AppUtil warning:@"取消收藏成功!" withType:m_success];
+            [btn setImage:imageNamed(@"noFav.png") forState:UIControlStateNormal];
+            btn.tag = -1;
+        } failed:nil];
+    }
 }
 
 - (void)showTutorails{

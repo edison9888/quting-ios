@@ -206,12 +206,36 @@
          @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
          @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]
          ]];
-        [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
-//        [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
-//            NSLog(@"%@", result);
-//        } failed:nil];
+        
+        [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
+            if ([[result valueForKey:@"likes"] count]>0) {
+                NSMutableArray *tempDatas = [NSMutableArray array];
+                for (NSDictionary *temp in [result valueForKey:@"media"]) {
+                    [tempDatas addObject:@{@"title":[temp valueForKey:@"name"], @"id": [temp valueForKey:@"id"], @"mtype": [temp valueForKey:@"mtype"], @"detailTitle":[temp valueForKey:@"author"]}];
+                }
+                ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
+                [list loadDatas:@[tempDatas, [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"]]];
+                [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
+            }
+        } failed:nil];
 
     } else {
+        NSMutableArray *historys = [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"];
+        if (!historys) {
+            historys = [NSMutableArray array];
+        }
+        BOOL has = NO;
+        for (NSDictionary *temp in historys) {
+            if ([[temp valueForKey:@"id"] isEqualToString:[dict valueForKey:@"id"]]) {
+                has = YES;
+            }
+        }
+        if (!has) {
+            [historys addObject:@{@"title":[dict valueForKey:@"name"], @"id": [dict valueForKey:@"id"], @"mtype": [dict valueForKey:@"mtype"], @"detailTitle":[dict valueForKey:@"author"]}];
+        }
+        [[NSUserDefaults standardUserDefaults] setValue:historys forKey:@"historys"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
         if (listInfos==nil) {
             [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [NSString stringWithFormat:@"%d", self.tag]} success:^(id result) {
                 listInfos = [result valueForKey:@"mfiles"];

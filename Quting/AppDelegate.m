@@ -18,18 +18,25 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    _rootViewController = [[RootViewController alloc] init];
-    self.window.backgroundColor = [UIColor blackColor];
-    self.window.rootViewController = _rootViewController;
-    [self.window makeKeyAndVisible];
     
     if ([[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]==nil) {
         [[RequestHelper defaultHelper] requestPOSTAPI:@"/api/guests" postData:@{@"guest[device_token]": [OpenUDID value]} success:^(id result) {
             NSLog(@"%@", result);
             [[NSUserDefaults standardUserDefaults] setValue:[[result valueForKey:@"guest"] valueForKey:@"id"] forKey:@"guest"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            _rootViewController = [[RootViewController alloc] init];
+            self.window.backgroundColor = [UIColor blackColor];
+            self.window.rootViewController = _rootViewController;
+            [self.window makeKeyAndVisible];
+
         } failed:nil];
+    } else {
+        _rootViewController = [[RootViewController alloc] init];
+        self.window.backgroundColor = [UIColor blackColor];
+        self.window.rootViewController = _rootViewController;
+        [self.window makeKeyAndVisible];
     }
+
     return YES;
 }
 

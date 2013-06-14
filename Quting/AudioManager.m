@@ -9,6 +9,8 @@
 #import "AudioManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import "AlbumsView.h"
+
+
 @implementation AudioManager {
     MPMoviePlayerController *player;
     NSMutableArray *playList;

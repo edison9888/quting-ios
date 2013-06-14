@@ -31,12 +31,7 @@
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    scrollView.contentOffset = CGPointMake(0, offsetY);
-}
-
 - (void)viewDidDisappear:(BOOL)animated{
-    offsetY = scrollView.contentOffset.y;
     [[AudioManager defaultManager] clearAudioList];
 }
 
@@ -65,12 +60,12 @@
     [self loadAlbumsWithIndex:1];
     
     [self.view addSubview:scrollView];
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *note) {
-                                                      [scrollView setContentOffset:CGPointZero animated:YES];
-                                                  }];
+//    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
+//                                                      object:nil
+//                                                       queue:nil
+//                                                  usingBlock:^(NSNotification *note) {
+//                                                      [scrollView setContentOffset:CGPointZero animated:YES];
+//                                                  }];
 }
 
 - (void)back{
@@ -99,9 +94,6 @@
     NSString *key = [NSString stringWithFormat:@"api/media?page=%d", index];
     NSMutableArray *temp = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] valueForKey:key]];
     if (temp!=nil && temp.count>0) {
-        if (index==1) {
-            [temp removeObjectAtIndex:0];
-        }
         loadPage *= -1;
         [self loadAlbumsWithDatas:temp];
         return;
@@ -144,7 +136,7 @@
     int start = (loadPage-1)*6;
     int index = 0;
     for (int i=start; i<count; i++) {
-        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:index] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:index] valueForKey:@"name"], @"description": [[datas objectAtIndex:index] valueForKey:@"description"]} isShop:YES];
+        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:@{@"mtype": [[datas objectAtIndex:index] valueForKey:@"mtype"], @"name": [[datas objectAtIndex:index] valueForKey:@"name"], @"description": [[datas objectAtIndex:index] valueForKey:@"description"], @"id": [[datas objectAtIndex:index] valueForKey:@"id"]} isShop:YES];
         albums.tag = [[[datas objectAtIndex:index] valueForKey:@"id"] intValue];
         [scrollView addSubview:albums];
         index ++;

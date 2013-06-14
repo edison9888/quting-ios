@@ -32,3 +32,4 @@
 #define imageNamed(name) ([UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:nil]])
 #define SHOWCONFIG @"showConfigView"
 #define BACKTOMAIN @"backToMainView"
+#define PAYMEIDA @"payMedia"
