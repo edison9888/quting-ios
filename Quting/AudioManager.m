@@ -80,7 +80,7 @@
 
 - (void)playWithURL:(NSString *)url{
     [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
-#warning setMediaInfo
+//#warning setMediaInfo
 //    self setMediaInfo:<#(UIImage *)#> andTitle:<#(NSString *)#> andArtist:<#(NSString *)#>
     AVAudioSession *session = [AVAudioSession sharedInstance];
     [session setActive:YES error:nil];
