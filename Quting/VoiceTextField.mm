@@ -52,9 +52,11 @@
     }
     self.tag = -1;
     [super resignFirstResponder];
-    voiceInputView = [[VoiceInputView alloc] init];
-    voiceInputView.delegate = self;
-    [self.window addSubview:voiceInputView];
+    if (voiceInputView==nil) {
+        voiceInputView = [[VoiceInputView alloc] init];
+        voiceInputView.delegate = self;
+        [self.window addSubview:voiceInputView];
+    }
     [voiceInputView show];
 }
 

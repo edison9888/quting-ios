@@ -109,7 +109,12 @@
             [self loadAlbumsWithDatas:datas];
         }
         
-    } failed:nil];
+    } failed:^(id result, NSError *error) {
+        [AppUtil warning:@"请检查网络连接" withType:m_error];
+        NSMutableArray *datas = [NSMutableArray array];
+        [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
+        [self loadAlbumsWithDatas:datas];
+    }];
 
     [self.view addSubview:_scrollView];
     [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"

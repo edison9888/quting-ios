@@ -121,7 +121,6 @@ char *OSTypeToStr(char *buf, OSType t)
             [_updateTimer invalidate];
             _updateTimer = nil;
         }
-        [self removeFromSuperview];
     }];
 }
 
