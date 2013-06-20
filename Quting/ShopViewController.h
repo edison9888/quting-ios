@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CategoryView.h"
 
-@interface ShopViewController : UIViewController <UIScrollViewDelegate>
+@interface ShopViewController : UIViewController <UIScrollViewDelegate, CategoryDelegate>
 
 @end

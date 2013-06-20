@@ -264,7 +264,7 @@
 }
 
 - (BOOL)playing{
-    return player.playbackState == MPMoviePlaybackStatePlaying;
+    return (player.playbackState!=MPMoviePlaybackStatePaused && player.playbackState!=MPMoviePlaybackStateStopped && player.playbackState!=MPMoviePlaybackStateInterrupted);
 }
 
 - (void)setCurrentAlbums:(AlbumsView *)albums{

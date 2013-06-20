@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C413EC0F177317390027B2FE /* CategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C413EC0E177317390027B2FE /* CategoryView.m */; };
+		C413EC12177318390027B2FE /* category.png in Resources */ = {isa = PBXBuildFile; fileRef = C413EC10177318390027B2FE /* category.png */; };
+		C413EC13177318390027B2FE /* category@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C413EC11177318390027B2FE /* category@2x.png */; };
 		C430256E175870920082D368 /* ListViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C430256D175870920082D368 /* ListViewController.mm */; };
 		C43026491758978E0082D368 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C43026481758978E0082D368 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C43026B8175897980082D368 /* AQRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = C430264C175897980082D368 /* AQRecorder.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -176,6 +179,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C413EC0D177317390027B2FE /* CategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryView.h; sourceTree = "<group>"; };
+		C413EC0E177317390027B2FE /* CategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryView.m; sourceTree = "<group>"; };
+		C413EC10177318390027B2FE /* category.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = category.png; sourceTree = "<group>"; };
+		C413EC11177318390027B2FE /* category@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category@2x.png"; sourceTree = "<group>"; };
 		C430256C175870920082D368 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		C430256D175870920082D368 /* ListViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ListViewController.mm; sourceTree = "<group>"; };
 		C43026471758978E0082D368 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -522,6 +529,8 @@
 				C49F3C151756156B00C20A4B /* MainViewController.m */,
 				C4EDC55A1764CCA500F467C0 /* ShopViewController.h */,
 				C4EDC55B1764CCA500F467C0 /* ShopViewController.m */,
+				C413EC0D177317390027B2FE /* CategoryView.h */,
+				C413EC0E177317390027B2FE /* CategoryView.m */,
 				C4EDC55D1764D44800F467C0 /* PayView.h */,
 				C4EDC55E1764D44800F467C0 /* PayView.m */,
 				C4EDC60E1764E7A200F467C0 /* BluetoothViewController.h */,
@@ -612,6 +621,8 @@
 		C4EDC6D41764EE7900F467C0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				C413EC10177318390027B2FE /* category.png */,
+				C413EC11177318390027B2FE /* category@2x.png */,
 				C4EDC6D51764EE7900F467C0 /* bluetooth */,
 				C4EDC6E01764EE7900F467C0 /* btn */,
 				C4EDC6E71764EE7900F467C0 /* config */,
@@ -951,6 +962,8 @@
 				C4EDC79D1764EE7900F467C0 /* error@2x.png in Resources */,
 				C4EDC79E1764EE7900F467C0 /* success.png in Resources */,
 				C4EDC79F1764EE7900F467C0 /* success@2x.png in Resources */,
+				C413EC12177318390027B2FE /* category.png in Resources */,
+				C413EC13177318390027B2FE /* category@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1018,6 +1031,7 @@
 				C4EDC6101764E7A200F467C0 /* BluetoothViewController.m in Sources */,
 				C4A52A331772B656008FF7D6 /* JASidePanelController.m in Sources */,
 				C4A52A341772B656008FF7D6 /* UIViewController+JASidePanel.m in Sources */,
+				C413EC0F177317390027B2FE /* CategoryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

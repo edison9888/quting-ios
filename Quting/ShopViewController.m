@@ -16,10 +16,10 @@
 
 @implementation ShopViewController {
     UIScrollView *scrollView;
-    int loadPage;
     int maxCount;
     int maxPage;
     float offsetY;
+    NSString *category;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -53,64 +53,40 @@
     self.navigationController.navigationBarHidden = NO;
     self.view.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
     
-    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:imageNamed(@"category.png")];
+    [self.view addSubview:bg];
+
+    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 48, self.view.frame.size.width, self.view.frame.size.height-44-48)];
     scrollView.delegate = self;
-    
-    loadPage = -1;
-    [self loadAlbumsWithIndex:1];
-    
+    scrollView.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
     [self.view addSubview:scrollView];
-//    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
-//                                                      object:nil
-//                                                       queue:nil
-//                                                  usingBlock:^(NSNotification *note) {
-//                                                      [scrollView setContentOffset:CGPointZero animated:YES];
-//                                                  }];
+    
+
+    CategoryView *cate = [[CategoryView alloc] init];
+    cate.loadDelegate = self;
+    [self.view addSubview:cate];
+}
+
+- (void)loadListWithCategory:(NSString *)name{
+    category = name;
+    for (UIView *temp in scrollView.subviews) {
+        [temp removeFromSuperview];
+    }
+    [self loadAlbums];
 }
 
 - (void)back{
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView_{
-    if (loadPage<0) {
-        return;
-    }
-    CGFloat pageHeight = scrollView.frame.size.height;
-    int page = floor((scrollView.contentOffset.y - pageHeight / 2) / pageHeight) + 1;
-    if (page<0) {
-        return;
-    }
-    if (scrollView_.contentOffset.y+scrollView_.frame.size.height > scrollView_.contentSize.height-scrollView_.frame.size.height && (loadPage<=maxPage-1 || maxPage==0)) {
-        //        NSLog(@"%d", page);
-        //        return;
-        loadPage++;
-        loadPage *= -1;
-        [self loadAlbumsWithIndex:loadPage*-1];
-    }
-}
-
-- (void)loadAlbumsWithIndex:(int)index{
-    NSString *key = [NSString stringWithFormat:@"api/media?page=%d", index];
-    NSMutableArray *temp = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] valueForKey:key]];
+- (void)loadAlbums{
+    NSMutableArray *temp = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] valueForKey:category]];
     if (temp!=nil && temp.count>0) {
-        loadPage *= -1;
         [self loadAlbumsWithDatas:temp];
         return;
     }
-    [[RequestHelper defaultHelper] requestGETAPI:key postData:nil success:^(id result) {
+    [[RequestHelper defaultHelper] requestGETAPI:@"/api/media" postData:@{@"term": category} success:^(id result) {
         if (result) {
-            int tempMax = [[result valueForKey:@"count"] intValue];
-            if (maxCount==0) {
-                if (tempMax!=maxCount) {
-                    maxCount = tempMax;
-                    [[NSUserDefaults standardUserDefaults] setInteger:maxCount forKey:@"maxCount"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    int temp = maxCount/6;
-                    maxPage = maxCount%6==0?temp:(temp+1);
-                }
-            }
-            loadPage *= -1;
             NSMutableArray *datas = [NSMutableArray array];
             for (NSDictionary *dict in [result valueForKey:@"media"]) {
                 NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithDictionary:dict];
@@ -121,7 +97,7 @@
                 }
                 [datas addObject:tempDict];
             }
-            [[NSUserDefaults standardUserDefaults] setValue:datas forKey:key];
+            [[NSUserDefaults standardUserDefaults] setValue:datas forKey:category];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [self loadAlbumsWithDatas:datas];
         }
@@ -132,8 +108,8 @@
 - (void)loadAlbumsWithDatas:(NSMutableArray *)datas{
     float size = 115;
     float gap = (320.0-size*2.0)/3.0;
-    int count = datas.count+(loadPage-1)*6;
-    int start = (loadPage-1)*6;
+    int count = datas.count;
+    int start = 0;
     int index = 0;
     for (int i=start; i<count; i++) {
         AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:[datas objectAtIndex:index] isShop:YES];

@@ -161,7 +161,7 @@
 
 - (void)manageAudio{
     [[AudioManager defaultManager] clearOtherAlbumsStat:self];
-    if ([[AudioManager defaultManager] stat]!=MPMoviePlaybackStatePaused) {
+    if ([[AudioManager defaultManager] playing]) {
         [[AudioManager defaultManager] pause];
         [self audioPause];
     } else {
