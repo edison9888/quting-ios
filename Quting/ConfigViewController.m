@@ -40,6 +40,10 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+    self.tableView.frame = CGRectMake(60, 0, 270, self.view.frame.size.height);
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

@@ -70,16 +70,10 @@
 		C4A44519175641AC00851E8D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A44518175641AC00851E8D /* MediaPlayer.framework */; };
 		C4A4451D1756497400851E8D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A4451C1756497400851E8D /* MobileCoreServices.framework */; };
 		C4A4451F1756498100851E8D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A4451E1756498100851E8D /* SystemConfiguration.framework */; };
+		C4A52A331772B656008FF7D6 /* JASidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4A52A301772B656008FF7D6 /* JASidePanelController.m */; };
+		C4A52A341772B656008FF7D6 /* UIViewController+JASidePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = C4A52A321772B656008FF7D6 /* UIViewController+JASidePanel.m */; };
 		C4D0CD0817571C47002295D0 /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D0CD0717571C47002295D0 /* AudioManager.m */; };
 		C4D0CD59175724CE002295D0 /* PlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D0CD58175724CE002295D0 /* PlayViewController.m */; };
-		C4ECAEC81759B6B600B3B0FF /* FacingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEB81759B6B600B3B0FF /* FacingView.m */; };
-		C4ECAEC91759B6B600B3B0FF /* FoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEBA1759B6B600B3B0FF /* FoldView.m */; };
-		C4ECAECA1759B6B600B3B0FF /* MultiFoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEBC1759B6B600B3B0FF /* MultiFoldView.m */; };
-		C4ECAECB1759B6B600B3B0FF /* PaperFoldSwipeHintView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEBF1759B6B600B3B0FF /* PaperFoldSwipeHintView.m */; };
-		C4ECAECC1759B6B600B3B0FF /* PaperFoldView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC11759B6B600B3B0FF /* PaperFoldView.m */; };
-		C4ECAECD1759B6B600B3B0FF /* ShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC31759B6B600B3B0FF /* ShadowView.m */; };
-		C4ECAECE1759B6B600B3B0FF /* TouchThroughUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC51759B6B600B3B0FF /* TouchThroughUIView.m */; };
-		C4ECAECF1759B6B600B3B0FF /* UIView+Screenshot.m in Sources */ = {isa = PBXBuildFile; fileRef = C4ECAEC71759B6B600B3B0FF /* UIView+Screenshot.m */; };
 		C4EDC55C1764CCA500F467C0 /* ShopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4EDC55B1764CCA500F467C0 /* ShopViewController.m */; };
 		C4EDC55F1764D44800F467C0 /* PayView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4EDC55E1764D44800F467C0 /* PayView.m */; };
 		C4EDC6101764E7A200F467C0 /* BluetoothViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4EDC60F1764E7A200F467C0 /* BluetoothViewController.m */; };
@@ -282,27 +276,14 @@
 		C4A4451A1756491700851E8D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		C4A4451C1756497400851E8D /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		C4A4451E1756498100851E8D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C4A52A2F1772B656008FF7D6 /* JASidePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JASidePanelController.h; sourceTree = "<group>"; };
+		C4A52A301772B656008FF7D6 /* JASidePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JASidePanelController.m; sourceTree = "<group>"; };
+		C4A52A311772B656008FF7D6 /* UIViewController+JASidePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+JASidePanel.h"; sourceTree = "<group>"; };
+		C4A52A321772B656008FF7D6 /* UIViewController+JASidePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+JASidePanel.m"; sourceTree = "<group>"; };
 		C4D0CD0617571C47002295D0 /* AudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioManager.h; sourceTree = "<group>"; };
 		C4D0CD0717571C47002295D0 /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioManager.m; sourceTree = "<group>"; };
 		C4D0CD57175724CE002295D0 /* PlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayViewController.h; sourceTree = "<group>"; };
 		C4D0CD58175724CE002295D0 /* PlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayViewController.m; sourceTree = "<group>"; };
-		C4ECAEB71759B6B600B3B0FF /* FacingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacingView.h; sourceTree = "<group>"; };
-		C4ECAEB81759B6B600B3B0FF /* FacingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacingView.m; sourceTree = "<group>"; };
-		C4ECAEB91759B6B600B3B0FF /* FoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldView.h; sourceTree = "<group>"; };
-		C4ECAEBA1759B6B600B3B0FF /* FoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldView.m; sourceTree = "<group>"; };
-		C4ECAEBB1759B6B600B3B0FF /* MultiFoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiFoldView.h; sourceTree = "<group>"; };
-		C4ECAEBC1759B6B600B3B0FF /* MultiFoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiFoldView.m; sourceTree = "<group>"; };
-		C4ECAEBD1759B6B600B3B0FF /* PaperFoldConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldConstants.h; sourceTree = "<group>"; };
-		C4ECAEBE1759B6B600B3B0FF /* PaperFoldSwipeHintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldSwipeHintView.h; sourceTree = "<group>"; };
-		C4ECAEBF1759B6B600B3B0FF /* PaperFoldSwipeHintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperFoldSwipeHintView.m; sourceTree = "<group>"; };
-		C4ECAEC01759B6B600B3B0FF /* PaperFoldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaperFoldView.h; sourceTree = "<group>"; };
-		C4ECAEC11759B6B600B3B0FF /* PaperFoldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaperFoldView.m; sourceTree = "<group>"; };
-		C4ECAEC21759B6B600B3B0FF /* ShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowView.h; sourceTree = "<group>"; };
-		C4ECAEC31759B6B600B3B0FF /* ShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowView.m; sourceTree = "<group>"; };
-		C4ECAEC41759B6B600B3B0FF /* TouchThroughUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchThroughUIView.h; sourceTree = "<group>"; };
-		C4ECAEC51759B6B600B3B0FF /* TouchThroughUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchThroughUIView.m; sourceTree = "<group>"; };
-		C4ECAEC61759B6B600B3B0FF /* UIView+Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Screenshot.h"; sourceTree = "<group>"; };
-		C4ECAEC71759B6B600B3B0FF /* UIView+Screenshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Screenshot.m"; sourceTree = "<group>"; };
 		C4EDC55A1764CCA500F467C0 /* ShopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopViewController.h; sourceTree = "<group>"; };
 		C4EDC55B1764CCA500F467C0 /* ShopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopViewController.m; sourceTree = "<group>"; };
 		C4EDC55D1764D44800F467C0 /* PayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayView.h; sourceTree = "<group>"; };
@@ -510,6 +491,7 @@
 		C448DF5E1756090800AD4C94 /* Quting */ = {
 			isa = PBXGroup;
 			children = (
+				C4A52A2E1772B656008FF7D6 /* Source */,
 				C49BDB5F1761C99900C62A2D /* OpenUDID.h */,
 				C49BDB601761C99A00C62A2D /* OpenUDID.m */,
 				C49BDB551761A58700C62A2D /* UITableView+Animation.h */,
@@ -524,7 +506,6 @@
 				C43026EA1758979E0082D368 /* VoiceInputView.mm */,
 				C43026EB1758979E0082D368 /* VoiceTextField.h */,
 				C43026EC1758979E0082D368 /* VoiceTextField.mm */,
-				C4ECAEB61759B6B600B3B0FF /* paperFold */,
 				C430264A175897980082D368 /* voice */,
 				C43026471758978E0082D368 /* JSONKit.h */,
 				C43026481758978E0082D368 /* JSONKit.m */,
@@ -617,28 +598,15 @@
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
-		C4ECAEB61759B6B600B3B0FF /* paperFold */ = {
+		C4A52A2E1772B656008FF7D6 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				C4ECAEB71759B6B600B3B0FF /* FacingView.h */,
-				C4ECAEB81759B6B600B3B0FF /* FacingView.m */,
-				C4ECAEB91759B6B600B3B0FF /* FoldView.h */,
-				C4ECAEBA1759B6B600B3B0FF /* FoldView.m */,
-				C4ECAEBB1759B6B600B3B0FF /* MultiFoldView.h */,
-				C4ECAEBC1759B6B600B3B0FF /* MultiFoldView.m */,
-				C4ECAEBD1759B6B600B3B0FF /* PaperFoldConstants.h */,
-				C4ECAEBE1759B6B600B3B0FF /* PaperFoldSwipeHintView.h */,
-				C4ECAEBF1759B6B600B3B0FF /* PaperFoldSwipeHintView.m */,
-				C4ECAEC01759B6B600B3B0FF /* PaperFoldView.h */,
-				C4ECAEC11759B6B600B3B0FF /* PaperFoldView.m */,
-				C4ECAEC21759B6B600B3B0FF /* ShadowView.h */,
-				C4ECAEC31759B6B600B3B0FF /* ShadowView.m */,
-				C4ECAEC41759B6B600B3B0FF /* TouchThroughUIView.h */,
-				C4ECAEC51759B6B600B3B0FF /* TouchThroughUIView.m */,
-				C4ECAEC61759B6B600B3B0FF /* UIView+Screenshot.h */,
-				C4ECAEC71759B6B600B3B0FF /* UIView+Screenshot.m */,
+				C4A52A2F1772B656008FF7D6 /* JASidePanelController.h */,
+				C4A52A301772B656008FF7D6 /* JASidePanelController.m */,
+				C4A52A311772B656008FF7D6 /* UIViewController+JASidePanel.h */,
+				C4A52A321772B656008FF7D6 /* UIViewController+JASidePanel.m */,
 			);
-			path = paperFold;
+			path = Source;
 			sourceTree = "<group>";
 		};
 		C4EDC6D41764EE7900F467C0 /* UI */ = {
@@ -1040,14 +1008,6 @@
 				C43026E8175897980082D368 /* MeterTable.mm in Sources */,
 				C43026ED1758979E0082D368 /* VoiceInputView.mm in Sources */,
 				C43026EE1758979E0082D368 /* VoiceTextField.mm in Sources */,
-				C4ECAEC81759B6B600B3B0FF /* FacingView.m in Sources */,
-				C4ECAEC91759B6B600B3B0FF /* FoldView.m in Sources */,
-				C4ECAECA1759B6B600B3B0FF /* MultiFoldView.m in Sources */,
-				C4ECAECB1759B6B600B3B0FF /* PaperFoldSwipeHintView.m in Sources */,
-				C4ECAECC1759B6B600B3B0FF /* PaperFoldView.m in Sources */,
-				C4ECAECD1759B6B600B3B0FF /* ShadowView.m in Sources */,
-				C4ECAECE1759B6B600B3B0FF /* TouchThroughUIView.m in Sources */,
-				C4ECAECF1759B6B600B3B0FF /* UIView+Screenshot.m in Sources */,
 				C49BDB511761A4EB00C62A2D /* RequestHelper.m in Sources */,
 				C49BDB541761A51900C62A2D /* AppUtil.m in Sources */,
 				C49BDB591761A58700C62A2D /* UITableView+Animation.m in Sources */,
@@ -1056,6 +1016,8 @@
 				C4EDC55C1764CCA500F467C0 /* ShopViewController.m in Sources */,
 				C4EDC55F1764D44800F467C0 /* PayView.m in Sources */,
 				C4EDC6101764E7A200F467C0 /* BluetoothViewController.m in Sources */,
+				C4A52A331772B656008FF7D6 /* JASidePanelController.m in Sources */,
+				C4A52A341772B656008FF7D6 /* UIViewController+JASidePanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -337,6 +337,10 @@
 
 - (void)audioProgress:(NSNotification *)notifi{
     float progress = [notifi.object floatValue];
+    [self progress:progress];
+}
+
+- (void)progress:(float)progress{
     if (!slider.enabled) {
         slider.enabled = YES;
         int duration = [[AudioManager defaultManager] duration];
@@ -377,14 +381,19 @@
 
 - (void)sliderDragUp:(UISlider *)slider1{
     NSLog(@"slider up:%f", slider.value);
+    if (![[AudioManager defaultManager] playing]) {
+        [[AudioManager defaultManager] resume];
+    }
+    [self progress:slider1.value];
+    [self performSelector:@selector(resume) withObject:nil afterDelay:.8];
+}
+
+- (void)resume{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlay) name:AudioPlayNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPause) name:AudioPauseNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioNext) name:AudioNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPre) name:AudioPreNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioProgress:) name:AudioProgressNotification object:nil];
-    if (![[AudioManager defaultManager] playing]) {
-        [[AudioManager defaultManager] resume];
-    }
 }
 
 - (void)sliderTouchDown:(UISlider *)slider1{

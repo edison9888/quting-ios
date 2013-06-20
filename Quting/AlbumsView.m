@@ -161,7 +161,7 @@
 
 - (void)manageAudio{
     [[AudioManager defaultManager] clearOtherAlbumsStat:self];
-    if ([[AudioManager defaultManager] stat]==MPMoviePlaybackStatePlaying) {
+    if ([[AudioManager defaultManager] stat]!=MPMoviePlaybackStatePaused) {
         [[AudioManager defaultManager] pause];
         [self audioPause];
     } else {
@@ -200,8 +200,10 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     if (self.tag == -1) {
+        [[AudioManager defaultManager] clearOtherAlbumsStat:nil];
         [[AudioManager defaultManager] setCurrentAlbums:nil];
     } else {
+        [[AudioManager defaultManager] clearOtherAlbumsStat:self];
         [[AudioManager defaultManager] setCurrentAlbums:self];
     }
     cover.alpha = 1;
@@ -212,19 +214,6 @@
         return;
     }
     if (self.tag==-1) {
-//        ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
-//        [list loadDatas:@[
-//         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}],
-//         
-//         @[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
-//         @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)}]
-//         ]];
-        
         [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
 //            if ([[result valueForKey:@"likes"] count]>0) {
                 NSMutableArray *tempDatas = [NSMutableArray array];

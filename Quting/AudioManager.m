@@ -9,7 +9,7 @@
 #import "AudioManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import "AlbumsView.h"
-
+#import "AppUtil.h"
 
 @implementation AudioManager {
     MPMoviePlayerController *player;
@@ -154,7 +154,7 @@
 }
 
 - (void)pause{
-    if (player.playbackState == MPMoviePlaybackStatePlaying) {
+    if (player.playbackState != MPMoviePlaybackStatePaused) {
         [player pause];
         [self stopTick];
     }
@@ -222,7 +222,7 @@
         return;
     }
     float total = player.duration;
-    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:total*percentage]];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:total*percentage]];
     [player setCurrentPlaybackTime:total*percentage];
 }
 
@@ -236,16 +236,20 @@
 }
 
 - (BOOL)hasNext{
-//    return currentIndex<playList.count;
-    return YES;
+    return currentIndex<playList.count-1;
+//    return YES;
 }
 
 - (BOOL)hasPre{
-//    return currentIndex>0;
-    return YES;
+    return currentIndex>0;
+//    return YES;
 }
 
 - (void)playListAtFirst{
+    if (playList.count<=0) {
+        [AppUtil warning:@"未找到数据" withType:m_error];
+        return;
+    }
     currentIndex = 0;
     [self playWithURL:[playList objectAtIndex:currentIndex]];
 }

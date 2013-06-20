@@ -9,16 +9,15 @@
 #import "RootViewController.h"
 #import "ConfigViewController.h"
 #import "AppUtil.h"
+#import "JASidePanelController.h"
 
 @interface RootViewController ()
 
 @end
 
 @implementation RootViewController {
-    PaperFoldView *paperFoldView;
+    JASidePanelController *sideView;
     UINavigationController *navigationController;
-    
-    
     ConfigViewController *config;
 }
 
@@ -29,7 +28,7 @@
     _main = [[MainViewController alloc] init];
     _main.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
     config = [[ConfigViewController alloc] initWithStyle:UITableViewStylePlain];
-    config.view.frame = CGRectMake(0, 0, 280, self.view.frame.size.height);
+    config.view.frame = CGRectMake(0, 0, 320, self.view.frame.size.height);
     
     navigationController = [[UINavigationController alloc] initWithRootViewController:_main];
     navigationController.delegate = self;
@@ -42,27 +41,32 @@
                          UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetMake(0.0f, 1.0f)]
      }];
 
-    paperFoldView = [[PaperFoldView alloc] initWithFrame:CGRectMake(0,0,[self.view bounds].size.width,[self.view bounds].size.height)];
-    paperFoldView.delegate = self;
-    [self.view addSubview:paperFoldView];
-    
-    [paperFoldView setCenterContentView:navigationController.view];
-    
-    [paperFoldView setRightFoldContentView:config.view foldCount:2 pullFactor:.9];
+    sideView = [[JASidePanelController alloc] init];
+    sideView.view.frame = CGRectMake(0, 0, 320, self.view.frame.size.height);
+    sideView.shouldDelegateAutorotateToVisiblePanel = NO;
+    sideView.centerPanel = navigationController;
+    sideView.rightPanel = config;
+    [self.view addSubview:sideView.view];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showConfigView:) name:SHOWCONFIG object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMainView:) name:BACKTOMAIN object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(canRight) name:ENABLERIGHT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cantRight) name:DISABLERIGHT object:nil];
+}
+
+- (void)canRight{
+    sideView.rightPanel = config;
+}
+
+- (void)cantRight{
+    sideView.rightPanel = nil;
 }
 
 - (void)navigationController:(UINavigationController *)navigationController_ didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
     if ([viewController isKindOfClass:NSClassFromString(@"MainViewController")]) {
-        for (UIGestureRecognizer *temp in paperFoldView.contentView.gestureRecognizers) {
-            temp.enabled = YES;
-        }
+        [sideView setRightPanel:config];
     } else {
-        for (UIGestureRecognizer *temp in paperFoldView.contentView.gestureRecognizers) {
-            temp.enabled = NO;
-        }
+        [sideView setRightPanel:nil];
     }
 }
 
@@ -71,7 +75,7 @@
     if (notifi.object) {
         isAnimation = [notifi.object boolValue];
     }
-    [paperFoldView setPaperFoldState:PaperFoldStateRightUnfolded animated:isAnimation];
+    [sideView showRightPanelAnimated:isAnimation];
 }
 
 - (void)showMainView:(NSNotification *)notifi{
@@ -79,13 +83,7 @@
     if (notifi.object) {
         isAnimation = [notifi.object boolValue];
     }
-    [paperFoldView setPaperFoldState:PaperFoldStateDefault animated:isAnimation];
-}
-
-- (void)paperFoldView:(id)paperFoldView didFoldAutomatically:(BOOL)automated toState:(PaperFoldState)paperFoldState{
-    if (paperFoldState == PaperFoldStateDefault) {
-        [_main removeBackGesture];
-    }
+    [sideView showCenterPanelAnimated:isAnimation];
 }
 
 - (void)didReceiveMemoryWarning

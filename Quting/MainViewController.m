@@ -21,6 +21,7 @@
     ListViewController *listView;
     UIButton *searchBtn;
     UIButton *shopBtn;
+    UIButton *configBtn;
     int maxCount;
     float offsetY;
 }
@@ -64,7 +65,7 @@
     searchBtn.frame = CGRectMake(0, 0, 44, 44);
     [searchBtn setImage:imageNamed(@"searchItem.png") forState:UIControlStateNormal];
 
-    UIButton *configBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    configBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [configBtn addTarget:self action:@selector(showConfig) forControlEvents:UIControlEventTouchUpInside];
     configBtn.frame = CGRectMake(44, 0, 44, 44);
     [configBtn setImage:imageNamed(@"configItem.png") forState:UIControlStateNormal];
@@ -170,12 +171,16 @@
 - (void)shop{
     if (listView.view.alpha==1) {
         searchBtn.hidden = NO;
+        configBtn.hidden = NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:ENABLERIGHT object:nil];
+
         [shopBtn setImage:imageNamed(@"shopItem.png") forState:UIControlStateNormal];
         __block CGRect frame = listView.view.frame;
         frame.origin.y = -listView.view.frame.size.height;
         [UIView animateWithDuration:.3 animations:^{
             listView.view.alpha = 0;
             listView.view.frame = frame;
+            [listView resignFirstResponder];
             frame = _scrollView.frame;
             frame.origin.y = 0;
             _scrollView.frame = frame;
@@ -201,7 +206,9 @@
             _scrollView.alpha = 0;
         }];
         searchBtn.hidden = YES;
-    } 
+        configBtn.hidden = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:DISABLERIGHT object:nil];
+    }
 }
 
 - (void)showConfig{
