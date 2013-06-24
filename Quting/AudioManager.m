@@ -18,6 +18,7 @@
     NSTimer *ticker;
     NSString *tempURL;
     AlbumsView *albumsView;
+    float needSkipToTime;
 }
 
 + (AudioManager *)defaultManager{
@@ -45,7 +46,10 @@
 }
 
 - (void)startTick{
-    [self stopTick];
+    if (ticker) {
+        [ticker invalidate];
+        ticker = nil;
+    }
     ticker = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(tick) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:ticker forMode:NSRunLoopCommonModes];
     [[NSNotificationCenter defaultCenter] postNotificationName:AudioPlayNotification object:nil];
@@ -58,7 +62,7 @@
     if (ticker) {
         [ticker invalidate];
         ticker = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName:AudioPauseNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioPauseNotification object:nil userInfo:@{@"currentIndex":@(currentIndex), @"progress":@([self progress]), @"time": @(player.currentPlaybackTime), @"albumsProgress": @([self albumsProgress])}];
     }
     if (albumsView) {
         [albumsView audioPause];
@@ -71,21 +75,47 @@
     return currentTime/total;
 }
 
+- (float)albumsProgress{
+    float progress = [self progress];
+    float albumsProgress = 100.0/playList.count/100.0;
+    return albumsProgress*currentIndex+albumsProgress*progress;
+}
+
 - (void)tick{
     [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:[self progress]]];
     if (albumsView) {
-        [albumsView audioProgress:[self progress]];
+        [albumsView audioProgress:[self albumsProgress]];
     }
 }
 
+- (void)durationAvailable:(NSNotification*)notification{
+    NSLog(@"%f", player.duration);
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMovieDurationAvailableNotification  object:nil];
+    [player setCurrentPlaybackTime:needSkipToTime];
+    needSkipToTime = 0;
+}
+
 - (void)playWithURL:(NSString *)url{
-    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
-//#warning setMediaInfo
-//    self setMediaInfo:<#(UIImage *)#> andTitle:<#(NSString *)#> andArtist:<#(NSString *)#>
+    [self playWithURL:url withCurrentTime:0];
+}
+
+- (void)playWithURL:(NSString *)url withCurrentTime:(float)time{
+    //#warning setMediaInfo
+    //    self setMediaInfo:<#(UIImage *)#> andTitle:<#(NSString *)#> andArtist:<#(NSString *)#>
+    if (time>0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(durationAvailable:)
+                                                     name:MPMovieDurationAvailableNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:time]];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
+    }
     AVAudioSession *session = [AVAudioSession sharedInstance];
+    needSkipToTime = time;
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
-    [player setContentURL:[NSURL URLWithString:url]];
+    [player setContentURL:[NSURL URLWithString:@"http://tome-file.b0.upaiyun.com/3.mp3"]];
     [player play];
     [self startTick];
     tempURL = [url copy];
@@ -132,8 +162,8 @@
 
 - (BOOL)changeStat{
     if (player.playbackState == MPMoviePlaybackStatePlaying) {
-        [player pause];
         [self stopTick];
+        [player pause];
         return NO;
     } else {
         [player play];
@@ -154,9 +184,9 @@
 }
 
 - (void)pause{
-    if (player.playbackState != MPMoviePlaybackStatePaused) {
-        [player pause];
+    if (ticker) {
         [self stopTick];
+        [player pause];
     }
 }
 
@@ -209,10 +239,10 @@
 }
 
 - (void)clearAudioList{
+    [self stopTick];
     [player stop];
     currentIndex = -1;
     tempURL = nil;
-    [self stopTick];
     [playList removeAllObjects];
 }
 
@@ -259,15 +289,25 @@
 }
 
 - (void)playIndex:(int)index{
+    [self playIndex:index withTime:0];
+}
+
+- (void)playIndex:(int)index withTime:(float)time{
+    [player stop];
+    [self stopTick];
     currentIndex = index;
-    [self playWithURL:[playList objectAtIndex:currentIndex]];
+    if (time == NAN) {
+        time = 0;
+    }
+    [self playWithURL:[playList objectAtIndex:currentIndex] withCurrentTime:time];
 }
 
 - (BOOL)playing{
-    return (player.playbackState!=MPMoviePlaybackStatePaused && player.playbackState!=MPMoviePlaybackStateStopped && player.playbackState!=MPMoviePlaybackStateInterrupted);
+    return ticker!=nil;
 }
 
 - (void)setCurrentAlbums:(AlbumsView *)albums{
+    [[NSNotificationCenter defaultCenter] addObserver:albums selector:@selector(recordPlayProgress:) name:AudioPauseNotification object:nil];
     albumsView = albums;
 }
 
@@ -279,8 +319,10 @@
     if (albumsView==albums) {
         return NO;
     }
+    [[AudioManager defaultManager] clearAudioList];
     [albumsView stop];
-    albumsView = albums;
+    [[NSNotificationCenter defaultCenter] removeObserver:albumsView name:AudioPauseNotification object:nil];
+    [self setCurrentAlbums:albums];
     return YES;
 }
 @end

@@ -58,16 +58,19 @@
 - (void)loadView{
     //set backcolor & progresscolor
     UIColor *backColor = [UIColor whiteColor];
-    UIColor *progressColor = [UIColor colorWithRed:238.0/255.0 green:55.0/255.0 blue:137.0/255.0 alpha:1.0];
     
     int width = self.frame.size.width-10;
     //alloc CircularProgressView instance
     circularProgressView = [[CircularProgressView alloc] initWithFrame:CGRectMake(5, 5, width, width)
                                                                   backColor:backColor
-                                                              progressColor:progressColor
+                                                              progressColor:[UIColor grayColor]
                                                                   lineWidth:5];
     //add CircularProgressView
     [self addSubview:circularProgressView];
+    NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
+    if (history!=nil && !isShop) {
+        circularProgressView.progress = [[history valueForKey:@"albumsProgress"] floatValue];
+    }
     
     cover = [[UIImageView alloc] init];
     cover.image = [UIImage imageNamed:@"thumb"];
@@ -88,12 +91,14 @@
         [self customCoverView];
     }
     
-    control = [UIButton buttonWithType:UIButtonTypeCustom];
-    [control setImage:imageNamed(@"playing.png") forState:UIControlStateNormal];
-    [control setImage:imageNamed(@"btn_pause.png") forState:UIControlStateSelected];
-    [control addTarget:self action:@selector(manageAudio) forControlEvents:UIControlEventTouchUpInside];
-    control.frame = CGRectMake(self.frame.size.width-28, self.frame.size.height-28, 26, 26);
-    [self addSubview:control];
+    if (!isShop) {
+        control = [UIButton buttonWithType:UIButtonTypeCustom];
+        [control setImage:imageNamed(@"playing.png") forState:UIControlStateNormal];
+        [control setImage:imageNamed(@"btn_pause.png") forState:UIControlStateSelected];
+        [control addTarget:self action:@selector(manageAudio) forControlEvents:UIControlEventTouchUpInside];
+        control.frame = CGRectMake(self.frame.size.width-28, self.frame.size.height-28, 26, 26);
+        [self addSubview:control];
+    }
     
     _label = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height+5, self.frame.size.width, 15)];
     _label.textAlignment = NSTextAlignmentCenter;
@@ -152,11 +157,8 @@
 }
 
 - (void)stop{
-    [[AudioManager defaultManager] clearAudioList];
     cover.alpha = .85;
     control.selected = NO;
-    circularProgressView.progress = 0;
-    [circularProgressView setNeedsDisplay];
 }
 
 - (void)manageAudio{
@@ -175,7 +177,12 @@
                     }
                     [[AudioManager defaultManager] clearAudioList];
                     [[AudioManager defaultManager] addAudioListToList:mp3files];
-                    [[AudioManager defaultManager] playListAtFirst];
+                    NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
+                    if (history!=nil) {
+                        [[AudioManager defaultManager] playIndex:[[history valueForKey:@"currentIndex"] intValue] withTime:[[history valueForKey:@"time"] floatValue]];
+                    } else {
+                        [[AudioManager defaultManager] playListAtFirst];
+                    }
                     [[AudioManager defaultManager] setCurrentAlbums:self];
                 } failed:nil];
             } else {
@@ -185,12 +192,25 @@
                 }
                 [[AudioManager defaultManager] clearAudioList];
                 [[AudioManager defaultManager] addAudioListToList:mp3files];
-                [[AudioManager defaultManager] playListAtFirst];
+                NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
+                if (history!=nil) {
+                    [[AudioManager defaultManager] playIndex:[[history valueForKey:@"currentIndex"] intValue] withTime:[[history valueForKey:@"time"] floatValue]];
+                } else {
+                    [[AudioManager defaultManager] playListAtFirst];
+                }
             }
         } else {
             [[AudioManager defaultManager] resume];
         }
         [self audioPlay];
+    }
+}
+
+- (void)recordPlayProgress:(NSNotification *)notifi{
+    NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
+    if (!isShop) {
+        [[NSUserDefaults standardUserDefaults] setValue:[notifi userInfo] forKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 

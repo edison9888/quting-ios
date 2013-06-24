@@ -58,7 +58,7 @@
     UIImageView *bg = [[UIImageView alloc] initWithImage:imageNamed(@"category.png")];
     [self.view addSubview:bg];
 
-    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 48, self.view.frame.size.width, self.view.frame.size.height-44-48)];
+    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 47, self.view.frame.size.width, self.view.frame.size.height-44-47)];
     scrollView.delegate = self;
     scrollView.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
     scrollView.pagingEnabled = YES;

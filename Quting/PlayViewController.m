@@ -32,6 +32,8 @@
     NSArray *datas;
     NSDictionary *dict;
     UIImage *coverImage;
+    UILabel *detailTitle;
+    NSMutableArray *tempDatas;
 }
 
 - (id)initWithDatas:(NSArray *)datas_ andParentData:(NSDictionary *)dict_ andCover:(UIImage *)img{
@@ -61,18 +63,27 @@
     listView.view.alpha = 0;
     listView.view.frame = CGRectMake(0, 0, 320, height+50);
     [self.view addSubview:listView.view];
-    NSMutableArray *tempDatas = [NSMutableArray array];
+    tempDatas = [[NSMutableArray alloc] init];
     NSMutableArray *mp3List = [NSMutableArray array];
     for (NSDictionary *temp in datas) {
         [tempDatas addObject:@{@"title":[dict valueForKey:@"name"], @"detailTitle": [temp valueForKey:@"name"], @"isFav":@(NO), @"duration":[temp valueForKey:@"time"]}];
         [mp3List addObject:[NSString stringWithFormat:@"%@/%@", @"http://t.pamakids.com/", [[temp valueForKey:@"url"] stringByReplacingOccurrencesOfString:@"public" withString:@""]]];
     }
     BOOL temp = NO;
+    float progress = 0;
+    float currentPlayTime = 0;
     if ([[AudioManager defaultManager] needURL]) {
         [[AudioManager defaultManager] clearAudioList];
         if (mp3List.count>0) {
             [[AudioManager defaultManager] addAudioListToList:mp3List];
-            [[AudioManager defaultManager] playListAtFirst];
+            NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@", [dict valueForKey:@"id"]]];
+            if (history!=nil) {
+                progress = [[history valueForKey:@"progress"] floatValue];
+                currentPlayTime = [[history valueForKey:@"time"] floatValue];
+                [[AudioManager defaultManager] playIndex:[[history valueForKey:@"currentIndex"] intValue] withTime:[[history valueForKey:@"time"] floatValue]];
+            } else {
+                [[AudioManager defaultManager] playListAtFirst];
+            }
         }
         temp = YES;
     }
@@ -111,6 +122,7 @@
     //滑动拖动后的事件
     [slider addTarget:self action:@selector(sliderDragUp:) forControlEvents:UIControlEventTouchUpInside];
     slider.enabled = ![[AudioManager defaultManager] needURL];
+    slider.value = progress;
     [self.view addSubview:slider];
     
     currentTime = [[UILabel alloc] initWithFrame:CGRectMake(20, height+40, 150, 15)];
@@ -130,7 +142,7 @@
     
     int duration = [[AudioManager defaultManager] duration];
     totalTime.text = [NSString stringWithFormat:@"%02d:%02d", duration/60, duration%60];
-    int currentPlaybackTime = [[AudioManager defaultManager] progress]*[[AudioManager defaultManager] duration];
+    int currentPlaybackTime = currentPlayTime;
     currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
     slider.value = [[AudioManager defaultManager] progress];
     
@@ -239,7 +251,7 @@
     title.textColor = [UIColor colorWithRed:49/255.0 green:49/255.0 blue:49/255.0 alpha:1];
     [coverView addSubview:title];
     
-    UILabel *detailTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height+3, 150, 9)];
+    detailTitle = [[UILabel alloc] initWithFrame:CGRectMake(15, coverBG.frame.origin.y+coverBG.frame.size.height+3, 150, 9)];
     detailTitle.backgroundColor = [UIColor clearColor];
     detailTitle.text = name;
     detailTitle.font = [UIFont boldSystemFontOfSize:9];
@@ -268,14 +280,14 @@
         [[RequestHelper defaultHelper] requestPOSTAPI:@"/api/likes" postData:@{@"like[guest_id]": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"like[medium_id]": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
             NSLog(@"result:%@", result);
             [AppUtil warning:@"收藏成功!" withType:m_success];
-            [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
+            [btn setImage:imageNamed(@"fav_play.png") forState:UIControlStateNormal];
             btn.tag = 1;
             [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEFAV object:[dict valueForKey:@"id"] userInfo:@{@"is_like": @(1)}];
         } failed:nil];
     } else {
         [[RequestHelper defaultHelper] requestGETAPI:@"api/likes/cancel" postData:@{@"medium_id": [[dict valueForKey:@"id"] stringValue], @"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
             [AppUtil warning:@"取消收藏成功!" withType:m_success];
-            [btn setImage:imageNamed(@"noFav.png") forState:UIControlStateNormal];
+            [btn setImage:imageNamed(@"unFav_play.png") forState:UIControlStateNormal];
             btn.tag = -1;
             [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEFAV object:[dict valueForKey:@"id"] userInfo:@{@"is_like": @(-1)}];
         } failed:nil];
@@ -344,12 +356,15 @@
 - (void)progress:(float)progress{
     if (!slider.enabled) {
         slider.enabled = YES;
+    }
+    if ([totalTime.text isEqualToString:@"00:00"]) {
         int duration = [[AudioManager defaultManager] duration];
         totalTime.text = [NSString stringWithFormat:@"%02d:%02d", duration/60, duration%60];
     }
     int currentPlaybackTime = progress*[[AudioManager defaultManager] duration];
-    currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
-    NSLog(@"%f", progress);
+    if (currentPlaybackTime>0) {
+        currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
+    }
     if (progress!=0) {
         slider.value = progress;
     }
@@ -367,11 +382,13 @@
 - (void)audioPre{
     pre.enabled = [[AudioManager defaultManager] hasPre];
     next.enabled = [[AudioManager defaultManager] hasNext];
+    detailTitle.text = [[tempDatas objectAtIndex:[[AudioManager defaultManager] currentIndex]] valueForKey:@"detailTitle"];
 }
 
 - (void)audioNext{
     pre.enabled = [[AudioManager defaultManager] hasPre];
     next.enabled = [[AudioManager defaultManager] hasNext];
+    detailTitle.text = [[tempDatas objectAtIndex:[[AudioManager defaultManager] currentIndex]] valueForKey:@"detailTitle"];
 }
 
 - (void)sliderValueChanged:(UISlider *)slider1{

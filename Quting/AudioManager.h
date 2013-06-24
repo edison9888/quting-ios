@@ -40,9 +40,11 @@
 - (void)playListAtFirst;
 - (int)currentIndex;
 - (void)playIndex:(int)index;
+- (void)playIndex:(int)index withTime:(float)time;
 - (BOOL)playing;
 - (void)setCurrentAlbums:(AlbumsView *)albums;
 - (BOOL)clearOtherAlbumsStat:(AlbumsView *)albums;
 - (float)progress;
+- (float)albumsProgress;
 
 @end
