@@ -250,12 +250,13 @@
     [btn addTarget:self action:@selector(addFav:) forControlEvents:UIControlEventTouchUpInside];
     if ([[dict valueForKey:@"is_like"] intValue]==1) {
         btn.tag = 1;
-        [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
+        [btn setImage:imageNamed(@"fav_play.png") forState:UIControlStateNormal];
     } else {
         btn.tag = -1;
-        [btn setImage:imageNamed(@"noFav.png") forState:UIControlStateNormal];
+        [btn setImage:imageNamed(@"unFav_play.png") forState:UIControlStateNormal];
     }
-    btn.frame = CGRectMake(coverBG.frame.origin.x+coverBG.frame.size.width-70, coverBG.frame.origin.y+coverBG.frame.size.height-70, 60, 60);
+    btn.frame = CGRectMake(coverBG.frame.origin.x+coverBG.frame.size.width-28, coverBG.frame.origin.y+coverBG.frame.size.height-26, 28, 26);
+    btn.center = smallCoverBG.center;
     [coverView addSubview:btn];
 //    UIImageView *heart = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
 //    heart.frame = CGRectMake(18, 20, 14, 13);
