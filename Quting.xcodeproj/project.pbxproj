@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C413EC0F177317390027B2FE /* CategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C413EC0E177317390027B2FE /* CategoryView.m */; };
+		C429A1D817782CF200E28AC5 /* CategoryListView.m in Sources */ = {isa = PBXBuildFile; fileRef = C429A1D717782CF100E28AC5 /* CategoryListView.m */; };
 		C430256E175870920082D368 /* ListViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C430256D175870920082D368 /* ListViewController.mm */; };
 		C43026491758978E0082D368 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C43026481758978E0082D368 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C43026B8175897980082D368 /* AQRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = C430264C175897980082D368 /* AQRecorder.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -185,6 +186,8 @@
 /* Begin PBXFileReference section */
 		C413EC0D177317390027B2FE /* CategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryView.h; sourceTree = "<group>"; };
 		C413EC0E177317390027B2FE /* CategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryView.m; sourceTree = "<group>"; };
+		C429A1D617782CF100E28AC5 /* CategoryListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListView.h; sourceTree = "<group>"; };
+		C429A1D717782CF100E28AC5 /* CategoryListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListView.m; sourceTree = "<group>"; };
 		C430256C175870920082D368 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		C430256D175870920082D368 /* ListViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ListViewController.mm; sourceTree = "<group>"; };
 		C43026471758978E0082D368 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
@@ -537,6 +540,8 @@
 				C49F3C151756156B00C20A4B /* MainViewController.m */,
 				C4EDC55A1764CCA500F467C0 /* ShopViewController.h */,
 				C4EDC55B1764CCA500F467C0 /* ShopViewController.m */,
+				C429A1D617782CF100E28AC5 /* CategoryListView.h */,
+				C429A1D717782CF100E28AC5 /* CategoryListView.m */,
 				C413EC0D177317390027B2FE /* CategoryView.h */,
 				C413EC0E177317390027B2FE /* CategoryView.m */,
 				C4EDC55D1764D44800F467C0 /* PayView.h */,
@@ -1048,6 +1053,7 @@
 				C4A52A331772B656008FF7D6 /* JASidePanelController.m in Sources */,
 				C4A52A341772B656008FF7D6 /* UIViewController+JASidePanel.m in Sources */,
 				C413EC0F177317390027B2FE /* CategoryView.m in Sources */,
+				C429A1D817782CF200E28AC5 /* CategoryListView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1204,7 +1210,7 @@
 				INFOPLIST_FILE = "Quting/Quting-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "683B18DF-F455-4519-A12C-C79C951AA80E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C0EFDDE4-61C0-4E74-BB9C-05099396B653";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Ad_Hoc;

@@ -10,12 +10,14 @@
 
 @interface CategoryView : UIScrollView <UIScrollViewDelegate>
 
+- (id)initWithNames:(NSArray *)names;
 @property (nonatomic, weak) id loadDelegate;
+- (void)changeToIndex:(int)index;
 
 @end
 
 @protocol CategoryDelegate <NSObject>
 
-- (void)loadListWithCategory:(NSString *)name;
+- (void)loadListWithIndex:(int)index;
 
 @end
