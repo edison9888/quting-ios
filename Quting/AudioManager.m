@@ -115,7 +115,7 @@
     needSkipToTime = time;
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
-    [player setContentURL:[NSURL URLWithString:@"http://tome-file.b0.upaiyun.com/3.mp3"]];
+    [player setContentURL:[NSURL URLWithString:url]];//@"http://tome-file.b0.upaiyun.com/3.mp3"
     [player play];
     [self startTick];
     tempURL = [url copy];
