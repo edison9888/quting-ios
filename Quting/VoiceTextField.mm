@@ -7,6 +7,7 @@
 //
 
 #import "VoiceTextField.h"
+#import "AppUtil.h"
 #define BLANK @"           "
 @implementation VoiceTextField {
     UIImageView *p1;
@@ -48,6 +49,10 @@
 
 - (void)voiceMode{
     if (self.tag<0) {
+        return;
+    }
+    if (![AppUtil isNetworkReachable]) {
+        [AppUtil warning:@"服务器访问失败,请检查网络连接或重试" withType:m_error];
         return;
     }
     self.tag = -1;

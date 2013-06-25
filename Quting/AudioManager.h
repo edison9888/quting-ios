@@ -46,5 +46,7 @@
 - (BOOL)clearOtherAlbumsStat:(AlbumsView *)albums;
 - (float)progress;
 - (float)albumsProgress;
+- (void)tryListen;
+- (BOOL)hasLocal:(int)id1;
 
 @end

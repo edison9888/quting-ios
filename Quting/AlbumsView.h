@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) UIImage *coverImage;
 - (void)stop;
+- (NSString *)localRoot;
 
 - (void)audioProgress:(float)temp;
 - (void)audioPlay;

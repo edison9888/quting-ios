@@ -51,12 +51,25 @@
         [coverView addSubview:coverBG];
         
         UIImageView *cover = [[UIImageView alloc] initWithImage:coverImage];
+        cover.userInteractionEnabled = YES;
         cover.frame = CGRectMake(5, 5, size, size);
         //    cover.center = coverBG.center;
         cover.contentMode = UIViewContentModeScaleAspectFill;
         cover.clipsToBounds = YES;
         cover.layer.cornerRadius = size/2;
         [coverBG addSubview:cover];
+        
+        UIView *buyBG = [[UIView alloc] initWithFrame:CGRectMake(0, (isiPhone5?30:15)-5+200, size, size)];
+        buyBG.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.5];
+        buyBG.layer.cornerRadius = (size)/2;
+        [cover addSubview:buyBG];
+        cover.clipsToBounds = YES;
+        
+        UIButton *try = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 86, 40)];
+        try.center = CGPointMake(buyBG.center.x, 25);
+        [try setImage:imageNamed(@"try.png") forState:UIControlStateNormal];
+        [try addTarget:self action:@selector(try) forControlEvents:UIControlEventTouchUpInside];
+        [buyBG addSubview:try];
         
         UIView *smallCover1 = [[UIView alloc] initWithFrame:CGRectMake(smallCoverBG.frame.origin.x+4, smallCoverBG.frame.origin.y+4, smallCoverBG.frame.size.width-8, smallCoverBG.frame.size.height-8)];
         smallCover1.backgroundColor = [UIColor whiteColor];
@@ -81,6 +94,8 @@
         price.text = @"免费";
         price.textColor = [UIColor whiteColor];
         price.font = [UIFont boldSystemFontOfSize:18];
+        price.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.5];
+        price.shadowOffset = CGSizeMake(0, .5);
         price.textAlignment = NSTextAlignmentCenter;
         [smallCover addSubview:price];
         
@@ -107,6 +122,19 @@
         [coverView addSubview:subscription];
     }
     return self;
+}
+
+- (void)try{
+    [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [[info valueForKey:@"id"] stringValue]} success:^(id result) {
+        NSArray *listInfos = [result valueForKey:@"mfiles"];
+        NSMutableArray *mp3files = [NSMutableArray array];
+        for (NSDictionary *temp in listInfos) {
+            [mp3files addObject:[NSString stringWithFormat:@"%@/%@", @"http://t.pamakids.com/", [[temp valueForKey:@"url"] stringByReplacingOccurrencesOfString:@"public" withString:@""]]];
+        }
+        [[AudioManager defaultManager] clearAudioList];
+        [[AudioManager defaultManager] addAudioListToList:mp3files];
+        [[AudioManager defaultManager] tryListen];
+    } failed:nil];
 }
 
 - (void)addSubScription{

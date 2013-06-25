@@ -83,18 +83,14 @@
     listView.view.frame = CGRectMake(0, -480, 320, 480);
     [self.view addSubview:listView.view];
     [listView.tableView reloadData];
-//    [listView loadDatas:@[@{@"title":@"我的歌声里", @"detailTitle":@"原声带第一首", @"isFav":@(NO), @"duration":@"05:20", @"isCurrent":@(NO)},
-//     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第二首", @"isFav":@(YES), @"duration":@"05:50", @"isCurrent":@(NO)},
-//     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第三首", @"isFav":@(NO), @"duration":@"04:25", @"isCurrent":@(YES)},
-//     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第四首", @"isFav":@(YES), @"duration":@"02:27", @"isCurrent":@(NO)},
-//     @{@"title":@"我的歌声里", @"detailTitle":@"原声带第五首", @"isFav":@(NO), @"duration":@"06:32", @"isCurrent":@(NO)},]];
-    
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
     _scrollView.delegate = self;
 
     NSString *key = @"api/buys";
-    [[RequestHelper defaultHelper] requestGETAPI:key postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
+    NSString *userID = [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"];
+    userID = userID==nil?@"":userID;
+    [[RequestHelper defaultHelper] requestGETAPI:key postData:@{@"guest_id": userID} success:^(id result) {
         if (result) {
             NSMutableArray *datas = [NSMutableArray array];
             for (NSDictionary *dict in [result valueForKey:@"buys"]) {
@@ -107,13 +103,17 @@
                 [datas addObject:tempDict];
             }
             [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
+            [[NSUserDefaults standardUserDefaults] setValue:datas forKey:@"buysData"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [self loadAlbumsWithDatas:datas];
         }
         
     } failed:^(id result, NSError *error) {
         [AppUtil warning:@"请检查网络连接" withType:m_error];
-        NSMutableArray *datas = [NSMutableArray array];
-        [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
+        NSMutableArray *datas = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] valueForKey:@"buysData"]];
+        if (datas.count==0) {
+            [datas insertObject:@{@"mtype": @"", @"name": @"我的最爱", @"id": @"-1"} atIndex:0];
+        }
         [self loadAlbumsWithDatas:datas];
     }];
 
@@ -138,6 +138,13 @@
                                                           }
                                                       }
                                                       NSDictionary *data = note.object;
+                                                      NSArray *local = [[NSUserDefaults standardUserDefaults] valueForKey:@"buysData"];
+                                                      NSMutableArray *datas = [NSMutableArray arrayWithArray:local];
+                                                      [datas addObject:data];
+                                                      [[NSUserDefaults standardUserDefaults] setValue:datas forKey:@"buysData"];
+                                                      [[NSUserDefaults standardUserDefaults] synchronize];
+                                                      [datas removeAllObjects];
+                                                      datas = nil;
                                                         AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:data isShop:NO];
                                                         albums.tag = [[data valueForKey:@"id"] intValue];
                                                         [_scrollView addSubview:albums];
@@ -155,14 +162,14 @@
     for (int i=0; i<datas.count; i++) {
         AlbumsView *albums;
         if ([[[datas objectAtIndex:i] valueForKey:@"id"] intValue]==-1) {
-            albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:[datas objectAtIndex:i] isShop:NO];
+            albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap+40)+gap/2, size, size+50) andInfo:[datas objectAtIndex:i] isShop:NO];
         } else {
-            albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:[datas objectAtIndex:i] isShop:NO];
+            albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap+40)+gap/2, size, size+50) andInfo:[datas objectAtIndex:i] isShop:NO];
         }
         albums.tag = [[[datas objectAtIndex:i] valueForKey:@"id"] intValue];
         [_scrollView addSubview:albums];
     }
-    int height = datas.count%2==0?((datas.count/2*(size+gap))+gap):((datas.count/2+1)*(size+gap))+gap;
+    int height = datas.count%2==0?((datas.count/2*(size+gap+40))+gap):((datas.count/2+1)*(size+gap+40))+gap;
     height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
 //    height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
     _scrollView.contentSize = CGSizeMake(0, height);

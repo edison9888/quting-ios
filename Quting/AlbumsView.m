@@ -15,6 +15,9 @@
 #import "RequestHelper.h"
 #import "PayView.h"
 #import "UIView+Animation.h"
+
+#define DOWNLOADTAG 123
+
 @implementation AlbumsView {
     UIImageView *cover;
     UIButton *control;
@@ -23,12 +26,14 @@
     CircularProgressView *circularProgressView;
     BOOL isShop;
     UIImageView *fav;
+    int fixHeight;
+    UIButton *download;
 }
 
 @synthesize coverImage;
 
 - (UIImage*)imageFromView:(UIView*)view{
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, view.layer.contentsScale);
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -43,7 +48,12 @@
         isShop = isShop_;
         self.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
         self.clipsToBounds = NO;
-        UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        if (isShop_) {
+            fixHeight = 0;
+        } else {
+            fixHeight = 50;
+        }
+        UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height-fixHeight)];
         bg.backgroundColor = [UIColor colorWithRed:229/255.0f green:229/255.0f blue:229/255.0f alpha:1];
         bg.layer.cornerRadius = frame.size.width/2;
         bg.clipsToBounds = YES;
@@ -96,17 +106,128 @@
         [control setImage:imageNamed(@"playing.png") forState:UIControlStateNormal];
         [control setImage:imageNamed(@"btn_pause.png") forState:UIControlStateSelected];
         [control addTarget:self action:@selector(manageAudio) forControlEvents:UIControlEventTouchUpInside];
-        control.frame = CGRectMake(self.frame.size.width-28, self.frame.size.height-28, 26, 26);
+        control.frame = CGRectMake(self.frame.size.width-28, self.frame.size.height-fixHeight-28, 26, 26);
         [self addSubview:control];
     }
     
-    _label = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height+5, self.frame.size.width, 15)];
+    _label = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height-fixHeight+5, self.frame.size.width, 15)];
     _label.textAlignment = NSTextAlignmentCenter;
     _label.font = [UIFont boldSystemFontOfSize:15];
     _label.text = [dict valueForKey:@"name"];
     _label.backgroundColor = [UIColor clearColor];
     _label.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:125/255.0 alpha:1];
     [self addSubview:_label];
+    
+    if ([[dict valueForKey:@"id"] intValue]!=-1 && !isShop) {
+        download = [[UIButton alloc] initWithFrame:CGRectMake(0, self.frame.size.height-25, 65, 19)];
+        if ([[AudioManager defaultManager] hasLocal:[[dict valueForKey:@"id"] intValue]]) {
+            [download setImage:[UIImage imageNamed:@"local.png"] forState:UIControlStateNormal];
+            download.userInteractionEnabled = NO;
+            listInfos = [[NSUserDefaults standardUserDefaults] valueForKey:[NSString stringWithFormat:@"ListInfo%@", [[dict valueForKey:@"id"] stringValue]]];
+        } else {
+            [download setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
+            [download addTarget:self action:@selector(downloadToLocal) forControlEvents:UIControlEventTouchUpInside];
+        }
+        download.center = CGPointMake(_label.center.x, download.center.y);
+        [self addSubview:download];
+    }
+}
+
+- (void)downloadToLocal{
+    control.hidden = YES;
+    [download setImage:imageNamed(@"downloading.png") forState:UIControlStateNormal];
+    self.userInteractionEnabled = NO;
+    UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-fixHeight)];
+    bg.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.5];
+    bg.layer.cornerRadius = self.frame.size.width/2;
+    bg.clipsToBounds = YES;
+    UIImage *temp = [self imageFromView:bg];
+    UIImageView *downloading = [[UIImageView alloc] initWithImage:temp];
+    downloading.tag = DOWNLOADTAG;
+    [self addSubview:downloading];
+    
+    UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width-30, 10)];
+    whiteView.backgroundColor = [UIColor whiteColor];
+    whiteView.layer.cornerRadius = 3;
+    
+    UIView *blueView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width-30, 10)];
+    blueView.layer.cornerRadius = 3;
+    blueView.backgroundColor = [UIColor colorWithRed:76/255.0 green:136/255.0 blue:211/255.0 alpha:1];
+    
+    whiteView.center = downloading.center;
+    blueView.center = downloading.center;
+    [downloading addSubview:whiteView];
+    [downloading addSubview:blueView];
+    CGRect frame = blueView.frame;
+    frame.size.width = 0;
+    blueView.frame = frame;
+        
+    [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [NSString stringWithFormat:@"%d", self.tag]} success:^(id result) {
+        NSString *documentdir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        NSString *rootPath = [documentdir stringByAppendingPathComponent:[[dict valueForKey:@"id"] stringValue]];
+        NSString *cacheRoot = [NSTemporaryDirectory() stringByAppendingPathComponent:[[dict valueForKey:@"id"] stringValue]];
+        NSArray *datas = [result valueForKey:@"mfiles"];
+        [[NSUserDefaults standardUserDefaults] setValue:datas forKey:[NSString stringWithFormat:@"ListInfo%@", [[dict valueForKey:@"id"] stringValue]]];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        float count = datas.count;
+        float realCount = datas.count;
+        float partProgress = 100.0/datas.count/100.0;
+        int index = 0;
+        for (NSDictionary *temp in datas) {
+            NSString *url = [NSString stringWithFormat:@"%@/%@", @"http://t.pamakids.com/", [[temp valueForKey:@"url"] stringByReplacingOccurrencesOfString:@"public/" withString:@""]];
+            NSString *name = [[url componentsSeparatedByString:@"/"] lastObject];
+            NSString *path = [rootPath stringByAppendingPathComponent:name];
+            NSString *cachePath = [cacheRoot stringByAppendingPathComponent:[NSString stringWithFormat:@"cache%@", name]];
+            NSString *cacheRealPath = [cacheRoot stringByAppendingPathComponent:name];
+            BOOL isDir;
+            if (!([[NSFileManager defaultManager] fileExistsAtPath:cacheRoot isDirectory:&isDir] && isDir)) {
+                [[NSFileManager defaultManager] createDirectoryAtPath:cacheRoot withIntermediateDirectories:NO attributes:nil error:nil];
+            }
+            NSLog(@"download url:%@", url);
+            if ([[NSFileManager defaultManager] fileExistsAtPath:cacheRealPath]) {
+                index++;
+                count--;
+                continue;
+            }
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+            AFHTTPRequestOperation *operation1 = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+            operation1.outputStream = [NSOutputStream outputStreamToFileAtPath:cachePath append:NO];
+            [operation1 setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+                float progress = (totalBytesRead*1.0)/(totalBytesExpectedToRead*1.0);
+                float needProgress = partProgress*index+partProgress*progress;
+                CGRect frame = blueView.frame;
+                frame.size.width = whiteView.frame.size.width*needProgress;
+                blueView.frame = frame;
+//                NSLog(@"url%@ progress:%f", url, progress);
+            }];
+            [operation1 setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSLog(@"download complet %d count:%f", index+1, count);
+                [[NSFileManager defaultManager] moveItemAtPath:cachePath toPath:cacheRealPath error:nil];
+                if (index+1==realCount) {
+                    NSLog(@"albums download done", nil);
+//                    BOOL isDir;
+//                    if (!([[NSFileManager defaultManager] fileExistsAtPath:rootPath isDirectory:&isDir] && isDir)) {
+//                        [[NSFileManager defaultManager] createDirectoryAtPath:rootPath withIntermediateDirectories:NO attributes:nil error:nil];
+//                    }
+//                    [[NSFileManager defaultManager] moveItemAtPath:cacheRoot toPath:rootPath error:nil];
+                    if ([[NSFileManager defaultManager] copyItemAtPath:cacheRoot toPath:rootPath error:nil]) {
+                        if ([[NSFileManager defaultManager] removeItemAtPath:cacheRoot error:nil]) {
+                            control.hidden = NO;
+                            [downloading removeFromSuperview];
+                            [download setImage:[UIImage imageNamed:@"local.png"] forState:UIControlStateNormal];
+                            download.userInteractionEnabled = NO;
+                            listInfos = [[NSUserDefaults standardUserDefaults] valueForKey:[NSString stringWithFormat:@"ListInfo%@", [[dict valueForKey:@"id"] stringValue]]];
+                        }
+                    }
+                }
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"download failed", nil);
+                [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+            }];
+            [ApplicationDelegate.queue addOperation:operation1];
+            index++;
+        }
+    } failed:nil];
 }
 
 - (void)customCoverView{
@@ -117,7 +238,7 @@
 
     UIView *blackCover;
     if (!isShop) {
-        blackCover = [[UIView alloc] initWithFrame:CGRectMake(-10, self.frame.size.height-40, self.frame.size.width, self.frame.size.height)];
+        blackCover = [[UIView alloc] initWithFrame:CGRectMake(-10, self.frame.size.height-fixHeight-40, self.frame.size.width, self.frame.size.height-fixHeight)];
         blackCover.backgroundColor = [UIColor blackColor];
         blackCover.layer.cornerRadius = self.frame.size.width/2;
         blackCover.alpha = .5;
@@ -134,11 +255,11 @@
         [blackCover removeFromSuperview];
         if ([[dict valueForKey:@"is_like"] intValue]==1) {
             fav = [[UIImageView alloc] initWithImage:imageNamed(@"fav.png")];
-            fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
+            fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-fixHeight-35, 14, 13);
             [cover addSubview:fav];
         } else {
             fav = [[UIImageView alloc] initWithImage:imageNamed(@"noFav.png")];
-            fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-35, 14, 13);
+            fav.frame = CGRectMake(blackCover.center.x-7, self.frame.size.height-fixHeight-35, 14, 13);
             [cover addSubview:fav];
         }
     }
@@ -207,8 +328,8 @@
 }
 
 - (void)recordPlayProgress:(NSNotification *)notifi{
-    NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
     if (!isShop) {
+        NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
         [[NSUserDefaults standardUserDefaults] setValue:[notifi userInfo] forKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -301,6 +422,12 @@
     circularProgressView.progressColor = [UIColor grayColor];
     cover.alpha = .85;
     control.selected = NO;
+}
+
+- (NSString *)localRoot{
+    NSString *documentdir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *rootPath = [documentdir stringByAppendingPathComponent:[[dict valueForKey:@"id"] stringValue]];
+    return rootPath;
 }
 
 -(void)dealloc{

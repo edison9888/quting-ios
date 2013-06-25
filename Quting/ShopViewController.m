@@ -78,9 +78,7 @@
         [self loadDataWithPage:0];
         [self loadDataWithPage:1];
         scrollView.contentSize = CGSizeMake(scrollView.frame.size.width*categories.count, 0);
-    } failed:^(id result, NSError *error) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }];
+    } failed:nil];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView_{

@@ -7,7 +7,8 @@
 //
 
 #import "ConfigViewController.h"
-
+#import "HelpViewController.h"
+#import "iVersion.h"
 @interface ConfigViewController ()
 
 @end
@@ -30,8 +31,8 @@
 {
     [super viewDidLoad];
     
-    names = @[@"设置", @"关于", @"帮助", @"检查更新"];
-    icons = @[@"config.png", @"info.png", @"help.png", @"checkUpdate.png"];
+    names = @[@"关于", @"帮助"];
+    icons = @[@"info.png", @"help.png"];
 
     self.tableView.backgroundColor = [UIColor clearColor];
     UIView *bgView = [[UIView alloc] initWithFrame:self.view.frame];
@@ -59,7 +60,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    return names.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -68,7 +69,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.detailTextLabel.backgroundColor = [UIColor clearColor];
         
@@ -126,13 +127,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    if (indexPath.row==1) {
+        HelpViewController *help = [[HelpViewController alloc] init];
+        UINavigationController *tempNavi = [[UINavigationController alloc] initWithRootViewController:help];
+        [tempNavi.navigationBar setBackgroundImage:imageNamed(@"navi_background.png") forBarMetrics:UIBarMetricsDefault];
+        [self presentViewController:tempNavi animated:YES completion:^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BACKTOMAIN object:nil];
+        }];
+    }
 }
 
 @end

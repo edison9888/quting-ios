@@ -19,6 +19,7 @@
     NSString *tempURL;
     AlbumsView *albumsView;
     float needSkipToTime;
+    BOOL tryMode;
 }
 
 + (AudioManager *)defaultManager{
@@ -115,9 +116,20 @@
     needSkipToTime = time;
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
-    [player setContentURL:[NSURL URLWithString:url]];//@"http://tome-file.b0.upaiyun.com/3.mp3"
+    NSURL *contentUrl = [NSURL URLWithString:url];
+    if (albumsView) {
+        NSString *root = [albumsView localRoot];
+        NSString *name = [[url componentsSeparatedByString:@"/"] lastObject];
+        NSString *path = [root stringByAppendingPathComponent:name];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+            contentUrl = [NSURL fileURLWithPath:path];
+        }
+    } 
+    [player setContentURL:contentUrl];//@"http://tome-file.b0.upaiyun.com/3.mp3"
     [player play];
-    [self startTick];
+    if (!tryMode) {
+        [self startTick];
+    }
     tempURL = [url copy];
 }
 
@@ -239,6 +251,7 @@
 }
 
 - (void)clearAudioList{
+    tryMode = NO;
     [self stopTick];
     [player stop];
     currentIndex = -1;
@@ -313,6 +326,7 @@
 
 - (BOOL)clearOtherAlbumsStat:(AlbumsView *)albums{
     if (albumsView==nil) {
+        [self setCurrentAlbums:albums];
         [[AudioManager defaultManager] clearAudioList];
         return YES;
     }
@@ -324,5 +338,19 @@
     [[NSNotificationCenter defaultCenter] removeObserver:albumsView name:AudioPauseNotification object:nil];
     [self setCurrentAlbums:albums];
     return YES;
+}
+
+- (void)tryListen{
+    currentIndex = -1;
+    tryMode = YES;
+    [self playListAtFirst];
+    ticker = [NSTimer scheduledTimerWithTimeInterval:50 target:self selector:@selector(clearAudioList) userInfo:nil repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:ticker forMode:NSRunLoopCommonModes];
+}
+
+- (BOOL)hasLocal:(int)id1{
+    NSString *documentdir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    BOOL isDir;
+    return ([[NSFileManager defaultManager] fileExistsAtPath:[documentdir stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", id1]]isDirectory:&isDir] && isDir);
 }
 @end
