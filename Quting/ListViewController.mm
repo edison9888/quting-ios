@@ -13,13 +13,14 @@
 #import "RequestHelper.h"
 #import "PlayViewController.h"
 #import "MainViewController.h"
+#import "AppUtil.h"
 @interface ListViewController ()
 
 @end
 
 @implementation ListViewController {
     ListModel model;
-    NSArray *datas;
+    NSMutableArray *datas;
     
     UIButton *myFavBtn;
     UIButton *historyBtn;
@@ -239,18 +240,61 @@
             NSDictionary *dict = [temp objectAtIndex:indexPath.row-1];
             cell.textLabel.text = [dict valueForKey:@"name"];
             cell.detailTextLabel.text = [dict valueForKey:@"author"];
-//            UIImageView *fav = (UIImageView *)[cell viewWithTag:1];
-//            if (!fav) {
-//                fav = [[UIImageView alloc] initWithImage:imageNamed(myFavBtn.selected?@"fav.png":@"unFav.png")];
-//                fav.frame = CGRectMake(280, 20, 14, 13);
-//                fav.tag = 1;
-//                [cell addSubview:fav];
-//            } else {
-//                fav.image = imageNamed(myFavBtn.selected?@"fav.png":@"unFav.png");
-//            }
+            UIButton *btn = (UIButton *)[cell viewWithTag:indexPath.row];
+            if (myFavBtn.selected) {
+                BOOL isFav = [[dict valueForKey:@"is_like"] boolValue];
+                if (!btn) {
+                    btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                    [btn addTarget:self action:@selector(changeFav:) forControlEvents:UIControlEventTouchUpInside];
+                    btn.frame = CGRectMake(260, 00, 50, 50);
+                    [btn setImage:imageNamed(isFav?@"fav.png":@"unFav.png") forState:UIControlStateNormal];
+                    btn.tag = indexPath.row;
+                    [cell addSubview:btn];
+                } else {
+                    [btn setImage:imageNamed(isFav?@"fav.png":@"unFav.png") forState:UIControlStateNormal];
+                }
+            } else {
+                if (btn) {
+                    [btn removeFromSuperview];
+                }
+            }
         }
     }
     return cell;
+}
+
+- (void)changeFav:(UIButton *)btn{
+    NSArray *temp;
+    if (myFavBtn.selected) {
+        temp = [datas objectAtIndex:0];
+    } else {
+        temp = [datas objectAtIndex:1];
+    }
+    NSDictionary *dict = [temp objectAtIndex:btn.tag-1];
+    BOOL isFav = [[dict valueForKey:@"is_like"] boolValue];
+    if (!isFav) {
+        [[RequestHelper defaultHelper] requestPOSTAPI:@"/api/likes" postData:@{@"like[guest_id]": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"like[medium_id]": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
+            NSLog(@"result:%@", result);
+            [AppUtil warning:@"收藏成功!" withType:m_success];
+            [btn setImage:imageNamed(@"fav.png") forState:UIControlStateNormal];
+            [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEFAV object:[dict valueForKey:@"id"] userInfo:@{@"is_like": @(1)}];
+            NSMutableArray *tempArr = [NSMutableArray arrayWithArray:[datas objectAtIndex:0]];
+            NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithDictionary:dict];
+            [tempDict setValue:@(YES) forKey:@"is_like"];
+            [tempArr addObject:tempDict];
+            [datas replaceObjectAtIndex:0 withObject:tempArr];
+        } failed:nil];
+    } else {
+        [[RequestHelper defaultHelper] requestGETAPI:@"api/likes/cancel" postData:@{@"medium_id": [[dict valueForKey:@"id"] stringValue], @"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
+            [AppUtil warning:@"取消收藏成功!" withType:m_success];
+            [btn setImage:imageNamed(@"unFav.png") forState:UIControlStateNormal];
+            [[NSNotificationCenter defaultCenter] postNotificationName:CHANGEFAV object:[dict valueForKey:@"id"] userInfo:@{@"is_like": @(-1)}];
+            NSMutableArray *tempArr = [NSMutableArray arrayWithArray:[datas objectAtIndex:0]];
+            [tempArr removeObject:dict];
+            [datas replaceObjectAtIndex:0 withObject:tempArr];
+            [self.tableView reloadData];
+        } failed:nil];
+    }
 }
 
 - (void)historyMode{
@@ -298,7 +342,7 @@
 
 - (void)loadDatas:(NSArray *)datas_{
     datas = nil;
-    datas = datas_;
+    datas = [NSMutableArray arrayWithArray:datas_];
     [self.tableView reloadData];
 }
 

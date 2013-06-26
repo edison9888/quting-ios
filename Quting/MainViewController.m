@@ -86,6 +86,8 @@
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
     _scrollView.delegate = self;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapScrollView)];
+    [self.view addGestureRecognizer:tapGesture];
 
     NSString *key = @"api/buys";
     NSString *userID = [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"];
@@ -143,17 +145,56 @@
                                                       [datas addObject:data];
                                                       [[NSUserDefaults standardUserDefaults] setValue:datas forKey:@"buysData"];
                                                       [[NSUserDefaults standardUserDefaults] synchronize];
-                                                      [datas removeAllObjects];
-                                                      datas = nil;
-                                                        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap)+gap/2, size, size) andInfo:data isShop:NO];
+                                                        AlbumsView *albums = [[AlbumsView alloc] initWithFrame:CGRectMake(gap+(size+gap)*(i%2), i/2*(size+gap+40)+gap/2, size, size+50) andInfo:data isShop:NO];
                                                         albums.tag = [[data valueForKey:@"id"] intValue];
                                                         [_scrollView addSubview:albums];
                                                       i++;
-                                                        int height = i%2==0?((i/2*(size+gap))+gap):((i/2+1)*(size+gap))+gap;
-                                                        height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
-//                                                        height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
-                                                        _scrollView.contentSize = CGSizeMake(0, height);
+                                                      int height = i%2==0?((i/2*(size+gap+40))+gap):((i/2+1)*(size+gap+40))+gap;
+                                                      height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
+                                                      _scrollView.contentSize = CGSizeMake(0, height);
+                                                      [datas removeAllObjects];
+                                                      datas = nil;
                                                   }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:UNPAYMEIDA
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *note) {
+                                                      [UIView animateWithDuration:.3 animations:^{
+                                                          int tag = [note.object intValue];
+                                                          BOOL beginMove = NO;
+                                                          int index = 0;
+                                                          float size = 115;
+                                                          float gap = (320.0-size*2.0)/3.0;
+                                                          for (AlbumsView *albums in _scrollView.subviews) {
+                                                              if (![albums isKindOfClass:[AlbumsView class]]) {
+                                                                  continue;
+                                                              }
+                                                              if (albums.tag==tag) {
+                                                                  [albums removeFromSuperview];
+                                                                  beginMove = YES;
+                                                                  index++;
+                                                                  continue;
+                                                              }
+                                                              if (beginMove) {
+                                                                  CGRect frame = albums.frame;
+                                                                  frame.origin.x = gap+(size+gap)*((index-1)%2);
+                                                                  frame.origin.y = (index-1)/2*(size+gap+40)+gap/2;
+                                                                  albums.frame = frame;
+                                                              }
+                                                              index ++;
+                                                          }
+                                                          index -= 1;
+                                                          int height = index%2==0?((index/2*(size+gap+40))+gap):((index/2+1)*(size+gap+40))+gap;
+                                                          height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
+                                                          _scrollView.contentSize = CGSizeMake(0, height);
+                                                      }];
+                                                  }];
+
+}
+
+- (void)tapScrollView{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"normalMode" object:nil];
 }
 
 - (void)loadAlbumsWithDatas:(NSMutableArray *)datas{
@@ -171,7 +212,6 @@
     }
     int height = datas.count%2==0?((datas.count/2*(size+gap+40))+gap):((datas.count/2+1)*(size+gap+40))+gap;
     height = height<=_scrollView.frame.size.height?(_scrollView.frame.size.height+1):height;
-//    height = height>maxPage*scrollView.frame.size.height?(maxPage*scrollView.frame.size.height):height;
     _scrollView.contentSize = CGSizeMake(0, height);
 }
 
@@ -219,18 +259,7 @@
 }
 
 - (void)showConfig{
-    if (!tap) {
-        tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToReturn)];
-        [self.view addGestureRecognizer:tap];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SHOWCONFIG object:@(YES)];
-    } else {
-        [self tapToReturn];
-    }
-}
-
-- (void)tapToReturn{
-    [[NSNotificationCenter defaultCenter] postNotificationName:BACKTOMAIN object:@(YES)];
-    [self removeBackGesture];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SHOWCONFIG object:@(YES)];
 }
 
 - (void)removeBackGesture{

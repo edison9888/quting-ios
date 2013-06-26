@@ -53,11 +53,11 @@
         }
         if (btn.selected) {
             btn.selected = NO;
-            btn.titleLabel.font = [UIFont systemFontOfSize:17];
+            btn.titleLabel.font = [UIFont systemFontOfSize:16];
         }
     }
     btn_.selected = YES;
-    btn_.titleLabel.font = [UIFont systemFontOfSize:19];
+    btn_.titleLabel.font = [UIFont boldSystemFontOfSize:19];
     [self setContentOffset:CGPointMake(btn_.center.x-btn_.frame.size.width-80, 0) animated:YES];
 }
 

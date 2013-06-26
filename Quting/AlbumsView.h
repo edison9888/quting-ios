@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CircularProgressView.h"
 
-@interface AlbumsView : UIView
+@interface AlbumsView : UIView <UIAlertViewDelegate>
 
 - (id)initWithFrame:(CGRect)frame andInfo:(NSDictionary *)info isShop:(BOOL)isShop;
 @property (nonatomic, strong) UILabel *label;

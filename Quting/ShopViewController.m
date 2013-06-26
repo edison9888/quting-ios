@@ -55,8 +55,6 @@
     self.navigationController.navigationBarHidden = NO;
     self.view.backgroundColor = [UIColor colorWithRed:241.0/255.0 green:242.0/255.0 blue:242.0/255.0 alpha:1];
     
-    UIImageView *bg = [[UIImageView alloc] initWithImage:imageNamed(@"category.png")];
-    [self.view addSubview:bg];
 
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 47, self.view.frame.size.width, self.view.frame.size.height-44-47)];
     scrollView.delegate = self;
@@ -79,6 +77,10 @@
         [self loadDataWithPage:1];
         scrollView.contentSize = CGSizeMake(scrollView.frame.size.width*categories.count, 0);
     } failed:nil];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:imageNamed(@"category.png")];
+    bg.center = CGPointMake(scrollView.center.x, bg.center.y);
+    [self.view addSubview:bg];
+
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView_{

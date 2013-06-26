@@ -35,4 +35,5 @@
 #define ENABLERIGHT @"enableRight"
 #define DISABLERIGHT @"disableRight"
 #define PAYMEIDA @"payMedia"
+#define UNPAYMEIDA @"unPayMedia"
 #define CHANGEFAV @"changeFav"

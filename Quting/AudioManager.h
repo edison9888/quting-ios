@@ -48,5 +48,5 @@
 - (float)albumsProgress;
 - (void)tryListen;
 - (BOOL)hasLocal:(int)id1;
-
+- (BOOL)imCurrentAlbums:(AlbumsView *)albums;
 @end

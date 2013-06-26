@@ -353,4 +353,8 @@
     BOOL isDir;
     return ([[NSFileManager defaultManager] fileExistsAtPath:[documentdir stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", id1]]isDirectory:&isDir] && isDir);
 }
+
+- (BOOL)imCurrentAlbums:(AlbumsView *)albums{
+    return albums==albumsView;
+}
 @end

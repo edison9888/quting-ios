@@ -15,7 +15,7 @@
 #import "RequestHelper.h"
 #import "PayView.h"
 #import "UIView+Animation.h"
-
+#import "AppUtil.h"
 #define DOWNLOADTAG 123
 
 @implementation AlbumsView {
@@ -130,6 +130,59 @@
         }
         download.center = CGPointMake(_label.center.x, download.center.y);
         [self addSubview:download];
+        
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showDelete:)];
+        [self addGestureRecognizer:longPress];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showDeleteBtn:) name:@"deleteMode" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeDeleteBtn:) name:@"normalMode" object:nil];
+    }
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView:)];
+    [self addGestureRecognizer:tap];
+}
+
+- (void)showDelete:(UILongPressGestureRecognizer *)gesture{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteMode" object:nil];
+}
+
+- (void)showDeleteBtn:(NSNotification *)notifi{
+    if ([self viewWithTag:100]!=nil) {
+        return;
+    }
+    UIButton *clearView = [UIButton buttonWithType:UIButtonTypeCustom];
+    clearView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    clearView.tag = 100;
+    [self addSubview:clearView];
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, 0, 40, 40);
+    btn.tag = 101;
+    [btn setImage:[UIImage imageNamed:@"del_btn.png"] forState:UIControlStateNormal];
+    btn.center = CGPointMake(self.frame.size.width-15, 15);
+    [btn addTarget:self action:@selector(unPay:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:btn];
+    [btn fadeIn];
+}
+
+- (void)removeDeleteBtn:(NSNotification *)notifi{
+    [UIView animateWithDuration:.3 animations:^{
+        [self viewWithTag:101].alpha = 0;
+    } completion:^(BOOL finished) {
+        [[self viewWithTag:100] performSelector:@selector(removeFromSuperview)];
+        [[self viewWithTag:101] performSelector:@selector(removeFromSuperview)];
+    }];
+}
+
+- (void)unPay:(UIButton *)btn{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"取消订阅" message:@"确认取消订阅吗?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (alertView.cancelButtonIndex != buttonIndex) {
+        [[RequestHelper defaultHelper] requestDELETEAPI:[NSString stringWithFormat:@"/api/buys/%@", [[dict valueForKey:@"id"] stringValue]] postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"medium_id": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
+            [AppUtil warning:@"取消订阅成功!" withType:m_success];
+            [[NSNotificationCenter defaultCenter] postNotificationName:UNPAYMEIDA object:@(self.tag)];
+        } failed:nil];
     }
 }
 
@@ -335,11 +388,7 @@
     }
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    cover.alpha = .5;
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+- (void)tapView:(UIGestureRecognizer *)gesture{
     if (self.tag == -1) {
         [[AudioManager defaultManager] clearOtherAlbumsStat:nil];
         [[AudioManager defaultManager] setCurrentAlbums:nil];
@@ -356,21 +405,21 @@
     }
     if (self.tag==-1) {
         [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {
-//            if ([[result valueForKey:@"likes"] count]>0) {
-                NSMutableArray *tempDatas = [NSMutableArray array];
-                for (NSDictionary *temp in [result valueForKey:@"likes"]) {
-                    [tempDatas addObject:temp];
-                }
-                ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
-                NSArray *temp = [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"];
-                if (temp == nil) {
-                    temp = @[];
-                }
-                [list loadDatas:@[tempDatas, temp]];
-                [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
-//            }
+            //            if ([[result valueForKey:@"likes"] count]>0) {
+            NSMutableArray *tempDatas = [NSMutableArray array];
+            for (NSDictionary *temp in [result valueForKey:@"likes"]) {
+                [tempDatas addObject:temp];
+            }
+            ListViewController *list = [[ListViewController alloc] initWithModel:ListModel_fav];
+            NSArray *temp = [[NSUserDefaults standardUserDefaults] valueForKey:@"historys"];
+            if (temp == nil) {
+                temp = @[];
+            }
+            [list loadDatas:@[tempDatas, temp]];
+            [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:list animated:YES];
+            //            }
         } failed:nil];
-
+        
     } else {
         NSMutableArray *historys;
         if ([[NSUserDefaults standardUserDefaults] valueForKey:@"historys"]==nil) {
@@ -386,11 +435,11 @@
             }
         }
         if (!has) {
-                [historys addObject:dict];
+            [historys addObject:dict];
             [[NSUserDefaults standardUserDefaults] setValue:historys forKey:@"historys"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-
+        
         if (listInfos==nil) {
             [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [NSString stringWithFormat:@"%d", self.tag]} success:^(id result) {
                 listInfos = [result valueForKey:@"mfiles"];
@@ -402,10 +451,6 @@
             [((MainViewController *)self.superview.superview.nextResponder).navigationController pushViewController:playViewController animated:YES];
         }
     }
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
-    cover.alpha = 1;
 }
 
 - (void)audioProgress:(float)temp{
@@ -431,6 +476,11 @@
 }
 
 -(void)dealloc{
+    if ([[AudioManager defaultManager] imCurrentAlbums:self]) {
+        [[AudioManager defaultManager] clearAudioList];
+        [[AudioManager defaultManager] setCurrentAlbums:nil];
+    }
+    NSLog(@"dealloc %@", self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end
