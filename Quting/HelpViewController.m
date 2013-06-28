@@ -32,7 +32,7 @@
     self.navigationItem.title = @"帮助";
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     backBtn.frame = CGRectMake(0, 0, 44, 44);
-    [backBtn setImage:imageNamed(@"backItem.png") forState:UIControlStateNormal];
+    [backBtn setImage:imageNamed(@"close_btn.png") forState:UIControlStateNormal];
     [backBtn addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
     backBtn.transform = CGAffineTransformMakeRotation(-M_PI_2);
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backBtn];

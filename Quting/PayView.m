@@ -59,14 +59,14 @@
         cover.layer.cornerRadius = size/2;
         [coverBG addSubview:cover];
         
-        UIView *buyBG = [[UIView alloc] initWithFrame:CGRectMake(0, (isiPhone5?30:15)-5+200, size, size)];
+        UIView *buyBG = [[UIView alloc] initWithFrame:CGRectMake(0, (isiPhone5?30:15)-5+(isiPhone5?200:180), size, size)];
         buyBG.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.5];
         buyBG.layer.cornerRadius = (size)/2;
         [cover addSubview:buyBG];
         cover.clipsToBounds = YES;
         
         UIButton *try = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 86, 40)];
-        try.center = CGPointMake(buyBG.center.x, 25);
+        try.center = CGPointMake(buyBG.center.x, isiPhone5?25:22);
         [try setImage:imageNamed(@"try.png") forState:UIControlStateNormal];
         [try addTarget:self action:@selector(try) forControlEvents:UIControlEventTouchUpInside];
         [buyBG addSubview:try];

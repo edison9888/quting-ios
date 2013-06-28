@@ -194,6 +194,10 @@
 		C4A52A341772B656008FF7D6 /* UIViewController+JASidePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = C4A52A321772B656008FF7D6 /* UIViewController+JASidePanel.m */; };
 		C4D0CD0817571C47002295D0 /* AudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D0CD0717571C47002295D0 /* AudioManager.m */; };
 		C4D0CD59175724CE002295D0 /* PlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4D0CD58175724CE002295D0 /* PlayViewController.m */; };
+		C4E1A3BE177D6786004F1D79 /* close_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E1A3BA177D6786004F1D79 /* close_btn@2x.png */; };
+		C4E1A3BF177D6786004F1D79 /* resume_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E1A3BB177D6786004F1D79 /* resume_btn.png */; };
+		C4E1A3C0177D6786004F1D79 /* close_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E1A3BC177D6786004F1D79 /* close_btn.png */; };
+		C4E1A3C1177D6786004F1D79 /* resume_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4E1A3BD177D6786004F1D79 /* resume_btn@2x.png */; };
 		C4EDC55C1764CCA500F467C0 /* ShopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4EDC55B1764CCA500F467C0 /* ShopViewController.m */; };
 		C4EDC55F1764D44800F467C0 /* PayView.m in Sources */ = {isa = PBXBuildFile; fileRef = C4EDC55E1764D44800F467C0 /* PayView.m */; };
 		C4EDC6101764E7A200F467C0 /* BluetoothViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4EDC60F1764E7A200F467C0 /* BluetoothViewController.m */; };
@@ -433,6 +437,10 @@
 		C4D0CD0717571C47002295D0 /* AudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioManager.m; sourceTree = "<group>"; };
 		C4D0CD57175724CE002295D0 /* PlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayViewController.h; sourceTree = "<group>"; };
 		C4D0CD58175724CE002295D0 /* PlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayViewController.m; sourceTree = "<group>"; };
+		C4E1A3BA177D6786004F1D79 /* close_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close_btn@2x.png"; sourceTree = "<group>"; };
+		C4E1A3BB177D6786004F1D79 /* resume_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = resume_btn.png; sourceTree = "<group>"; };
+		C4E1A3BC177D6786004F1D79 /* close_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close_btn.png; sourceTree = "<group>"; };
+		C4E1A3BD177D6786004F1D79 /* resume_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "resume_btn@2x.png"; sourceTree = "<group>"; };
 		C4EDC55A1764CCA500F467C0 /* ShopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopViewController.h; sourceTree = "<group>"; };
 		C4EDC55B1764CCA500F467C0 /* ShopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopViewController.m; sourceTree = "<group>"; };
 		C4EDC55D1764D44800F467C0 /* PayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PayView.h; sourceTree = "<group>"; };
@@ -659,6 +667,10 @@
 		C4597AE31777F67B006519E9 /* btn */ = {
 			isa = PBXGroup;
 			children = (
+				C4E1A3BA177D6786004F1D79 /* close_btn@2x.png */,
+				C4E1A3BB177D6786004F1D79 /* resume_btn.png */,
+				C4E1A3BC177D6786004F1D79 /* close_btn.png */,
+				C4E1A3BD177D6786004F1D79 /* resume_btn@2x.png */,
 				C40C2149177AEE5E00B31DAF /* del_btn.png */,
 				C40C214A177AEE5E00B31DAF /* del_btn@2x.png */,
 				C429AC331779D8FD00784E46 /* downloading@2x.png */,
@@ -1068,6 +1080,10 @@
 				C429AC3E1779D8FD00784E46 /* local.png in Resources */,
 				C40C214B177AEE5E00B31DAF /* del_btn.png in Resources */,
 				C40C214C177AEE5E00B31DAF /* del_btn@2x.png in Resources */,
+				C4E1A3BE177D6786004F1D79 /* close_btn@2x.png in Resources */,
+				C4E1A3BF177D6786004F1D79 /* resume_btn.png in Resources */,
+				C4E1A3C0177D6786004F1D79 /* close_btn.png in Resources */,
+				C4E1A3C1177D6786004F1D79 /* resume_btn@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

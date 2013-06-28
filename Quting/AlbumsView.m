@@ -125,7 +125,12 @@
             download.userInteractionEnabled = NO;
             listInfos = [[NSUserDefaults standardUserDefaults] valueForKey:[NSString stringWithFormat:@"ListInfo%@", [[dict valueForKey:@"id"] stringValue]]];
         } else {
-            [download setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
+            NSString *cacheRoot = [NSTemporaryDirectory() stringByAppendingPathComponent:[[dict valueForKey:@"id"] stringValue]];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:cacheRoot]) {
+                [download setImage:[UIImage imageNamed:@"resume_btn.png"] forState:UIControlStateNormal];
+            } else {
+                [download setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
+            }
             [download addTarget:self action:@selector(downloadToLocal) forControlEvents:UIControlEventTouchUpInside];
         }
         download.center = CGPointMake(_label.center.x, download.center.y);
