@@ -58,7 +58,8 @@
     }
     btn_.selected = YES;
     btn_.titleLabel.font = [UIFont boldSystemFontOfSize:19];
-    [self setContentOffset:CGPointMake(btn_.center.x-btn_.frame.size.width-80, 0) animated:YES];
+    NSLog(@"%f", btn_.center.x-btn_.frame.size.width);
+    [self setContentOffset:CGPointMake(btn_.center.x-btn_.frame.size.width-(160-btn_.frame.size.width), 0) animated:YES];
 }
 
 - (void)changeTo:(UIButton *)btn_{

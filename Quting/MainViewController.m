@@ -120,12 +120,12 @@
     }];
 
     [self.view addSubview:_scrollView];
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification *note) {
-                                                      [_scrollView setContentOffset:CGPointZero animated:YES];
-                                                  }];
+//    [[NSNotificationCenter defaultCenter] addObserverForName:@"_UIApplicationSystemGestureStateChangedNotification"
+//                                                      object:nil
+//                                                       queue:nil
+//                                                  usingBlock:^(NSNotification *note) {
+//                                                      [_scrollView setContentOffset:CGPointZero animated:YES];
+//                                                  }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:PAYMEIDA
                                                       object:nil

@@ -199,11 +199,11 @@
     downloading.tag = DOWNLOADTAG;
     [self addSubview:downloading];
     
-    UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width-30, 10)];
+    UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width-50, 10)];
     whiteView.backgroundColor = [UIColor whiteColor];
     whiteView.layer.cornerRadius = 3;
     
-    UIView *blueView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width-30, 10)];
+    UIView *blueView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width-50, 10)];
     blueView.layer.cornerRadius = 3;
     blueView.backgroundColor = [UIColor colorWithRed:76/255.0 green:136/255.0 blue:211/255.0 alpha:1];
     
