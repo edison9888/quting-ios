@@ -14,6 +14,10 @@
 #import "PlayViewController.h"
 #import "MainViewController.h"
 #import "AppUtil.h"
+#import "RootViewController.h"
+#import "AlbumsView.h"
+#import "PayView.h"
+#import "UIView+Animation.h"
 @interface ListViewController ()
 
 @end
@@ -42,12 +46,20 @@
             UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
             self.navigationItem.leftBarButtonItem = back;
             self.navigationItem.hidesBackButton = YES;
-        }
-        if (model==ListModel_play) {
+        } else if (model==ListModel_play) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeCurrent:) name:AudioNextNotification object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeCurrent:) name:AudioPreNotification object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeCurrent:) name:AudioPlayNotification object:nil];
             [self changeCurrent:nil];
+        } else {
+            self.navigationItem.title = @"搜索";
+            UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            backBtn.frame = CGRectMake(0, 0, 44, 44);
+            [backBtn setImage:imageNamed(@"backItem.png") forState:UIControlStateNormal];
+            [backBtn addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+            UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
+            self.navigationItem.leftBarButtonItem = back;
+            self.navigationItem.hidesBackButton = YES;
         }
     }
     return self;
@@ -59,6 +71,9 @@
 }
 
 - (void)back{
+    if (model == ListModel_search) {
+        [[AudioManager defaultManager] stopTry];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -320,22 +335,33 @@
         NSDictionary *albums;
         if (model==ListModel_search) {
             albums = [datas objectAtIndex:indexPath.row-1];
-            [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
-                PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];
-                [((MainViewController *)self.view.superview.nextResponder).navigationController pushViewController:playViewController animated:YES];
-                //            [((MainViewController *)self.view.superview.nextResponder) convertMode];
-            } failed:nil];
+            NSArray *tempArr = ((RootViewController *)self.view.window.rootViewController).main.scrollView.subviews;
+            for (AlbumsView *temp in tempArr) {
+                if ([temp isKindOfClass:[AlbumsView class]]) {
+                    if (temp.tag== [[albums valueForKey:@"id"] integerValue]) {
+                        [temp tapView:nil];
+                        return;
+                    }
+                }
+            }
+            PayView *pay = [[PayView alloc] initWithImage:nil andInfo:albums];
+            [self.view.window addSubview:pay];
+            [pay fadeIn];
         } else {
             if (historyBtn.selected) {
                 albums = [[datas objectAtIndex:1] objectAtIndex:indexPath.row-1];
             } else {
                 albums = [[datas objectAtIndex:0] objectAtIndex:indexPath.row-1];
             }
-            [[RequestHelper defaultHelper] requestGETAPI:@"/api/mfiles" postData:@{@"medium_id": [albums valueForKey:@"id"]} success:^(id result) {
-                PlayViewController *playViewController = [[PlayViewController alloc] initWithDatas:[result valueForKey:@"mfiles"] andParentData:albums andCover:nil];
-                [self.navigationController pushViewController:playViewController animated:YES];
-                //            [((MainViewController *)self.view.superview.nextResponder) convertMode];
-            } failed:nil];
+            NSArray *tempArr = ((RootViewController *)self.view.window.rootViewController).main.scrollView.subviews;
+            for (AlbumsView *temp in tempArr) {
+                if ([temp isKindOfClass:[AlbumsView class]]) {
+                    if (temp.tag== [[albums valueForKey:@"id"] integerValue]) {
+                        [temp tapView:nil];
+                        return;
+                    }
+                }
+            }
         }
     }
 }

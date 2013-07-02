@@ -20,6 +20,7 @@
     AlbumsView *albumsView;
     float needSkipToTime;
     BOOL tryMode;
+    NSString *tryURL;
 }
 
 + (AudioManager *)defaultManager{
@@ -104,6 +105,7 @@
     //#warning setMediaInfo
     //    self setMediaInfo:<#(UIImage *)#> andTitle:<#(NSString *)#> andArtist:<#(NSString *)#>
     if (time>0) {
+        needSkipToTime = time;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(durationAvailable:)
                                                      name:MPMovieDurationAvailableNotification
@@ -113,7 +115,6 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
     }
     AVAudioSession *session = [AVAudioSession sharedInstance];
-    needSkipToTime = time;
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
     NSURL *contentUrl = [NSURL URLWithString:url];
@@ -129,8 +130,8 @@
     [player play];
     if (!tryMode) {
         [self startTick];
+        tempURL = [url copy];
     }
-    tempURL = [url copy];
 }
 
 - (BOOL)needURL{
@@ -340,12 +341,24 @@
     return YES;
 }
 
-- (void)tryListen{
-    currentIndex = -1;
+- (void)tryListen:(NSString *)url{
     tryMode = YES;
-    [self playListAtFirst];
-    ticker = [NSTimer scheduledTimerWithTimeInterval:50 target:self selector:@selector(clearAudioList) userInfo:nil repeats:NO];
+    if (player) {
+        needSkipToTime = player.currentPlaybackTime;
+    }
+    [self playWithURL:url];
+    ticker = [NSTimer scheduledTimerWithTimeInterval:50 target:self selector:@selector(pause) userInfo:nil repeats:NO];
     [[NSRunLoop currentRunLoop] addTimer:ticker forMode:NSRunLoopCommonModes];
+}
+
+- (void)stopTry{
+    tryMode = NO;
+    [self stopTick];
+    if (needSkipToTime && currentIndex!=-1) {
+        [self playIndex:currentIndex withTime:needSkipToTime];
+    } else {
+        [self clearAudioList];
+    }
 }
 
 - (BOOL)hasLocal:(int)id1{

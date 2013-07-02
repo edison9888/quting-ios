@@ -146,6 +146,13 @@
     [self addGestureRecognizer:tap];
 }
 
+- (void)setTag:(NSInteger)tag{
+    if (tag==-1) {
+        control.alpha = 0;
+    }
+    [super setTag:tag];
+}
+
 - (void)showDelete:(UILongPressGestureRecognizer *)gesture{
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteMode" object:nil];
 }
@@ -154,21 +161,30 @@
     if ([self viewWithTag:100]!=nil) {
         return;
     }
+    CAKeyframeAnimation *rotation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotation.values = @[@(.01), @(-.01)];
+    rotation.autoreverses = YES;
+    rotation.repeatCount = NSIntegerMax;
+    rotation.duration = .1;
+    [self.layer addAnimation:rotation forKey:@"shake"];
     UIButton *clearView = [UIButton buttonWithType:UIButtonTypeCustom];
     clearView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     clearView.tag = 100;
     [self addSubview:clearView];
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn.frame = CGRectMake(0, 0, 40, 40);
-    btn.tag = 101;
-    [btn setImage:[UIImage imageNamed:@"del_btn.png"] forState:UIControlStateNormal];
-    btn.center = CGPointMake(self.frame.size.width-15, 15);
-    [btn addTarget:self action:@selector(unPay:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:btn];
-    [btn fadeIn];
+    if (!control.hidden) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(0, 0, 40, 40);
+        btn.tag = 101;
+        [btn setImage:[UIImage imageNamed:@"del_btn.png"] forState:UIControlStateNormal];
+        btn.center = CGPointMake(self.frame.size.width-15, 15);
+        [btn addTarget:self action:@selector(unPay:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:btn];
+        [btn fadeIn];
+    }
 }
 
 - (void)removeDeleteBtn:(NSNotification *)notifi{
+    [self.layer removeAllAnimations];
     [UIView animateWithDuration:.3 animations:^{
         [self viewWithTag:101].alpha = 0;
     } completion:^(BOOL finished) {
@@ -191,10 +207,20 @@
     }
 }
 
+- (void)stopDownload{
+    control.hidden = NO;
+    [[self viewWithTag:DOWNLOADTAG] removeFromSuperview];
+    [download setImage:[UIImage imageNamed:@"resume_btn.png"] forState:UIControlStateNormal];
+    [ApplicationDelegate.queue cancelAllOperations];
+}
+
 - (void)downloadToLocal{
+    if (control.hidden) {
+        [self stopDownload];
+        return;
+    }
     control.hidden = YES;
     [download setImage:imageNamed(@"downloading.png") forState:UIControlStateNormal];
-    self.userInteractionEnabled = NO;
     UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-fixHeight)];
     bg.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.5];
     bg.layer.cornerRadius = self.frame.size.width/2;
@@ -275,6 +301,16 @@
                             [download setImage:[UIImage imageNamed:@"local.png"] forState:UIControlStateNormal];
                             download.userInteractionEnabled = NO;
                             listInfos = [[NSUserDefaults standardUserDefaults] valueForKey:[NSString stringWithFormat:@"ListInfo%@", [[dict valueForKey:@"id"] stringValue]]];
+                            if (self.layer.animationKeys.count>0) {
+                                UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+                                btn.frame = CGRectMake(0, 0, 40, 40);
+                                btn.tag = 101;
+                                [btn setImage:[UIImage imageNamed:@"del_btn.png"] forState:UIControlStateNormal];
+                                btn.center = CGPointMake(self.frame.size.width-15, 15);
+                                [btn addTarget:self action:@selector(unPay:) forControlEvents:UIControlEventTouchUpInside];
+                                [self addSubview:btn];
+                                [btn fadeIn];
+                            }
                         }
                     }
                 }
@@ -394,19 +430,20 @@
 }
 
 - (void)tapView:(UIGestureRecognizer *)gesture{
-    if (self.tag == -1) {
-        [[AudioManager defaultManager] clearOtherAlbumsStat:nil];
-        [[AudioManager defaultManager] setCurrentAlbums:nil];
-    } else {
-        [[AudioManager defaultManager] clearOtherAlbumsStat:self];
-        [[AudioManager defaultManager] setCurrentAlbums:self];
-    }
     cover.alpha = 1;
     if (isShop) {
         PayView *pay = [[PayView alloc] initWithImage:self.coverImage andInfo:dict];
         [self.window addSubview:pay];
         [pay fadeIn];
         return;
+    } else {
+        if (self.tag == -1) {
+            [[AudioManager defaultManager] clearOtherAlbumsStat:nil];
+            [[AudioManager defaultManager] setCurrentAlbums:nil];
+        } else {
+            [[AudioManager defaultManager] clearOtherAlbumsStat:self];
+            [[AudioManager defaultManager] setCurrentAlbums:self];
+        }
     }
     if (self.tag==-1) {
         [[RequestHelper defaultHelper] requestGETAPI:@"/api/likes" postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"]} success:^(id result) {

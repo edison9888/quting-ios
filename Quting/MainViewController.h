@@ -13,6 +13,5 @@
 @property (nonatomic, retain) UIScrollView *scrollView;
 
 - (void)removeBackGesture;
-- (void)convertMode;
 
 @end

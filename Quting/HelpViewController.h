@@ -10,4 +10,6 @@
 
 @interface HelpViewController : UIViewController
 
+- (id)initWithURL:(NSString *)url;
+
 @end

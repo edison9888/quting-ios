@@ -159,6 +159,10 @@
 		C4597BAC1777F67B006519E9 /* error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4597B461777F67B006519E9 /* error@2x.png */; };
 		C4597BAD1777F67B006519E9 /* success.png in Resources */ = {isa = PBXBuildFile; fileRef = C4597B471777F67B006519E9 /* success.png */; };
 		C4597BAE1777F67B006519E9 /* success@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4597B481777F67B006519E9 /* success@2x.png */; };
+		C4609A911782CADE000AE7CD /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C4609A901782CADE000AE7CD /* AboutViewController.m */; };
+		C4609A941782CB18000AE7CD /* about.png in Resources */ = {isa = PBXBuildFile; fileRef = C4609A921782CB18000AE7CD /* about.png */; };
+		C4609A951782CB18000AE7CD /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4609A931782CB18000AE7CD /* about@2x.png */; };
+		C4609A971782D2E1000AE7CD /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4609A961782D2E1000AE7CD /* MessageUI.framework */; };
 		C48D749A1779C8FD009ED8E9 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C48D74991779C8FD009ED8E9 /* HelpViewController.m */; };
 		C48D749F1779CA6F009ED8E9 /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C48D749C1779CA6F009ED8E9 /* iRate.bundle */; };
 		C48D74A01779CA6F009ED8E9 /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = C48D749E1779CA6F009ED8E9 /* iRate.m */; };
@@ -170,6 +174,7 @@
 		C49BDB591761A58700C62A2D /* UITableView+Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C49BDB561761A58700C62A2D /* UITableView+Animation.m */; };
 		C49BDB5A1761A58700C62A2D /* UIView+Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = C49BDB581761A58700C62A2D /* UIView+Animation.m */; };
 		C49BDB611761C99A00C62A2D /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = C49BDB601761C99A00C62A2D /* OpenUDID.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C49C42D71781817000B9D0AA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = C49C42D61781817000B9D0AA /* icon.png */; };
 		C49F3C111756135B00C20A4B /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C101756135B00C20A4B /* RootViewController.m */; };
 		C49F3C13175614EC00C20A4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C49F3C12175614EC00C20A4B /* QuartzCore.framework */; };
 		C49F3C161756156B00C20A4B /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C49F3C151756156B00C20A4B /* MainViewController.m */; };
@@ -373,6 +378,11 @@
 		C4597B461777F67B006519E9 /* error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error@2x.png"; sourceTree = "<group>"; };
 		C4597B471777F67B006519E9 /* success.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = success.png; sourceTree = "<group>"; };
 		C4597B481777F67B006519E9 /* success@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "success@2x.png"; sourceTree = "<group>"; };
+		C4609A8F1782CADE000AE7CD /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		C4609A901782CADE000AE7CD /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		C4609A921782CB18000AE7CD /* about.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about.png; sourceTree = "<group>"; };
+		C4609A931782CB18000AE7CD /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about@2x.png"; sourceTree = "<group>"; };
+		C4609A961782D2E1000AE7CD /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C48D74981779C8FD009ED8E9 /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
 		C48D74991779C8FD009ED8E9 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
 		C48D749C1779CA6F009ED8E9 /* iRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = iRate.bundle; sourceTree = "<group>"; };
@@ -392,6 +402,7 @@
 		C49BDB581761A58700C62A2D /* UIView+Animation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Animation.m"; sourceTree = "<group>"; };
 		C49BDB5F1761C99900C62A2D /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
 		C49BDB601761C99A00C62A2D /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
+		C49C42D61781817000B9D0AA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		C49F3C0F1756135B00C20A4B /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		C49F3C101756135B00C20A4B /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		C49F3C12175614EC00C20A4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -454,6 +465,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4609A971782D2E1000AE7CD /* MessageUI.framework in Frameworks */,
 				C48D74A81779CAE2009ED8E9 /* StoreKit.framework in Frameworks */,
 				C43026F0175897F40082D368 /* AudioToolbox.framework in Frameworks */,
 				C4A4451F1756498100851E8D /* SystemConfiguration.framework in Frameworks */,
@@ -519,6 +531,8 @@
 		C448DF4C1756090800AD4C94 = {
 			isa = PBXGroup;
 			children = (
+				C4609A961782D2E1000AE7CD /* MessageUI.framework */,
+				C49C42D61781817000B9D0AA /* icon.png */,
 				C48D74A71779CAE2009ED8E9 /* StoreKit.framework */,
 				C448DF5E1756090800AD4C94 /* Quting */,
 				C448DF571756090800AD4C94 /* Frameworks */,
@@ -597,6 +611,8 @@
 				C4EDC60F1764E7A200F467C0 /* BluetoothViewController.m */,
 				C49F3C171756157600C20A4B /* ConfigViewController.h */,
 				C49F3C181756157600C20A4B /* ConfigViewController.m */,
+				C4609A8F1782CADE000AE7CD /* AboutViewController.h */,
+				C4609A901782CADE000AE7CD /* AboutViewController.m */,
 				C48D74981779C8FD009ED8E9 /* HelpViewController.h */,
 				C48D74991779C8FD009ED8E9 /* HelpViewController.m */,
 				C4D0CD57175724CE002295D0 /* PlayViewController.h */,
@@ -628,6 +644,8 @@
 		C4597AD71777F67B006519E9 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				C4609A921782CB18000AE7CD /* about.png */,
+				C4609A931782CB18000AE7CD /* about@2x.png */,
 				C4597AD81777F67B006519E9 /* bluetooth */,
 				C4597AE31777F67B006519E9 /* btn */,
 				C4597AEA1777F67B006519E9 /* category.png */,
@@ -1084,6 +1102,9 @@
 				C4E1A3BF177D6786004F1D79 /* resume_btn.png in Resources */,
 				C4E1A3C0177D6786004F1D79 /* close_btn.png in Resources */,
 				C4E1A3C1177D6786004F1D79 /* resume_btn@2x.png in Resources */,
+				C49C42D71781817000B9D0AA /* icon.png in Resources */,
+				C4609A941782CB18000AE7CD /* about.png in Resources */,
+				C4609A951782CB18000AE7CD /* about@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1156,6 +1177,7 @@
 				C48D749A1779C8FD009ED8E9 /* HelpViewController.m in Sources */,
 				C48D74A01779CA6F009ED8E9 /* iRate.m in Sources */,
 				C48D74A61779CA99009ED8E9 /* iVersion.m in Sources */,
+				C4609A911782CADE000AE7CD /* AboutViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1312,7 +1334,7 @@
 				INFOPLIST_FILE = "Quting/Quting-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C0EFDDE4-61C0-4E74-BB9C-05099396B653";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AF27C694-CC89-47BB-8219-D43AFB9897E6";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Ad_Hoc;

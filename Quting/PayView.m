@@ -15,7 +15,7 @@
 #import "RootViewController.h"
 #import "MainViewController.h"
 #import "AlbumsView.h"
-
+#import "UIImageView+AFNetworking.h"
 @implementation PayView {
     NSDictionary *info;
 }
@@ -51,6 +51,9 @@
         [coverView addSubview:coverBG];
         
         UIImageView *cover = [[UIImageView alloc] initWithImage:coverImage];
+        if (!coverImage) {
+            [cover setImageWithURL:[NSURL URLWithString:[info_ valueForKey:@"mtype"]]];
+        }
         cover.userInteractionEnabled = YES;
         cover.frame = CGRectMake(5, 5, size, size);
         //    cover.center = coverBG.center;
@@ -84,6 +87,9 @@
         [coverView addSubview:smallCover];
         
         UIImageView *cover2 = [[UIImageView alloc] initWithImage:coverImage];
+        if (!coverImage) {
+            [cover2 setImageWithURL:[NSURL URLWithString:[info_ valueForKey:@"mtype"]]];
+        }
         cover2.frame = CGRectMake(coverBG.frame.origin.x-smallCover.frame.origin.x+5, coverBG.frame.origin.y-smallCover.frame.origin.y+5, size, size);
         cover2.contentMode = UIViewContentModeScaleAspectFill;
         cover2.alpha = .9;
@@ -131,9 +137,7 @@
         for (NSDictionary *temp in listInfos) {
             [mp3files addObject:[NSString stringWithFormat:@"%@/%@", @"http://t.pamakids.com/", [[temp valueForKey:@"url"] stringByReplacingOccurrencesOfString:@"public" withString:@""]]];
         }
-        [[AudioManager defaultManager] clearAudioList];
-        [[AudioManager defaultManager] addAudioListToList:mp3files];
-        [[AudioManager defaultManager] tryListen];
+        [[AudioManager defaultManager] tryListen:[mp3files objectAtIndex:0]];
     } failed:nil];
 }
 

@@ -423,6 +423,13 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+    NSMutableArray *arr = [NSMutableArray arrayWithArray:self.navigationController.viewControllers];
+    for (UIViewController *temp in self.navigationController.viewControllers) {
+        if ([temp isKindOfClass:NSClassFromString(@"ListViewController")]) {
+            [arr removeObject:temp];
+        }
+    }
+    self.navigationController.viewControllers = arr;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlay) name:AudioPlayNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPause) name:AudioPauseNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioNext) name:AudioNextNotification object:nil];

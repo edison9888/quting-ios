@@ -8,6 +8,7 @@
 
 #import "ConfigViewController.h"
 #import "HelpViewController.h"
+#import "AboutViewController.h"
 #import "iVersion.h"
 @interface ConfigViewController ()
 
@@ -127,6 +128,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (indexPath.row==0) {
+        AboutViewController *help = [[AboutViewController alloc] init];
+        UINavigationController *tempNavi = [[UINavigationController alloc] initWithRootViewController:help];
+        [tempNavi.navigationBar setBackgroundImage:imageNamed(@"navi_background.png") forBarMetrics:UIBarMetricsDefault];
+        [self presentViewController:tempNavi animated:YES completion:^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BACKTOMAIN object:nil];
+        }];
+    }
     if (indexPath.row==1) {
         HelpViewController *help = [[HelpViewController alloc] init];
         UINavigationController *tempNavi = [[UINavigationController alloc] initWithRootViewController:help];

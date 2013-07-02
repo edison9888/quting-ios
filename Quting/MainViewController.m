@@ -18,7 +18,6 @@
 
 @implementation MainViewController {
     UITapGestureRecognizer *tap;
-    ListViewController *listView;
     UIButton *searchBtn;
     UIButton *shopBtn;
     UIButton *configBtn;
@@ -61,7 +60,7 @@
     self.navigationItem.leftBarButtonItem = shop;
     
     searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [searchBtn addTarget:self action:@selector(convertMode) forControlEvents:UIControlEventTouchUpInside];
+    [searchBtn addTarget:self action:@selector(openSearch) forControlEvents:UIControlEventTouchUpInside];
     searchBtn.frame = CGRectMake(0, 0, 44, 44);
     [searchBtn setImage:imageNamed(@"searchItem.png") forState:UIControlStateNormal];
 
@@ -77,12 +76,6 @@
     
     UIBarButtonItem *config = [[UIBarButtonItem alloc] initWithCustomView:rightView];
     self.navigationItem.rightBarButtonItem = config;
-    
-    listView = [[ListViewController alloc] initWithModel:ListModel_search];
-    listView.view.alpha = 0;
-    listView.view.frame = CGRectMake(0, -480, 320, 480);
-    [self.view addSubview:listView.view];
-    [listView.tableView reloadData];
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
     _scrollView.delegate = self;
@@ -216,46 +209,13 @@
 }
 
 - (void)shop{
-    if (listView.view.alpha==1) {
-        searchBtn.hidden = NO;
-        configBtn.hidden = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:ENABLERIGHT object:nil];
-
-        [shopBtn setImage:imageNamed(@"shopItem.png") forState:UIControlStateNormal];
-        __block CGRect frame = listView.view.frame;
-        frame.origin.y = -listView.view.frame.size.height;
-        [UIView animateWithDuration:.3 animations:^{
-            listView.view.alpha = 0;
-            listView.view.frame = frame;
-            [listView resignFirstResponder];
-            frame = _scrollView.frame;
-            frame.origin.y = 0;
-            _scrollView.frame = frame;
-            _scrollView.alpha = 1;
-        }];
-    } else {
-        ShopViewController *shop = [[ShopViewController alloc] init];
-        [self.navigationController pushViewController:shop animated:YES];
-    }
+    ShopViewController *shop = [[ShopViewController alloc] init];
+    [self.navigationController pushViewController:shop animated:YES];
 }
 
-- (void)convertMode{
-    if (listView.view.alpha==0) {
-        [shopBtn setImage:imageNamed(@"backItem.png") forState:UIControlStateNormal];
-        __block CGRect frame = listView.view.frame;
-        frame.origin.y = 0;
-        [UIView animateWithDuration:.3 animations:^{
-            listView.view.alpha = 1;
-            listView.view.frame = frame;
-            frame = _scrollView.frame;
-            frame.origin.y = self.view.frame.size.height;
-            _scrollView.frame = frame;
-            _scrollView.alpha = 0;
-        }];
-        searchBtn.hidden = YES;
-        configBtn.hidden = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:DISABLERIGHT object:nil];
-    }
+- (void)openSearch{
+    ListViewController *listView = [[ListViewController alloc] initWithModel:ListModel_search];
+    [self.navigationController pushViewController:listView animated:YES];
 }
 
 - (void)showConfig{

@@ -35,7 +35,7 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
-    [[AudioManager defaultManager] clearAudioList];
+    [[AudioManager defaultManager] stopTry];
 }
 
 - (void)viewDidLoad

@@ -46,7 +46,8 @@
 - (BOOL)clearOtherAlbumsStat:(AlbumsView *)albums;
 - (float)progress;
 - (float)albumsProgress;
-- (void)tryListen;
+- (void)tryListen:(NSString *)url;
+- (void)stopTry;
 - (BOOL)hasLocal:(int)id1;
 - (BOOL)imCurrentAlbums:(AlbumsView *)albums;
 @end

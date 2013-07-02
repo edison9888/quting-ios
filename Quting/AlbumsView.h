@@ -16,10 +16,9 @@
 @property (nonatomic, strong) UIImage *coverImage;
 - (void)stop;
 - (NSString *)localRoot;
-
+- (void)tapView:(UIGestureRecognizer *)gesture;
 - (void)audioProgress:(float)temp;
 - (void)audioPlay;
 - (void)audioPause;
-
 
 @end
