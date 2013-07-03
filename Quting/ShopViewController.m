@@ -11,6 +11,7 @@
 #import "RequestHelper.h"
 #import "AudioManager.h"
 #import "CategoryListView.h"
+#import "ListViewController.h"
 @interface ShopViewController ()
 
 @end
@@ -50,6 +51,13 @@
     UIBarButtonItem *back = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
     self.navigationItem.leftBarButtonItem = back;
     self.navigationItem.hidesBackButton = YES;
+    
+    UIButton *searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [searchBtn addTarget:self action:@selector(openSearch) forControlEvents:UIControlEventTouchUpInside];
+    searchBtn.frame = CGRectMake(0, 0, 44, 44);
+    [searchBtn setImage:imageNamed(@"searchItem.png") forState:UIControlStateNormal];
+    UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithCustomView:searchBtn];
+    self.navigationItem.rightBarButtonItem = search;
 
     self.navigationItem.title = @"商 店";
     self.navigationController.navigationBarHidden = NO;
@@ -81,6 +89,11 @@
     bg.center = CGPointMake(scrollView.center.x, bg.center.y);
     [self.view addSubview:bg];
 
+}
+
+- (void)openSearch{
+    ListViewController *listView = [[ListViewController alloc] initWithModel:ListModel_search];
+    [self.navigationController pushViewController:listView animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView_{
