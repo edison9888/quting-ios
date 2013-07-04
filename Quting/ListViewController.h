@@ -16,6 +16,7 @@ typedef enum{
 
 @interface ListViewController : UITableViewController
 
+- (id)initWithShopModel;
 - (id)initWithModel:(ListModel)model;
 - (void)loadDatas:(NSArray *)datas;
 - (void)resignFirstResponder;

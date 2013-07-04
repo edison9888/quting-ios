@@ -11,6 +11,7 @@
 
 @interface RootViewController : UIViewController <UINavigationControllerDelegate>
 
+@property (nonatomic, strong) UINavigationController *navigationController;
 @property (nonatomic, strong) MainViewController *main;
 
 @end

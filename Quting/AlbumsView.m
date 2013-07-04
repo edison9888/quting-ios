@@ -16,6 +16,7 @@
 #import "PayView.h"
 #import "UIView+Animation.h"
 #import "AppUtil.h"
+#import "RootViewController.h"
 #define DOWNLOADTAG 123
 
 @implementation AlbumsView {
@@ -131,7 +132,7 @@
             } else {
                 [download setImage:[UIImage imageNamed:@"download.png"] forState:UIControlStateNormal];
             }
-            [download addTarget:self action:@selector(downloadToLocal) forControlEvents:UIControlEventTouchUpInside];
+            [download addTarget:self action:@selector(pressDownload) forControlEvents:UIControlEventTouchUpInside];
         }
         download.center = CGPointMake(_label.center.x, download.center.y);
         [self addSubview:download];
@@ -143,6 +144,7 @@
     }
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView:)];
+    tap.numberOfTapsRequired = 1;
     [self addGestureRecognizer:tap];
 }
 
@@ -200,10 +202,14 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (alertView.cancelButtonIndex != buttonIndex) {
-        [[RequestHelper defaultHelper] requestDELETEAPI:[NSString stringWithFormat:@"/api/buys/%@", [[dict valueForKey:@"id"] stringValue]] postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"medium_id": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
-            [AppUtil warning:@"取消订阅成功!" withType:m_success];
-            [[NSNotificationCenter defaultCenter] postNotificationName:UNPAYMEIDA object:@(self.tag)];
-        } failed:nil];
+        if (alertView.tag==2) {
+            [self downloadToLocal];
+        } else {
+            [[RequestHelper defaultHelper] requestDELETEAPI:[NSString stringWithFormat:@"/api/buys/%@", [[dict valueForKey:@"id"] stringValue]] postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"medium_id": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
+                [AppUtil warning:@"取消订阅成功!" withType:m_success];
+                [[NSNotificationCenter defaultCenter] postNotificationName:UNPAYMEIDA object:@(self.tag)];
+            } failed:nil];
+        }
     }
 }
 
@@ -212,6 +218,12 @@
     [[self viewWithTag:DOWNLOADTAG] removeFromSuperview];
     [download setImage:[UIImage imageNamed:@"resume_btn.png"] forState:UIControlStateNormal];
     [ApplicationDelegate.queue cancelAllOperations];
+}
+
+- (void)pressDownload{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"下载后您可以离线收听。是否立即下载？（下载时间可能较长，请耐心等待）" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
+    alert.tag = 2;
+    [alert show];
 }
 
 - (void)downloadToLocal{
@@ -430,6 +442,10 @@
 }
 
 - (void)tapView:(UIGestureRecognizer *)gesture{
+    self.userInteractionEnabled = NO;
+//    if () {
+//        <#statements#>
+//    }
     cover.alpha = 1;
     if (isShop) {
         PayView *pay = [[PayView alloc] initWithImage:self.coverImage andInfo:dict];

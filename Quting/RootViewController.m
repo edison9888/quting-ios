@@ -17,7 +17,6 @@
 
 @implementation RootViewController {
     JASidePanelController *sideView;
-    UINavigationController *navigationController;
     ConfigViewController *config;
 }
 
@@ -30,11 +29,11 @@
     config = [[ConfigViewController alloc] initWithStyle:UITableViewStylePlain];
     config.view.frame = CGRectMake(0, 0, 320, self.view.frame.size.height);
     
-    navigationController = [[UINavigationController alloc] initWithRootViewController:_main];
-    navigationController.delegate = self;
-    navigationController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    [navigationController.navigationBar setBackgroundImage:imageNamed(@"navi_background.png") forBarMetrics:UIBarMetricsDefault];
-    navigationController.navigationBar.clipsToBounds = YES;
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:_main];
+    _navigationController.delegate = self;
+    _navigationController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    [_navigationController.navigationBar setBackgroundImage:imageNamed(@"navi_background.png") forBarMetrics:UIBarMetricsDefault];
+    _navigationController.navigationBar.clipsToBounds = YES;
     [[UINavigationBar appearance] setTitleTextAttributes: @{
                                 UITextAttributeTextColor: [UIColor whiteColor],
                           UITextAttributeTextShadowColor: [UIColor colorWithRed:70.0/255.0 green:153.0/255.0 blue:121.0/255.0 alpha:1.0],
@@ -44,7 +43,7 @@
     sideView = [[JASidePanelController alloc] init];
     sideView.view.frame = CGRectMake(0, 0, 320, self.view.frame.size.height);
     sideView.shouldDelegateAutorotateToVisiblePanel = NO;
-    sideView.centerPanel = navigationController;
+    sideView.centerPanel = _navigationController;
     sideView.rightPanel = config;
     [self.view addSubview:sideView.view];
     

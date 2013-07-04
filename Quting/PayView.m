@@ -142,7 +142,6 @@
 }
 
 - (void)addSubScription{
-    
     NSArray *tempArr = ((RootViewController *)self.window.rootViewController).main.scrollView.subviews;
     for (UIView *temp in tempArr) {
         if ([temp isKindOfClass:[AlbumsView class]]) {

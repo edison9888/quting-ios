@@ -36,10 +36,22 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     _scrollView.contentOffset = CGPointMake(0, offsetY);
+    NSArray *tempArr = self.scrollView.subviews;
+    for (AlbumsView *temp in tempArr) {
+        if ([temp isKindOfClass:[AlbumsView class]]) {
+            temp.userInteractionEnabled = YES;
+        }
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
     offsetY = _scrollView.contentOffset.y;
+    NSArray *tempArr = self.scrollView.subviews;
+    for (AlbumsView *temp in tempArr) {
+        if ([temp isKindOfClass:[AlbumsView class]]) {
+            temp.userInteractionEnabled = NO;
+        }
+    }
 }
 
 - (void)viewDidLoad

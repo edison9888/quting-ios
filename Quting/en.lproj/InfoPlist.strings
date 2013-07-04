@@ -1,2 +1,4 @@
 /* Localized versions of Info.plist keys */
 
+CFBundleName="趣听";
+CFBundleDisplayName="趣听";

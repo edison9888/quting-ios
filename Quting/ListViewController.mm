@@ -30,6 +30,12 @@
     UIButton *historyBtn;
     int currentIndex;
     VoiceTextField *textField;
+    BOOL isShop;
+}
+
+- (id)initWithShopModel{
+    isShop = YES;
+    return [self initWithModel:ListModel_search];
 }
 
 - (id)initWithModel:(ListModel)model_{
@@ -171,7 +177,11 @@
                 [textField setClearButtonMode:UITextFieldViewModeWhileEditing];
                 textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
                 [textField setReturnKeyType:UIReturnKeyDone];
-                textField.placeholder = @"请输入搜索内容";
+                if (isShop) {
+                    textField.placeholder = @"在商店内搜索";
+                } else {
+                    textField.placeholder = @"请输入搜索内容";
+                }
                 textField.textColor = [UIColor blackColor];
                 textField.tag = 1;
                 [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];

@@ -12,6 +12,7 @@
 #import "AudioManager.h"
 #import "CategoryListView.h"
 #import "ListViewController.h"
+#import "AppUtil.h"
 @interface ShopViewController ()
 
 @end
@@ -73,17 +74,21 @@
     [self.view addSubview:scrollView];
     
     [[RequestHelper defaultHelper] requestGETAPI:@"/api/categories" postData:nil success:^(id result) {
-        categories = [[NSMutableArray alloc] init];
-        for (NSDictionary *temp in [result valueForKey:@"categories"]) {
-            [categories addObject:[temp valueForKey:@"name"]];
-            [cateViewArr addObject:[NSNull null]];
+        if ([[result valueForKey:@"categories"] count]<=0) {
+            [AppUtil warning:@"数据获取失败，稍后重试" withType:m_error];
+        } else {
+            categories = [[NSMutableArray alloc] init];
+            for (NSDictionary *temp in [result valueForKey:@"categories"]) {
+                [categories addObject:[temp valueForKey:@"name"]];
+                [cateViewArr addObject:[NSNull null]];
+            }
+            cate = [[CategoryView alloc] initWithNames:categories];
+            cate.loadDelegate = self;
+            [self.view addSubview:cate];
+            [self loadDataWithPage:0];
+            [self loadDataWithPage:1];
+            scrollView.contentSize = CGSizeMake(scrollView.frame.size.width*categories.count, 0);
         }
-        cate = [[CategoryView alloc] initWithNames:categories];
-        cate.loadDelegate = self;
-        [self.view addSubview:cate];
-        [self loadDataWithPage:0];
-        [self loadDataWithPage:1];
-        scrollView.contentSize = CGSizeMake(scrollView.frame.size.width*categories.count, 0);
     } failed:nil];
     UIImageView *bg = [[UIImageView alloc] initWithImage:imageNamed(@"category.png")];
     bg.center = CGPointMake(scrollView.center.x, bg.center.y);
@@ -92,7 +97,7 @@
 }
 
 - (void)openSearch{
-    ListViewController *listView = [[ListViewController alloc] initWithModel:ListModel_search];
+    ListViewController *listView = [[ListViewController alloc] initWithShopModel];
     [self.navigationController pushViewController:listView animated:YES];
 }
 
