@@ -54,9 +54,6 @@
 		C448DF631756090800AD4C94 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C448DF611756090800AD4C94 /* InfoPlist.strings */; };
 		C448DF651756090800AD4C94 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C448DF641756090800AD4C94 /* main.m */; };
 		C448DF691756090800AD4C94 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C448DF681756090800AD4C94 /* AppDelegate.m */; };
-		C448DF6B1756090800AD4C94 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C448DF6A1756090800AD4C94 /* Default.png */; };
-		C448DF6D1756090800AD4C94 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C448DF6C1756090800AD4C94 /* Default@2x.png */; };
-		C448DF6F1756090800AD4C94 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C448DF6E1756090800AD4C94 /* Default-568h@2x.png */; };
 		C4597B491777F67B006519E9 /* backBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = C4597AD91777F67B006519E9 /* backBtn.png */; };
 		C4597B4A1777F67B006519E9 /* backBtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4597ADA1777F67B006519E9 /* backBtn@2x.png */; };
 		C4597B4B1777F67B006519E9 /* page1.png in Resources */ = {isa = PBXBuildFile; fileRef = C4597ADB1777F67B006519E9 /* page1.png */; };
@@ -163,6 +160,11 @@
 		C4609A941782CB18000AE7CD /* about.png in Resources */ = {isa = PBXBuildFile; fileRef = C4609A921782CB18000AE7CD /* about.png */; };
 		C4609A951782CB18000AE7CD /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C4609A931782CB18000AE7CD /* about@2x.png */; };
 		C4609A971782D2E1000AE7CD /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4609A961782D2E1000AE7CD /* MessageUI.framework */; };
+		C47405F7178672E900760210 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C47405F6178672E900760210 /* Default-568h@2x.png */; };
+		C47405F9178672ED00760210 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C47405F8178672ED00760210 /* Default@2x.png */; };
+		C47405FB178672F400760210 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C47405FA178672F400760210 /* Default.png */; };
+		C47405FE1786738B00760210 /* downloading1.png in Resources */ = {isa = PBXBuildFile; fileRef = C47405FC1786738B00760210 /* downloading1.png */; };
+		C47405FF1786738B00760210 /* downloading1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C47405FD1786738B00760210 /* downloading1@2x.png */; };
 		C48D749A1779C8FD009ED8E9 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C48D74991779C8FD009ED8E9 /* HelpViewController.m */; };
 		C48D749F1779CA6F009ED8E9 /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C48D749C1779CA6F009ED8E9 /* iRate.bundle */; };
 		C48D74A01779CA6F009ED8E9 /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = C48D749E1779CA6F009ED8E9 /* iRate.m */; };
@@ -273,9 +275,6 @@
 		C448DF661756090800AD4C94 /* Quting-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Quting-Prefix.pch"; sourceTree = "<group>"; };
 		C448DF671756090800AD4C94 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C448DF681756090800AD4C94 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		C448DF6A1756090800AD4C94 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		C448DF6C1756090800AD4C94 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		C448DF6E1756090800AD4C94 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		C4597AD91777F67B006519E9 /* backBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backBtn.png; sourceTree = "<group>"; };
 		C4597ADA1777F67B006519E9 /* backBtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backBtn@2x.png"; sourceTree = "<group>"; };
 		C4597ADB1777F67B006519E9 /* page1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = page1.png; sourceTree = "<group>"; };
@@ -383,6 +382,11 @@
 		C4609A921782CB18000AE7CD /* about.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about.png; sourceTree = "<group>"; };
 		C4609A931782CB18000AE7CD /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about@2x.png"; sourceTree = "<group>"; };
 		C4609A961782D2E1000AE7CD /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		C47405F6178672E900760210 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		C47405F8178672ED00760210 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		C47405FA178672F400760210 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		C47405FC1786738B00760210 /* downloading1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = downloading1.png; sourceTree = "<group>"; };
+		C47405FD1786738B00760210 /* downloading1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "downloading1@2x.png"; sourceTree = "<group>"; };
 		C48D74981779C8FD009ED8E9 /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
 		C48D74991779C8FD009ED8E9 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
 		C48D749C1779CA6F009ED8E9 /* iRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = iRate.bundle; sourceTree = "<group>"; };
@@ -531,6 +535,9 @@
 		C448DF4C1756090800AD4C94 = {
 			isa = PBXGroup;
 			children = (
+				C47405FA178672F400760210 /* Default.png */,
+				C47405F8178672ED00760210 /* Default@2x.png */,
+				C47405F6178672E900760210 /* Default-568h@2x.png */,
 				C4609A961782D2E1000AE7CD /* MessageUI.framework */,
 				C49C42D61781817000B9D0AA /* icon.png */,
 				C48D74A71779CAE2009ED8E9 /* StoreKit.framework */,
@@ -634,9 +641,6 @@
 				C448DF611756090800AD4C94 /* InfoPlist.strings */,
 				C448DF641756090800AD4C94 /* main.m */,
 				C448DF661756090800AD4C94 /* Quting-Prefix.pch */,
-				C448DF6A1756090800AD4C94 /* Default.png */,
-				C448DF6C1756090800AD4C94 /* Default@2x.png */,
-				C448DF6E1756090800AD4C94 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -685,6 +689,8 @@
 		C4597AE31777F67B006519E9 /* btn */ = {
 			isa = PBXGroup;
 			children = (
+				C47405FC1786738B00760210 /* downloading1.png */,
+				C47405FD1786738B00760210 /* downloading1@2x.png */,
 				C4E1A3BA177D6786004F1D79 /* close_btn@2x.png */,
 				C4E1A3BB177D6786004F1D79 /* resume_btn.png */,
 				C4E1A3BC177D6786004F1D79 /* close_btn.png */,
@@ -981,9 +987,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C448DF631756090800AD4C94 /* InfoPlist.strings in Resources */,
-				C448DF6B1756090800AD4C94 /* Default.png in Resources */,
-				C448DF6D1756090800AD4C94 /* Default@2x.png in Resources */,
-				C448DF6F1756090800AD4C94 /* Default-568h@2x.png in Resources */,
 				C4597B491777F67B006519E9 /* backBtn.png in Resources */,
 				C4597B4A1777F67B006519E9 /* backBtn@2x.png in Resources */,
 				C4597B4B1777F67B006519E9 /* page1.png in Resources */,
@@ -1105,6 +1108,11 @@
 				C49C42D71781817000B9D0AA /* icon.png in Resources */,
 				C4609A941782CB18000AE7CD /* about.png in Resources */,
 				C4609A951782CB18000AE7CD /* about@2x.png in Resources */,
+				C47405F7178672E900760210 /* Default-568h@2x.png in Resources */,
+				C47405F9178672ED00760210 /* Default@2x.png in Resources */,
+				C47405FB178672F400760210 /* Default.png in Resources */,
+				C47405FE1786738B00760210 /* downloading1.png in Resources */,
+				C47405FF1786738B00760210 /* downloading1@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

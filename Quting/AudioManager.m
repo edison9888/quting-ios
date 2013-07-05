@@ -352,12 +352,14 @@
 }
 
 - (void)stopTry{
-    tryMode = NO;
-    [self stopTick];
-    if (needSkipToTime && currentIndex!=-1) {
-        [self playIndex:currentIndex withTime:needSkipToTime];
-    } else {
-        [self clearAudioList];
+    if (tryMode) {
+        tryMode = NO;
+        [self stopTick];
+        if (needSkipToTime && currentIndex!=-1) {
+            [self playIndex:currentIndex withTime:needSkipToTime];
+        } else {
+            [self clearAudioList];
+        }
     }
 }
 

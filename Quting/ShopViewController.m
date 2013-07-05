@@ -36,6 +36,12 @@
     return self;
 }
 
+- (void)viewDidAppear:(BOOL)animated{
+    if (currentCate) {
+        [cate changeToIndex:currentCate];
+    }
+}
+
 - (void)viewDidDisappear:(BOOL)animated{
     [[AudioManager defaultManager] stopTry];
 }
@@ -43,6 +49,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    currentCate = -1;
     cateViewArr = [[NSMutableArray alloc] init];
     loadHistory = [[NSMutableDictionary alloc] init];
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -85,6 +92,8 @@
             cate = [[CategoryView alloc] initWithNames:categories];
             cate.loadDelegate = self;
             [self.view addSubview:cate];
+            currentCate = 1;
+            [cate changeToIndex:1];
             [self loadDataWithPage:0];
             [self loadDataWithPage:1];
             scrollView.contentSize = CGSizeMake(scrollView.frame.size.width*categories.count, 0);
@@ -107,6 +116,7 @@
     if (page<0) {
         return;
     }
+    currentCate = page+1;
     [cate changeToIndex:page+1];
     [self loadDataWithPage:page];
     [self loadDataWithPage:page+1];

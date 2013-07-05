@@ -41,7 +41,7 @@
     if (url) {
         [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
     } else {
-        [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://quting.azurewebsites.net/help/help.php"]]];
+        [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://quting.fm/help/help.php"]]];
     }
     [self.view addSubview:webView];
     if (!url) {

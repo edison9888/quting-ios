@@ -221,16 +221,16 @@
 }
 
 - (void)pressDownload{
+    if (control.hidden) {
+        [self stopDownload];
+        return;
+    }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:@"下载后您可以离线收听。是否立即下载？（下载时间可能较长，请耐心等待）" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确认", nil];
     alert.tag = 2;
     [alert show];
 }
 
 - (void)downloadToLocal{
-    if (control.hidden) {
-        [self stopDownload];
-        return;
-    }
     control.hidden = YES;
     [download setImage:imageNamed(@"downloading.png") forState:UIControlStateNormal];
     UIView *bg = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-fixHeight)];

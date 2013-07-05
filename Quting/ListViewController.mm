@@ -177,11 +177,11 @@
                 [textField setClearButtonMode:UITextFieldViewModeWhileEditing];
                 textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
                 [textField setReturnKeyType:UIReturnKeyDone];
-                if (isShop) {
+//                if (isShop) {
                     textField.placeholder = @"在商店内搜索";
-                } else {
-                    textField.placeholder = @"请输入搜索内容";
-                }
+//                } else {
+//                    textField.placeholder = @"请输入搜索内容";
+//                }
                 textField.textColor = [UIColor blackColor];
                 textField.tag = 1;
                 [textField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
@@ -344,6 +344,9 @@
     } else {
         NSDictionary *albums;
         if (model==ListModel_search) {
+            if (indexPath.row==0) {
+                return;
+            }
             albums = [datas objectAtIndex:indexPath.row-1];
             NSArray *tempArr = ((RootViewController *)self.view.window.rootViewController).main.scrollView.subviews;
             for (AlbumsView *temp in tempArr) {
