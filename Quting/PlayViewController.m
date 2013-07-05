@@ -197,6 +197,7 @@
     self.navigationItem.leftBarButtonItem = back;
     self.navigationItem.hidesBackButton = YES;
     self.navigationItem.title = [dict valueForKey:@"name"];
+    detailTitle.text = [[tempDatas objectAtIndex:[[AudioManager defaultManager] currentIndex]] valueForKey:@"detailTitle"];
 }
 
 - (void)addCover:(NSString *)name{
@@ -372,10 +373,12 @@
 }
 
 - (void)audioPlay{
+    NSLog(@"play", nil);
     play.selected = YES;
 }
 
 - (void)audioPause{
+    NSLog(@"pause", nil);
     play.selected = NO;
 }
 
@@ -401,6 +404,7 @@
     NSLog(@"slider up:%f", slider.value);
     if (![[AudioManager defaultManager] playing]) {
         [[AudioManager defaultManager] resume];
+        [self audioPlay];
     }
     [self progress:slider1.value];
     [self performSelector:@selector(resume) withObject:nil afterDelay:.8];

@@ -436,7 +436,7 @@
 - (void)recordPlayProgress:(NSNotification *)notifi{
     if (!isShop) {
         NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
-        [[NSUserDefaults standardUserDefaults] setValue:[notifi userInfo] forKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
+        [[NSUserDefaults standardUserDefaults] setValue:[notifi userInfo] forKey:[NSString stringWithFormat:@"history%@", [dict valueForKey:@"id"]]];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }

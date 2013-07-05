@@ -54,7 +54,7 @@
     }
     ticker = [NSTimer scheduledTimerWithTimeInterval:.5 target:self selector:@selector(tick) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:ticker forMode:NSRunLoopCommonModes];
-    [[NSNotificationCenter defaultCenter] postNotificationName:AudioPlayNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioPlayNotification object:@{@"currentIndex":@(currentIndex), @"progress":@([self progress]), @"time": @(player.currentPlaybackTime), @"albumsProgress": @([self albumsProgress])}];
     if (albumsView) {
         [albumsView audioPlay];
     }
@@ -174,7 +174,7 @@
 }
 
 - (BOOL)changeStat{
-    if (player.playbackState == MPMoviePlaybackStatePlaying) {
+    if (ticker!=nil) {
         [self stopTick];
         [player pause];
         return NO;
@@ -322,6 +322,7 @@
 
 - (void)setCurrentAlbums:(AlbumsView *)albums{
     [[NSNotificationCenter defaultCenter] addObserver:albums selector:@selector(recordPlayProgress:) name:AudioPauseNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:albums selector:@selector(recordPlayProgress:) name:AudioPlayNotification object:nil];
     albumsView = albums;
 }
 

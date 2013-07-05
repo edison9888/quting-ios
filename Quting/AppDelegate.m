@@ -42,6 +42,19 @@
         self.window.rootViewController = _rootViewController;
         [self.window makeKeyAndVisible];
     }
+    
+    NSString *load = [NSString stringWithFormat:@"Default%@.png", isRetina?(isiPhone5?@"-568h@2x":@"@2x"):@""];
+    UIImageView *temp = [[UIImageView alloc] initWithImage:imageNamed(load)];
+    temp.frame = CGRectMake(0, 0, temp.frame.size.width, temp.frame.size.height);
+    [_window addSubview:temp];
+    
+    [UIView animateWithDuration:.5 delay:2 options:UIViewAnimationOptionCurveLinear animations:^{
+//        temp.transform = CGAffineTransformMakeScale(1.5, 1.5);
+        temp.alpha = 0;
+    } completion:^(BOOL finished) {
+        [temp removeFromSuperview];
+    }];
+
 
     return YES;
 }
