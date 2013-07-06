@@ -76,7 +76,7 @@
         [[AudioManager defaultManager] clearAudioList];
         if (mp3List.count>0) {
             [[AudioManager defaultManager] addAudioListToList:mp3List];
-            NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@", [dict valueForKey:@"id"]]];
+            NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@0", [dict valueForKey:@"id"]]];
             if (history!=nil) {
                 progress = [[history valueForKey:@"progress"] floatValue];
                 currentPlayTime = [[history valueForKey:@"time"] floatValue];
