@@ -39,7 +39,7 @@
     BOOL needsConnection = flags & kSCNetworkFlagsConnectionRequired;
     BOOL result = (isReachable && !needsConnection);
     if (!result) {
-        [AppUtil warning:@"请检查网络连接" withType:m_error];
+        [AppUtil warning:@"您需要连接网络后才能查看,请您确认网络连接是否开启!" withType:m_error];
     }
     return result;
 }

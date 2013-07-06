@@ -442,10 +442,9 @@
 }
 
 - (void)tapView:(UIGestureRecognizer *)gesture{
-    self.userInteractionEnabled = NO;
-//    if () {
-//        <#statements#>
-//    }
+    if (!isShop) {
+        self.userInteractionEnabled = NO;
+    }
     cover.alpha = 1;
     if (isShop) {
         PayView *pay = [[PayView alloc] initWithImage:self.coverImage andInfo:dict];

@@ -52,7 +52,7 @@
         return;
     }
     if (![AppUtil isNetworkReachable]) {
-        [AppUtil warning:@"服务器访问失败,请检查网络连接或重试" withType:m_error];
+//        [AppUtil warning:@"您需要连接网络后才能查看,请您确认网络连接是否开启!" withType:m_error];
         return;
     }
     self.tag = -1;
