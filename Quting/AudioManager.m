@@ -42,7 +42,8 @@
         player = [[MPMoviePlayerController alloc] init];
         player.movieSourceType = MPMovieSourceTypeStreaming;
         playList = [[NSMutableArray alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiofinished:) name:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiofinished:) name:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiofinished:) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
     }
     return self;
 }
@@ -93,7 +94,10 @@
 - (void)durationAvailable:(NSNotification*)notification{
     NSLog(@"%f", player.duration);
     [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMovieDurationAvailableNotification  object:nil];
-    [player setCurrentPlaybackTime:needSkipToTime];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AudioLoadDoneNotification object:nil];
+    if (needSkipToTime>0) {
+        [player setCurrentPlaybackTime:needSkipToTime];
+    }
     needSkipToTime = 0;
 }
 
@@ -106,14 +110,15 @@
     //    self setMediaInfo:<#(UIImage *)#> andTitle:<#(NSString *)#> andArtist:<#(NSString *)#>
     if (time>0) {
         needSkipToTime = time;
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(durationAvailable:)
-                                                     name:MPMovieDurationAvailableNotification
-                                                   object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:time]];
     } else {
+        needSkipToTime = 0;
         [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(durationAvailable:)
+                                                 name:MPMovieDurationAvailableNotification
+                                               object:nil];
     AVAudioSession *session = [AVAudioSession sharedInstance];
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
@@ -139,16 +144,9 @@
 }
 
 - (void)audiofinished:(NSNotification *)notification{
-    if (notification==nil) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:1]];
-        tempURL = nil;
-        [self stopTick];
-        [self next];
-    }
     int reason = [[[notification userInfo] valueForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey] intValue];
     if (reason == MPMovieFinishReasonPlaybackEnded) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:1]];
-        tempURL = nil;
+        [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:0]];
         [self stopTick];
         [self next];
     }
@@ -209,7 +207,10 @@
     }
     ++currentIndex;
     if (currentIndex>playList.count-1) {
-        currentIndex = 0;
+        [self stopTick];
+        --currentIndex;
+        return;
+//        currentIndex = 0;
     }
     NSLog(@"next play index:%d", currentIndex);
     NSString *url = [playList objectAtIndex:currentIndex];
@@ -224,7 +225,9 @@
     }
     --currentIndex;
     if (currentIndex<0) {
-        currentIndex = playList.count-1;
+        ++currentIndex;
+//        currentIndex = playList.count-1;
+        return;
     }
     NSLog(@"pre play index:%d", currentIndex);
     [self playWithURL:[playList objectAtIndex:currentIndex]];
@@ -261,13 +264,19 @@
 }
 
 - (void)skipTo:(float)percentage{
-    if (percentage >= 1) {
-        [self audiofinished:nil];
-        return;
-    }
+//    if (percentage >= 1) {
+////        tempURL = nil;
+//        [self stopTick];
+//        [player stop];
+//        if (currentIndex+1>playList.count-1) {
+//            return NO;
+//        }
+//        return YES;
+//    }
     float total = player.duration;
 //    [[NSNotificationCenter defaultCenter] postNotificationName:AudioProgressNotification object:[NSNumber numberWithFloat:total*percentage]];
     [player setCurrentPlaybackTime:total*percentage];
+    [self resume];
 }
 
 - (float)duration{
@@ -307,7 +316,7 @@
 }
 
 - (void)playIndex:(int)index withTime:(float)time{
-    [player stop];
+//    [player stop];
     [self stopTick];
     currentIndex = index;
     if (time == NAN) {

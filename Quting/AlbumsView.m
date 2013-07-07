@@ -208,6 +208,9 @@
             [[RequestHelper defaultHelper] requestDELETEAPI:[NSString stringWithFormat:@"/api/buys/%@", [[dict valueForKey:@"id"] stringValue]] postData:@{@"guest_id": [[NSUserDefaults standardUserDefaults] valueForKey:@"guest"], @"medium_id": [[dict valueForKey:@"id"] stringValue]} success:^(id result) {
                 [AppUtil warning:@"取消订阅成功!" withType:m_success];
                 [[NSNotificationCenter defaultCenter] postNotificationName:UNPAYMEIDA object:@(self.tag)];
+                if ([[AudioManager defaultManager] imCurrentAlbums:self]) {
+                    [[AudioManager defaultManager] clearAudioList];
+                }
             } failed:nil];
         }
     }
@@ -435,7 +438,7 @@
 
 - (void)recordPlayProgress:(NSNotification *)notifi{
     if (!isShop && [[AudioManager defaultManager] imCurrentAlbums:self]) {
-        NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
+//        NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
         if ([notifi userInfo]!=nil) {
             [[NSUserDefaults standardUserDefaults] setValue:[notifi userInfo] forKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
             [[NSUserDefaults standardUserDefaults] synchronize];

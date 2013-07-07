@@ -265,14 +265,14 @@
 		C43026EB1758979E0082D368 /* VoiceTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VoiceTextField.h; sourceTree = "<group>"; };
 		C43026EC1758979E0082D368 /* VoiceTextField.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VoiceTextField.mm; sourceTree = "<group>"; };
 		C43026EF175897F40082D368 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		C448DF551756090800AD4C94 /* Quting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quting.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C448DF551756090800AD4C94 /* QuTing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuTing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C448DF581756090800AD4C94 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C448DF5A1756090800AD4C94 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C448DF5C1756090800AD4C94 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		C448DF601756090800AD4C94 /* Quting-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Quting-Info.plist"; sourceTree = "<group>"; };
+		C448DF601756090800AD4C94 /* QuTing-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuTing-Info.plist"; sourceTree = "<group>"; };
 		C448DF621756090800AD4C94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C448DF641756090800AD4C94 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		C448DF661756090800AD4C94 /* Quting-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Quting-Prefix.pch"; sourceTree = "<group>"; };
+		C448DF661756090800AD4C94 /* QuTing-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QuTing-Prefix.pch"; sourceTree = "<group>"; };
 		C448DF671756090800AD4C94 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C448DF681756090800AD4C94 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C4597AD91777F67B006519E9 /* backBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backBtn.png; sourceTree = "<group>"; };
@@ -550,7 +550,7 @@
 		C448DF561756090800AD4C94 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C448DF551756090800AD4C94 /* Quting.app */,
+				C448DF551756090800AD4C94 /* QuTing.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -637,10 +637,10 @@
 			isa = PBXGroup;
 			children = (
 				C4597AD71777F67B006519E9 /* UI */,
-				C448DF601756090800AD4C94 /* Quting-Info.plist */,
+				C448DF601756090800AD4C94 /* QuTing-Info.plist */,
 				C448DF611756090800AD4C94 /* InfoPlist.strings */,
 				C448DF641756090800AD4C94 /* main.m */,
-				C448DF661756090800AD4C94 /* Quting-Prefix.pch */,
+				C448DF661756090800AD4C94 /* QuTing-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -938,9 +938,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C448DF541756090800AD4C94 /* Quting */ = {
+		C448DF541756090800AD4C94 /* QuTing */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C448DF721756090800AD4C94 /* Build configuration list for PBXNativeTarget "Quting" */;
+			buildConfigurationList = C448DF721756090800AD4C94 /* Build configuration list for PBXNativeTarget "QuTing" */;
 			buildPhases = (
 				C448DF511756090800AD4C94 /* Sources */,
 				C448DF521756090800AD4C94 /* Frameworks */,
@@ -950,9 +950,9 @@
 			);
 			dependencies = (
 			);
-			name = Quting;
+			name = QuTing;
 			productName = Quting;
-			productReference = C448DF551756090800AD4C94 /* Quting.app */;
+			productReference = C448DF551756090800AD4C94 /* QuTing.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -964,7 +964,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = Johnil;
 			};
-			buildConfigurationList = C448DF501756090800AD4C94 /* Build configuration list for PBXProject "Quting" */;
+			buildConfigurationList = C448DF501756090800AD4C94 /* Build configuration list for PBXProject "QuTing" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -976,7 +976,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C448DF541756090800AD4C94 /* Quting */,
+				C448DF541756090800AD4C94 /* QuTing */,
 			);
 		};
 /* End PBXProject section */
@@ -1271,12 +1271,12 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: JIAKEN SHAHA (T4YBVPZ8Z4)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Quting/Quting-Prefix.pch";
+				GCC_PREFIX_HEADER = "Quting/QuTing-Prefix.pch";
 				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				INFOPLIST_FILE = "Quting/Quting-Info.plist";
+				INFOPLIST_FILE = "Quting/QuTing-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = QuTing;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BCEC978D-55FD-4C8F-9A00-FEE564C988C7";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1288,15 +1288,15 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = NO;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Sunshine zheng";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pamakids Tech Limited (M5L29HQV8J)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Quting/Quting-Prefix.pch";
+				GCC_PREFIX_HEADER = "Quting/QuTing-Prefix.pch";
 				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				INFOPLIST_FILE = "Quting/Quting-Info.plist";
+				INFOPLIST_FILE = "Quting/QuTing-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CC0AF9EB-0B04-45EE-8B06-83D69F90D344";
+				PRODUCT_NAME = QuTing;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C00D4DE5-3788-4822-B115-9402FC7E721D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1336,12 +1336,12 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Sunshine zheng";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Quting/Quting-Prefix.pch";
+				GCC_PREFIX_HEADER = "Quting/QuTing-Prefix.pch";
 				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				INFOPLIST_FILE = "Quting/Quting-Info.plist";
+				INFOPLIST_FILE = "Quting/QuTing-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = QuTing;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AF27C694-CC89-47BB-8219-D43AFB9897E6";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1350,7 +1350,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C448DF501756090800AD4C94 /* Build configuration list for PBXProject "Quting" */ = {
+		C448DF501756090800AD4C94 /* Build configuration list for PBXProject "QuTing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C448DF701756090800AD4C94 /* Debug */,
@@ -1360,7 +1360,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C448DF721756090800AD4C94 /* Build configuration list for PBXNativeTarget "Quting" */ = {
+		C448DF721756090800AD4C94 /* Build configuration list for PBXNativeTarget "QuTing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C448DF731756090800AD4C94 /* Debug */,

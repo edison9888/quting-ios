@@ -47,6 +47,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioNext) name:AudioNextNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPre) name:AudioPreNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioProgress:) name:AudioProgressNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioLoadDone:) name:AudioLoadDoneNotification object:nil];
     }
     return self;
 }
@@ -321,6 +322,8 @@
 - (void)preAudio{
     slider.enabled = NO;
     NSLog(@"pre");
+    currentTime.text = @"00:00";
+    totalTime.text = @"00:00";
     [[AudioManager defaultManager] pre];
 }
 
@@ -334,6 +337,8 @@
 
 - (void)nextAudio{
     slider.enabled = NO;
+    currentTime.text = @"00:00";
+    totalTime.text = @"00:00";
     NSLog(@"next");
     [[AudioManager defaultManager] next];
 }
@@ -366,10 +371,22 @@
     if (currentPlaybackTime>0) {
         currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
     }
-    if (progress!=0) {
+//    if (progress!=0) {
         slider.value = progress;
-    }
+//    }
     [self checkSlider];
+}
+
+- (void)audioLoadDone:(NSNotification *)notifi{
+    detailTitle.text = [[tempDatas objectAtIndex:[[AudioManager defaultManager] currentIndex]] valueForKey:@"detailTitle"];
+    int duration = [[AudioManager defaultManager] duration];
+    totalTime.text = [NSString stringWithFormat:@"%02d:%02d", duration/60, duration%60];
+    int currentPlaybackTime = [[AudioManager defaultManager] currentPlaybackTime];
+    if (currentPlaybackTime>0) {
+        currentTime.text = [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60];
+        NSLog(@"temp %@", [NSString stringWithFormat:@"%02d:%02d", currentPlaybackTime/60, currentPlaybackTime%60]);
+    }
+    play.selected = YES;
 }
 
 - (void)audioPlay{
@@ -385,29 +402,35 @@
 - (void)audioPre{
     pre.enabled = [[AudioManager defaultManager] hasPre];
     next.enabled = [[AudioManager defaultManager] hasNext];
-    detailTitle.text = [[tempDatas objectAtIndex:[[AudioManager defaultManager] currentIndex]] valueForKey:@"detailTitle"];
+    play.selected = YES;
 }
 
 - (void)audioNext{
     pre.enabled = [[AudioManager defaultManager] hasPre];
     next.enabled = [[AudioManager defaultManager] hasNext];
-    detailTitle.text = [[tempDatas objectAtIndex:[[AudioManager defaultManager] currentIndex]] valueForKey:@"detailTitle"];
+    play.selected = YES;
 }
 
 - (void)sliderValueChanged:(UISlider *)slider1{
+//    if (slider1.value>1) {
+//        return;
+//    }
 //    NSLog(@"slider change:%f", slider.value);
-    [[AudioManager defaultManager] skipTo:slider.value];
-    [self checkSlider];
+//    [self checkSlider];
 }
 
 - (void)sliderDragUp:(UISlider *)slider1{
-    NSLog(@"slider up:%f", slider.value);
-    if (![[AudioManager defaultManager] playing]) {
-        [[AudioManager defaultManager] resume];
-        [self audioPlay];
+//    NSLog(@"slider up:%f", slider.value);
+//    if (![[AudioManager defaultManager] playing]) {
+    if (slider.value>.999) {
+        slider.value = .999;
     }
-    [self progress:slider1.value];
-    [self performSelector:@selector(resume) withObject:nil afterDelay:.8];
+    [[AudioManager defaultManager] skipTo:slider.value];
+
+    //        [self audioPlay];
+//    }
+//    [self progress:slider1.value];
+//    [self performSelector:@selector(resume) withObject:nil afterDelay:.8];
 }
 
 - (void)resume{
@@ -419,7 +442,8 @@
 }
 
 - (void)sliderTouchDown:(UISlider *)slider1{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[AudioManager defaultManager] pause];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated{

@@ -14,6 +14,7 @@
 #define AudioNextNotification @"audioNext"
 #define AudioPreNotification @"audioPre"
 #define AudioProgressNotification @"audioProgress"
+#define AudioLoadDoneNotification @"audioLoadDone"
 
 
 @interface AudioManager : NSObject
