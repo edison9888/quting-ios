@@ -392,6 +392,8 @@
 - (void)audioPlay{
     NSLog(@"play", nil);
     play.selected = YES;
+    pre.enabled = [[AudioManager defaultManager] hasPre];
+    next.enabled = [[AudioManager defaultManager] hasNext];
 }
 
 - (void)audioPause{

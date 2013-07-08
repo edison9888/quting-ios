@@ -347,6 +347,7 @@
     [[AudioManager defaultManager] clearAudioList];
     [albumsView stop];
     [[NSNotificationCenter defaultCenter] removeObserver:albumsView name:AudioPauseNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:albumsView name:AudioPlayNotification object:nil];
     [self setCurrentAlbums:albums];
     return YES;
 }

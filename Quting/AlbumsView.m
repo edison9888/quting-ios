@@ -387,6 +387,7 @@
 }
 
 - (void)stop{
+    circularProgressView.progressColor = [UIColor grayColor];
     cover.alpha = .85;
     control.selected = NO;
 }
@@ -408,7 +409,7 @@
                     [[AudioManager defaultManager] clearAudioList];
                     [[AudioManager defaultManager] addAudioListToList:mp3files];
                     NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
-                    if (history!=nil) {
+                    if (history!=nil&&[[history valueForKey:@"currentIndex"] intValue]>-1) {
                         [[AudioManager defaultManager] playIndex:[[history valueForKey:@"currentIndex"] intValue] withTime:[[history valueForKey:@"time"] floatValue]];
                     } else {
                         [[AudioManager defaultManager] playListAtFirst];
@@ -423,7 +424,7 @@
                 [[AudioManager defaultManager] clearAudioList];
                 [[AudioManager defaultManager] addAudioListToList:mp3files];
                 NSDictionary *history = [[NSUserDefaults standardUserDefaults] dictionaryForKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
-                if (history!=nil) {
+                if (history!=nil&&[[history valueForKey:@"currentIndex"] intValue]>-1) {
                     [[AudioManager defaultManager] playIndex:[[history valueForKey:@"currentIndex"] intValue] withTime:[[history valueForKey:@"time"] floatValue]];
                 } else {
                     [[AudioManager defaultManager] playListAtFirst];
@@ -439,7 +440,11 @@
 - (void)recordPlayProgress:(NSNotification *)notifi{
     if (!isShop && [[AudioManager defaultManager] imCurrentAlbums:self]) {
 //        NSLog(@"record to %d, with info %@", [[dict valueForKey:@"id"] intValue], [notifi userInfo]);
-        if ([notifi userInfo]!=nil) {
+        NSDictionary *temp = [notifi userInfo];
+        if (temp!=nil) {
+            if ([[temp valueForKey:@"currentIndex"] intValue]==-1 || [[temp valueForKey:@"progress"] intValue]==NAN) {
+                return;
+            }
             [[NSUserDefaults standardUserDefaults] setValue:[notifi userInfo] forKey:[NSString stringWithFormat:@"history%@%d", [dict valueForKey:@"id"], isShop]];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
